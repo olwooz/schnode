@@ -1,10 +1,7 @@
-import { useEffect, useRef } from 'react';
-import { useDrag } from 'react-dnd';
-import { getEmptyImage } from 'react-dnd-html5-backend';
-
 import { ComponentRenderer } from '@/lib/component-renderer';
 import { CanvasComponent } from '@/lib/types';
 import { DRAG_ITEM_TYPE } from '@/constants/component';
+import { useDraggable } from '@/hooks/useDraggable';
 
 export function DraggableComponent({
   component,
@@ -19,8 +16,7 @@ export function DraggableComponent({
   onClick: () => void;
   onMove: (id: string, position: { x: number; y: number }) => void;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [{ isDragging }, drag, preview] = useDrag({
+  const { draggableRef, isDragging } = useDraggable({
     type: DRAG_ITEM_TYPE.PLACED_COMPONENT,
     item: () => ({
       id: component.id,
@@ -28,11 +24,7 @@ export function DraggableComponent({
       componentType: component.type,
       initialPosition: component.position,
     }),
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-    canDrag: () => !isPreviewMode,
-    end: (_, monitor) => {
+    onDragEnd: (_, monitor) => {
       const dropResult = monitor.getDropResult<{
         position: { x: number; y: number };
       }>();
@@ -40,21 +32,12 @@ export function DraggableComponent({
         onMove(component.id, dropResult.position);
       }
     },
-  });
-
-  useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true });
-  }, [preview]);
-
-  useEffect(() => {
-    if (ref.current && !isPreviewMode) {
-      drag(ref.current);
-    }
-  }, [drag, isPreviewMode]);
+    isPreviewMode,
+  } as const);
 
   return (
     <div
-      ref={ref}
+      ref={draggableRef}
       className={`
         absolute 
         cursor-${isPreviewMode ? 'default' : 'move'} 

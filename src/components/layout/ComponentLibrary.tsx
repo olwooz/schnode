@@ -4,7 +4,11 @@ import { Separator } from '@/components/ui/separator';
 import { DraggableItem } from '@/components/draggable/DraggableItem';
 import { COMPONENT_LIBRARY_ITEMS } from '@/constants/component';
 
-export function ComponentLibrary() {
+type ComponentLibraryProps = {
+  isPreviewMode: boolean;
+};
+
+export function ComponentLibrary({ isPreviewMode }: ComponentLibraryProps) {
   return (
     <div className='flex h-full flex-col'>
       <div className='p-4'>
@@ -20,6 +24,7 @@ export function ComponentLibrary() {
               type={item.type}
               title={item.title}
               description={item.description}
+              isPreviewMode={isPreviewMode}
             />
           ))}
         </div>
