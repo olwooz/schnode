@@ -1,7 +1,5 @@
 'use client';
 
-import { HTMLInputTypeAttribute } from 'react';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -14,106 +12,141 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ComponentType } from '@/types/dnd';
-import { COMPONENT_TYPE } from '@/constants/component';
-import {
-  ButtonVariant,
-  ButtonSize,
-  SelectTriggerSize,
-} from '@/types/shadcn-component';
-import {
-  BUTTON_SIZE,
-  SELECT_DEFAULT_OPTIONS,
-  SELECT_TRIGGER_SIZE,
-} from '@/constants/variant';
-import { BUTTON_VARIANT } from '@/constants/variant';
+import { COMPONENT_TYPE, DEFAULT_PROPS } from '@/constants/component';
 import { Label } from '@/components/ui/label';
-import { INPUT_TYPES } from '@/constants/input';
+import { ActionButton } from '@/types/card';
+import {
+  ButtonProps,
+  InputProps,
+  SelectProps,
+  CardProps,
+  TableProps,
+  CheckboxProps,
+  ContentItem,
+  ComponentProps,
+} from '@/types/component';
 
-interface ButtonProps {
-  children: string;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
+function ButtonRenderer({ props }: { props?: Partial<ButtonProps> }) {
+  const buttonProps = { ...DEFAULT_PROPS.button, ...props } as ButtonProps;
+  return (
+    <Button variant={buttonProps.variant} size={buttonProps.size}>
+      {buttonProps.children}
+    </Button>
+  );
 }
 
-interface InputProps {
-  label: string;
-  placeholder: string;
-  type: HTMLInputTypeAttribute;
+function InputRenderer({ props }: { props?: Partial<InputProps> }) {
+  const inputProps = { ...DEFAULT_PROPS.input, ...props } as InputProps;
+  return (
+    <div className='grid w-full max-w-sm items-center gap-1.5'>
+      <Label>{inputProps.label}</Label>
+      <Input placeholder={inputProps.placeholder} type={inputProps.type} />
+    </div>
+  );
 }
 
-interface SelectProps {
-  label: string;
-  placeholder: string;
-  options: string[];
-  size?: SelectTriggerSize;
+function SelectRenderer({ props }: { props?: Partial<SelectProps> }) {
+  const selectProps = { ...DEFAULT_PROPS.select, ...props } as SelectProps;
+  const options =
+    typeof selectProps.options === 'string'
+      ? JSON.parse(selectProps.options)
+      : selectProps.options;
+
+  return (
+    <div className='grid w-full max-w-sm items-center gap-1.5'>
+      <Label>{selectProps.label}</Label>
+      <Select>
+        <SelectTrigger size={selectProps.size}>
+          <SelectValue placeholder={selectProps.placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option: string) => (
+            <SelectItem key={option} value={option.toLowerCase()}>
+              {option}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
 }
 
-interface CardProps {
-  title: string;
-  description?: string;
-  content: string;
-  contentItems?: string;
-  actionButtons?: string;
+function CardRenderer({ props }: { props?: Partial<CardProps> }) {
+  const cardProps = { ...DEFAULT_PROPS.card, ...props } as CardProps;
+
+  const contentItems = cardProps.contentItems
+    ? JSON.parse(cardProps.contentItems)
+    : [];
+
+  const actionButtons = cardProps.actionButtons
+    ? JSON.parse(cardProps.actionButtons)
+    : [];
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{cardProps.title}</CardTitle>
+        {cardProps.description && (
+          <div className='text-sm text-muted-foreground mt-1'>
+            {cardProps.description}
+          </div>
+        )}
+      </CardHeader>
+      <CardContent>
+        <div className='space-y-4'>
+          <p>{cardProps.content}</p>
+
+          {contentItems.length > 0 && (
+            <div className='space-y-3'>
+              {contentItems.map((item: ContentItem) => (
+                <div key={item.id}>
+                  {item.type === 'input' ? (
+                    <InputRenderer props={item.props} />
+                  ) : (
+                    <SelectRenderer props={item.props} />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {actionButtons.length > 0 && (
+            <div className='flex flex-wrap gap-2 mt-4'>
+              {actionButtons.map((button: ActionButton) => (
+                <ButtonRenderer key={button.id} props={button} />
+              ))}
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
 }
 
-interface TableProps {
-  title: string;
+function TableRenderer({ props }: { props?: Partial<TableProps> }) {
+  const tableProps = { ...DEFAULT_PROPS.table, ...props } as TableProps;
+  return (
+    <div className='rounded-md border p-4'>
+      <h3 className='mb-2 font-medium'>{tableProps.title}</h3>
+      <p className='text-sm text-gray-500'>Table component placeholder</p>
+    </div>
+  );
 }
 
-interface CheckboxProps {
-  label: string;
+function CheckboxRenderer({ props }: { props?: Partial<CheckboxProps> }) {
+  const checkboxProps = {
+    ...DEFAULT_PROPS.checkbox,
+    ...props,
+  } as CheckboxProps;
+  return (
+    <div className='flex items-center space-x-2'>
+      <Checkbox id='checkbox' />
+      <label htmlFor='checkbox' className='text-sm font-medium'>
+        {checkboxProps.label}
+      </label>
+    </div>
+  );
 }
-
-// Define types for content items and action buttons
-type ContentItem = {
-  id: string;
-  type: 'input' | 'select';
-  props: Record<string, string>;
-};
-
-type ActionButton = {
-  id: string;
-  text: string;
-  variant: string;
-};
-
-type ComponentProps = {
-  button: ButtonProps;
-  input: InputProps;
-  select: SelectProps;
-  card: CardProps;
-  table: TableProps;
-  checkbox: CheckboxProps;
-};
-
-const defaultProps: ComponentProps = {
-  button: {
-    children: 'Button',
-    variant: BUTTON_VARIANT.DEFAULT,
-    size: BUTTON_SIZE.DEFAULT,
-  },
-  input: {
-    label: 'Input',
-    placeholder: 'Type here...',
-    type: INPUT_TYPES.TEXT,
-  },
-  select: {
-    label: 'Select',
-    placeholder: 'Select an option',
-    options: SELECT_DEFAULT_OPTIONS,
-    size: SELECT_TRIGGER_SIZE.DEFAULT,
-  },
-  card: {
-    title: 'Card Title',
-    content: 'Card content goes here',
-  },
-  table: {
-    title: 'Data Table',
-  },
-  checkbox: {
-    label: 'Checkbox',
-  },
-};
 
 type ComponentRendererProps = {
   type: ComponentType;
@@ -122,161 +155,23 @@ type ComponentRendererProps = {
 
 export function ComponentRenderer({ type, props }: ComponentRendererProps) {
   switch (type) {
-    case COMPONENT_TYPE.BUTTON: {
-      const buttonProps = { ...defaultProps.button, ...props } as ButtonProps;
-      return (
-        <Button variant={buttonProps.variant} size={buttonProps.size}>
-          {buttonProps.children}
-        </Button>
-      );
-    }
+    case COMPONENT_TYPE.BUTTON:
+      return <ButtonRenderer props={props as Partial<ButtonProps>} />;
 
-    case COMPONENT_TYPE.INPUT: {
-      const inputProps = { ...defaultProps.input, ...props } as InputProps;
-      return (
-        <div className='grid w-full max-w-sm items-center gap-1.5'>
-          <Label>{inputProps.label}</Label>
-          <Input placeholder={inputProps.placeholder} type={inputProps.type} />
-        </div>
-      );
-    }
+    case COMPONENT_TYPE.INPUT:
+      return <InputRenderer props={props as Partial<InputProps>} />;
 
-    case COMPONENT_TYPE.SELECT: {
-      const selectProps = { ...defaultProps.select, ...props } as SelectProps;
-      const options =
-        typeof selectProps.options === 'string'
-          ? JSON.parse(selectProps.options)
-          : selectProps.options;
+    case COMPONENT_TYPE.SELECT:
+      return <SelectRenderer props={props as Partial<SelectProps>} />;
 
-      return (
-        <div className='grid w-full max-w-sm items-center gap-1.5'>
-          <Label>{selectProps.label}</Label>
-          <Select>
-            <SelectTrigger size={selectProps.size}>
-              <SelectValue placeholder={selectProps.placeholder} />
-            </SelectTrigger>
-            <SelectContent>
-              {options.map((option: string) => (
-                <SelectItem key={option} value={option.toLowerCase()}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      );
-    }
+    case COMPONENT_TYPE.CARD:
+      return <CardRenderer props={props as Partial<CardProps>} />;
 
-    case COMPONENT_TYPE.CARD: {
-      const cardProps = { ...defaultProps.card, ...props } as CardProps;
+    case COMPONENT_TYPE.TABLE:
+      return <TableRenderer props={props as Partial<TableProps>} />;
 
-      // Parse content items if available
-      const contentItems = cardProps.contentItems
-        ? JSON.parse(cardProps.contentItems)
-        : [];
-
-      // Parse action buttons if available
-      const actionButtons = cardProps.actionButtons
-        ? JSON.parse(cardProps.actionButtons)
-        : [];
-
-      return (
-        <Card>
-          <CardHeader>
-            <CardTitle>{cardProps.title}</CardTitle>
-            {cardProps.description && (
-              <div className='text-sm text-muted-foreground mt-1'>
-                {cardProps.description}
-              </div>
-            )}
-          </CardHeader>
-          <CardContent>
-            <div className='space-y-4'>
-              <p>{cardProps.content}</p>
-
-              {contentItems.length > 0 && (
-                <div className='space-y-3'>
-                  {contentItems.map((item: ContentItem) => (
-                    <div key={item.id}>
-                      {item.type === 'input' ? (
-                        <div className='grid w-full max-w-sm items-center gap-1.5'>
-                          <Label>{item.props.label}</Label>
-                          <Input
-                            placeholder={item.props.placeholder}
-                            type={item.props.type || 'text'}
-                          />
-                        </div>
-                      ) : (
-                        <div className='grid w-full max-w-sm items-center gap-1.5'>
-                          <Label>{item.props.label}</Label>
-                          <Select>
-                            <SelectTrigger>
-                              <SelectValue
-                                placeholder={item.props.placeholder}
-                              />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {JSON.parse(item.props.options).map(
-                                (option: string) => (
-                                  <SelectItem
-                                    key={option}
-                                    value={option.toLowerCase()}
-                                  >
-                                    {option}
-                                  </SelectItem>
-                                )
-                              )}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {actionButtons.length > 0 && (
-                <div className='flex flex-wrap gap-2 mt-4'>
-                  {actionButtons.map((button: ActionButton) => (
-                    <Button
-                      key={button.id}
-                      variant={button.variant as ButtonVariant}
-                    >
-                      {button.text}
-                    </Button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      );
-    }
-
-    case COMPONENT_TYPE.TABLE: {
-      const tableProps = { ...defaultProps.table, ...props } as TableProps;
-      return (
-        <div className='rounded-md border p-4'>
-          <h3 className='mb-2 font-medium'>{tableProps.title}</h3>
-          <p className='text-sm text-gray-500'>Table component placeholder</p>
-        </div>
-      );
-    }
-
-    case COMPONENT_TYPE.CHECKBOX: {
-      const checkboxProps = {
-        ...defaultProps.checkbox,
-        ...props,
-      } as CheckboxProps;
-      return (
-        <div className='flex items-center space-x-2'>
-          <Checkbox id='checkbox' />
-          <label htmlFor='checkbox' className='text-sm font-medium'>
-            {checkboxProps.label}
-          </label>
-        </div>
-      );
-    }
+    case COMPONENT_TYPE.CHECKBOX:
+      return <CheckboxRenderer props={props as Partial<CheckboxProps>} />;
 
     default:
       return <div>Unknown component type: {type}</div>;

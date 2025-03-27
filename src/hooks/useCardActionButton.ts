@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ActionButton } from '@/types/card';
 import { CanvasComponent } from '@/types/dnd';
 import { parseJsonProp } from '@/utils/canvas';
+import { DEFAULT_PROPS } from '@/constants/component';
 
 export function useCardActionButton(
   selectedComponent: CanvasComponent,
@@ -14,9 +15,7 @@ export function useCardActionButton(
   function handleAddActionButton() {
     const newButton: ActionButton = {
       id: uuidv4(),
-      text: 'Button',
-      variant: 'default',
-      size: 'default',
+      ...DEFAULT_PROPS.button,
     };
 
     const updatedButtons = [...actionButtons, newButton];

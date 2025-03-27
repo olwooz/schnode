@@ -1,4 +1,4 @@
-import { COMPONENT_TYPE, DRAG_ITEM_TYPE } from '@/constants/component';
+import { COMPONENT_TYPE, DRAG_ITEM_TYPE } from '@/constants/component-types';
 
 export type ComponentType =
   (typeof COMPONENT_TYPE)[keyof typeof COMPONENT_TYPE];

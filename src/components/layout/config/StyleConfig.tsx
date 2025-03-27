@@ -8,6 +8,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { CanvasComponent } from '@/types/dnd';
 import { VARIANTS } from '@/constants/variant';
+import { isEmptyObject } from '@/utils/object';
 
 type StyleConfigProps = {
   selectedComponent: CanvasComponent;
@@ -18,10 +19,10 @@ export default function StyleConfig({
   selectedComponent,
   handlePropChange,
 }: StyleConfigProps) {
-  const variant = VARIANTS[selectedComponent.type]?.variant;
-  const size = VARIANTS[selectedComponent.type]?.size;
+  const variant = VARIANTS[selectedComponent.type].variant;
+  const size = VARIANTS[selectedComponent.type].size;
 
-  if (!variant && !size) {
+  if (isEmptyObject(variant) && isEmptyObject(size)) {
     return (
       <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
         No style variants available for this component

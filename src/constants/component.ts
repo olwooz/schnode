@@ -1,13 +1,14 @@
+import {
+  SELECT_DEFAULT_OPTIONS,
+  SELECT_TRIGGER_SIZE,
+} from '@/constants/variant';
+import { INPUT_TYPES } from '@/constants/input';
+import { BUTTON_SIZE, BUTTON_VARIANT } from '@/constants/variant';
+import { ComponentProps } from '@/types/component';
 import { ComponentLibraryItem } from '@/types/dnd';
+import { COMPONENT_TYPE, DRAG_ITEM_TYPE } from '@/constants/component-types';
 
-export const COMPONENT_TYPE = {
-  BUTTON: 'button',
-  CARD: 'card',
-  CHECKBOX: 'checkbox',
-  INPUT: 'input',
-  SELECT: 'select',
-  TABLE: 'table',
-};
+export { COMPONENT_TYPE, DRAG_ITEM_TYPE };
 
 export const COMPONENT_LIBRARY_ITEMS: ComponentLibraryItem[] = [
   {
@@ -45,7 +46,31 @@ export const COMPONENT_LIBRARY_ITEMS: ComponentLibraryItem[] = [
   },
 ];
 
-export const DRAG_ITEM_TYPE = {
-  COMPONENT: 'COMPONENT',
-  PLACED_COMPONENT: 'PLACED_COMPONENT',
+export const DEFAULT_PROPS: ComponentProps = {
+  button: {
+    children: 'Button',
+    variant: BUTTON_VARIANT.DEFAULT,
+    size: BUTTON_SIZE.DEFAULT,
+  },
+  input: {
+    label: 'Input',
+    placeholder: 'Type here...',
+    type: INPUT_TYPES.TEXT,
+  },
+  select: {
+    label: 'Select',
+    placeholder: 'Select an option',
+    options: SELECT_DEFAULT_OPTIONS,
+    size: SELECT_TRIGGER_SIZE.DEFAULT,
+  },
+  card: {
+    title: 'Card Title',
+    content: 'Card content goes here',
+  },
+  table: {
+    title: 'Data Table',
+  },
+  checkbox: {
+    label: 'Checkbox',
+  },
 };

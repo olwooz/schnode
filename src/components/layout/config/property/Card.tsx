@@ -6,15 +6,16 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { CanvasComponent } from '@/types/dnd';
+import { EditorItem } from '@/types/card';
 import { COMPONENT_TYPE } from '@/constants/component';
 import { createMockComponent } from '@/utils/canvas';
+import { useCardActionButton } from '@/hooks/useCardActionButton';
+import { useCardContent } from '@/hooks/useCardContent';
+
 import InputProperty from './Input';
 import SelectProperty from './Select';
 import ButtonProperty from './Button';
 import StyleConfig from '../StyleConfig';
-import { useCardActionButton } from '@/hooks/useCardActionButton';
-import { EditorItem } from '@/types/card';
-import { useCardContent } from '@/hooks/useCardContent';
 
 type ItemEditorProps = {
   item: EditorItem;
@@ -177,7 +178,6 @@ const ActionProperties: React.FC<CardPropertyProps> = ({
     actionButtons,
     handleAddActionButton,
     handleRemoveActionButton,
-    handleUpdateActionButtonProp,
     createButtonPropHandler,
   } = useCardActionButton(selectedComponent, handlePropChange);
 
@@ -213,17 +213,11 @@ const ActionProperties: React.FC<CardPropertyProps> = ({
               <ButtonProperty
                 selectedComponent={createMockComponent(COMPONENT_TYPE.BUTTON, {
                   id: button.id,
-                  children: button.text,
-                  variant: button.variant,
-                  size: button.size,
+                  children: button.children,
+                  variant: button.variant ?? 'default',
+                  size: button.size ?? 'default',
                 })}
-                handlePropChange={(prop, value) => {
-                  if (prop === 'children') {
-                    handleUpdateActionButtonProp(button.id, 'text', value);
-                  } else {
-                    handleUpdateActionButtonProp(button.id, prop, value);
-                  }
-                }}
+                handlePropChange={createButtonPropHandler(button.id)}
               />
 
               <div className='mt-2 pt-2 border-t'>
@@ -232,8 +226,8 @@ const ActionProperties: React.FC<CardPropertyProps> = ({
                     COMPONENT_TYPE.BUTTON,
                     {
                       id: button.id,
-                      variant: button.variant,
-                      size: button.size,
+                      variant: button.variant ?? 'default',
+                      size: button.size ?? 'default',
                     }
                   )}
                   handlePropChange={createButtonPropHandler(button.id)}
