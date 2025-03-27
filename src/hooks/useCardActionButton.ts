@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ActionButton } from '@/types/card';
@@ -12,53 +12,99 @@ export function useCardActionButton(
 ) {
   const [actionButtons, setActionButtons] = useState<ActionButton[]>([]);
 
-  function handleAddActionButton() {
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const actionButtonsRef = useRef<ActionButton[]>([]);
+  const lastPropRef = useRef<string | null>(null);
+
+  const debouncedUpdate = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      const serialized = JSON.stringify(actionButtonsRef.current);
+      lastPropRef.current = serialized;
+      handlePropChange('actionButtons', serialized);
+      timeoutRef.current = null;
+    }, 300);
+  }, [handlePropChange]);
+
+  const updateButtons = useCallback(
+    (newButtons: ActionButton[]) => {
+      setActionButtons(newButtons);
+      debouncedUpdate();
+    },
+    [debouncedUpdate]
+  );
+
+  const handleAddActionButton = useCallback(() => {
     const newButton: ActionButton = {
       id: uuidv4(),
       ...DEFAULT_PROPS.button,
     };
 
-    const updatedButtons = [...actionButtons, newButton];
-    setActionButtons(updatedButtons);
-    handlePropChange('actionButtons', JSON.stringify(updatedButtons));
-  }
+    updateButtons([...actionButtonsRef.current, newButton]);
+  }, [updateButtons]);
 
-  function handleRemoveActionButton(id: string) {
-    const updatedButtons = actionButtons.filter((button) => button.id !== id);
-    setActionButtons(updatedButtons);
-    handlePropChange('actionButtons', JSON.stringify(updatedButtons));
-  }
+  const handleRemoveActionButton = useCallback(
+    (id: string) => {
+      updateButtons(
+        actionButtonsRef.current.filter((button) => button.id !== id)
+      );
+    },
+    [updateButtons]
+  );
 
-  function handleUpdateActionButtonProp(
-    buttonId: string,
-    propName: string,
-    propValue: string
-  ) {
-    const updatedButtons = actionButtons.map((button) => {
-      if (button.id === buttonId) {
-        return {
-          ...button,
-          [propName]: propValue,
-        };
-      }
-      return button;
-    });
+  const handleUpdateActionButtonProp = useCallback(
+    (buttonId: string, propName: string, propValue: string) => {
+      updateButtons(
+        actionButtonsRef.current.map((button) => {
+          if (button.id === buttonId) {
+            return {
+              ...button,
+              [propName]: propValue,
+            };
+          }
+          return button;
+        })
+      );
+    },
+    [updateButtons]
+  );
 
-    setActionButtons(updatedButtons);
-    handlePropChange('actionButtons', JSON.stringify(updatedButtons));
-  }
-
-  function createButtonPropHandler(buttonId: string) {
-    return (propName: string, value: string) => {
-      handleUpdateActionButtonProp(buttonId, propName, value);
-    };
-  }
+  const createButtonPropHandler = useCallback(
+    (buttonId: string) => {
+      return (propName: string, value: string) => {
+        handleUpdateActionButtonProp(buttonId, propName, value);
+      };
+    },
+    [handleUpdateActionButtonProp]
+  );
 
   useEffect(() => {
-    setActionButtons(
-      parseJsonProp(selectedComponent.props.actionButtons as string, [])
-    );
-  }, [selectedComponent]);
+    actionButtonsRef.current = actionButtons;
+  }, [actionButtons]);
+
+  useEffect(() => {
+    const propActionButtons = selectedComponent.props.actionButtons as string;
+
+    if (propActionButtons === lastPropRef.current) {
+      return;
+    }
+
+    lastPropRef.current = propActionButtons;
+
+    const parsedButtons = parseJsonProp(propActionButtons, []);
+    setActionButtons(parsedButtons);
+  }, [selectedComponent.props.actionButtons]);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return {
     actionButtons,

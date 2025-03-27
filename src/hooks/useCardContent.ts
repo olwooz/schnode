@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { CanvasComponent } from '@/types/dnd';
@@ -13,64 +13,111 @@ export function useCardContent(
 ) {
   const [contentItems, setContentItems] = useState<ContentItem[]>([]);
 
-  function handleAddContentItem(type: 'input' | 'select') {
-    const newItem: ContentItem = {
-      id: uuidv4(),
-      type,
-      props:
-        type === COMPONENT_TYPE.INPUT
-          ? { label: 'Label', placeholder: 'Placeholder', type: 'text' }
-          : {
-              label: 'Label',
-              placeholder: 'Select an option',
-              options: JSON.stringify(SELECT_DEFAULT_OPTIONS),
-            },
-    };
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const contentItemsRef = useRef<ContentItem[]>([]);
+  const lastPropRef = useRef<string | null>(null);
 
-    const updatedItems = [...contentItems, newItem];
-    setContentItems(updatedItems);
-    handlePropChange('contentItems', JSON.stringify(updatedItems));
-  }
+  const debouncedUpdate = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
 
-  function handleRemoveContentItem(id: string) {
-    const updatedItems = contentItems.filter((item) => item.id !== id);
-    setContentItems(updatedItems);
-    handlePropChange('contentItems', JSON.stringify(updatedItems));
-  }
+    timeoutRef.current = setTimeout(() => {
+      const serialized = JSON.stringify(contentItemsRef.current);
+      lastPropRef.current = serialized;
+      handlePropChange('contentItems', serialized);
+      timeoutRef.current = null;
+    }, 300);
+  }, [handlePropChange]);
 
-  function handleUpdateContentItemProp(
-    itemId: string,
-    propName: string,
-    propValue: string
-  ) {
-    const updatedItems = contentItems.map((item) => {
-      if (item.id === itemId) {
-        return {
-          ...item,
-          props: {
-            ...item.props,
-            [propName]: propValue,
-          },
-        };
-      }
-      return item;
-    });
+  const updateItems = useCallback(
+    (newItems: ContentItem[]) => {
+      setContentItems(newItems);
+      debouncedUpdate();
+    },
+    [debouncedUpdate]
+  );
 
-    setContentItems(updatedItems);
-    handlePropChange('contentItems', JSON.stringify(updatedItems));
-  }
+  const handleAddContentItem = useCallback(
+    (type: 'input' | 'select') => {
+      const newItem: ContentItem = {
+        id: uuidv4(),
+        type,
+        props:
+          type === COMPONENT_TYPE.INPUT
+            ? { label: 'Label', placeholder: 'Placeholder', type: 'text' }
+            : {
+                label: 'Label',
+                placeholder: 'Select an option',
+                options: JSON.stringify(SELECT_DEFAULT_OPTIONS),
+              },
+      };
 
-  function createContentItemPropHandler(itemId: string) {
-    return (propName: string, value: string) => {
-      handleUpdateContentItemProp(itemId, propName, value);
-    };
-  }
+      updateItems([...contentItemsRef.current, newItem]);
+    },
+    [updateItems]
+  );
+
+  const handleRemoveContentItem = useCallback(
+    (id: string) => {
+      updateItems(contentItemsRef.current.filter((item) => item.id !== id));
+    },
+    [updateItems]
+  );
+
+  const handleUpdateContentItemProp = useCallback(
+    (itemId: string, propName: string, propValue: string) => {
+      updateItems(
+        contentItemsRef.current.map((item) => {
+          if (item.id === itemId) {
+            return {
+              ...item,
+              props: {
+                ...item.props,
+                [propName]: propValue,
+              },
+            };
+          }
+          return item;
+        })
+      );
+    },
+    [updateItems]
+  );
+
+  const createContentItemPropHandler = useCallback(
+    (itemId: string) => {
+      return (propName: string, value: string) => {
+        handleUpdateContentItemProp(itemId, propName, value);
+      };
+    },
+    [handleUpdateContentItemProp]
+  );
 
   useEffect(() => {
-    setContentItems(
-      parseJsonProp(selectedComponent.props.contentItems as string, [])
-    );
-  }, [selectedComponent]);
+    contentItemsRef.current = contentItems;
+  }, [contentItems]);
+
+  useEffect(() => {
+    const propContentItems = selectedComponent.props.contentItems as string;
+
+    if (propContentItems === lastPropRef.current) {
+      return;
+    }
+
+    lastPropRef.current = propContentItems;
+
+    const parsedItems = parseJsonProp(propContentItems, []);
+    setContentItems(parsedItems);
+  }, [selectedComponent.props.contentItems]);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return {
     contentItems,

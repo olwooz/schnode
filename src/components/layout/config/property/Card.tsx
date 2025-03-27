@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, memo } from 'react';
 import { Trash2, Plus } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { CanvasComponent } from '@/types/dnd';
-import { EditorItem } from '@/types/card';
+import { EditorItem, ContentItem, ActionButton } from '@/types/card';
 import { COMPONENT_TYPE } from '@/constants/component';
 import { createMockComponent } from '@/utils/canvas';
 import { useCardActionButton } from '@/hooks/useCardActionButton';
@@ -25,7 +25,12 @@ type ItemEditorProps = {
   children: ReactNode;
 };
 
-function ItemEditor({ item, title, onRemove, children }: ItemEditorProps) {
+const ItemEditor = memo(function ItemEditor({
+  item,
+  title,
+  onRemove,
+  children,
+}: ItemEditorProps) {
   return (
     <div className='border rounded-md p-3 space-y-2'>
       <div className='flex justify-between items-center mb-2'>
@@ -43,23 +48,94 @@ function ItemEditor({ item, title, onRemove, children }: ItemEditorProps) {
       {children}
     </div>
   );
-}
+});
+
+const ContentItemComponent = memo(function ContentItemComponent({
+  item,
+  onRemove,
+  createPropHandler,
+}: {
+  item: ContentItem;
+  onRemove: (id: string) => void;
+  createPropHandler: (id: string) => (propName: string, value: string) => void;
+}) {
+  return (
+    <ItemEditor
+      key={item.id}
+      item={item}
+      title={item.type === 'input' ? 'Input Field' : 'Select Field'}
+      onRemove={onRemove}
+    >
+      {item.type === 'input' ? (
+        <InputProperty
+          selectedComponent={createMockComponent(COMPONENT_TYPE.INPUT, {
+            ...item.props,
+            id: item.id,
+          })}
+          handlePropChange={createPropHandler(item.id)}
+        />
+      ) : (
+        <SelectProperty
+          selectedComponent={createMockComponent(COMPONENT_TYPE.SELECT, {
+            ...item.props,
+            id: item.id,
+          })}
+          handlePropChange={createPropHandler(item.id)}
+        />
+      )}
+    </ItemEditor>
+  );
+});
+
+const ActionButtonComponent = memo(function ActionButtonComponent({
+  button,
+  onRemove,
+  createPropHandler,
+}: {
+  button: ActionButton;
+  onRemove: (id: string) => void;
+  createPropHandler: (id: string) => (propName: string, value: string) => void;
+}) {
+  return (
+    <ItemEditor
+      key={button.id}
+      item={button}
+      title='Button'
+      onRemove={onRemove}
+    >
+      <ButtonProperty
+        selectedComponent={createMockComponent(COMPONENT_TYPE.BUTTON, {
+          id: button.id,
+          children: button.children,
+          variant: button.variant ?? 'default',
+          size: button.size ?? 'default',
+        })}
+        handlePropChange={createPropHandler(button.id)}
+      />
+
+      <div className='mt-2 pt-2 border-t'>
+        <StyleConfig
+          selectedComponent={createMockComponent(COMPONENT_TYPE.BUTTON, {
+            id: button.id,
+            variant: button.variant ?? 'default',
+            size: button.size ?? 'default',
+          })}
+          handlePropChange={createPropHandler(button.id)}
+        />
+      </div>
+    </ItemEditor>
+  );
+});
 
 type CardPropertyProps = {
   selectedComponent: CanvasComponent;
   handlePropChange: (prop: string, value: string) => void;
 };
 
-type CardPropertyComponent = React.FC<CardPropertyProps> & {
-  Basic: React.FC<CardPropertyProps>;
-  Content: React.FC<CardPropertyProps>;
-  Action: React.FC<CardPropertyProps>;
-};
-
-const BasicProperties: React.FC<CardPropertyProps> = ({
+const BasicProperties = memo(function BasicProperties({
   selectedComponent,
   handlePropChange,
-}) => {
+}: CardPropertyProps) {
   const title = useLocalFormState(
     selectedComponent.props.title ?? '',
     (value) => handlePropChange('title', value)
@@ -107,18 +183,26 @@ const BasicProperties: React.FC<CardPropertyProps> = ({
       </div>
     </div>
   );
-};
+});
 
-const ContentProperties: React.FC<CardPropertyProps> = ({
+const ContentProperties = memo(function ContentProperties({
   selectedComponent,
   handlePropChange,
-}) => {
+}: CardPropertyProps) {
   const {
     contentItems,
     handleAddContentItem,
     handleRemoveContentItem,
     createContentItemPropHandler,
   } = useCardContent(selectedComponent, handlePropChange);
+
+  const EmptyContent = memo(function EmptyContent() {
+    return (
+      <div className='text-sm text-muted-foreground text-center p-4 border rounded-md'>
+        No content components added yet
+      </div>
+    );
+  });
 
   return (
     <div className='space-y-4'>
@@ -150,52 +234,40 @@ const ContentProperties: React.FC<CardPropertyProps> = ({
 
       <div className='space-y-3'>
         {contentItems.length === 0 ? (
-          <div className='text-sm text-muted-foreground text-center p-4 border rounded-md'>
-            No content components added yet
-          </div>
+          <EmptyContent />
         ) : (
           contentItems.map((item) => (
-            <ItemEditor
+            <ContentItemComponent
               key={item.id}
               item={item}
-              title={item.type === 'input' ? 'Input Field' : 'Select Field'}
               onRemove={handleRemoveContentItem}
-            >
-              {item.type === 'input' ? (
-                <InputProperty
-                  selectedComponent={createMockComponent(COMPONENT_TYPE.INPUT, {
-                    ...item.props,
-                    id: item.id,
-                  })}
-                  handlePropChange={createContentItemPropHandler(item.id)}
-                />
-              ) : (
-                <SelectProperty
-                  selectedComponent={createMockComponent(
-                    COMPONENT_TYPE.SELECT,
-                    { ...item.props, id: item.id }
-                  )}
-                  handlePropChange={createContentItemPropHandler(item.id)}
-                />
-              )}
-            </ItemEditor>
+              createPropHandler={createContentItemPropHandler}
+            />
           ))
         )}
       </div>
     </div>
   );
-};
+});
 
-const ActionProperties: React.FC<CardPropertyProps> = ({
+const ActionProperties = memo(function ActionProperties({
   selectedComponent,
   handlePropChange,
-}) => {
+}: CardPropertyProps) {
   const {
     actionButtons,
     handleAddActionButton,
     handleRemoveActionButton,
     createButtonPropHandler,
   } = useCardActionButton(selectedComponent, handlePropChange);
+
+  const EmptyActions = memo(function EmptyActions() {
+    return (
+      <div className='text-sm text-muted-foreground text-center p-4 border rounded-md'>
+        No action buttons added yet
+      </div>
+    );
+  });
 
   return (
     <div className='space-y-4'>
@@ -215,72 +287,44 @@ const ActionProperties: React.FC<CardPropertyProps> = ({
 
       <div className='space-y-3'>
         {actionButtons.length === 0 ? (
-          <div className='text-sm text-muted-foreground text-center p-4 border rounded-md'>
-            No action buttons added yet
-          </div>
+          <EmptyActions />
         ) : (
           actionButtons.map((button) => (
-            <ItemEditor
+            <ActionButtonComponent
               key={button.id}
-              item={button}
-              title='Button'
+              button={button}
               onRemove={handleRemoveActionButton}
-            >
-              <ButtonProperty
-                selectedComponent={createMockComponent(COMPONENT_TYPE.BUTTON, {
-                  id: button.id,
-                  children: button.children,
-                  variant: button.variant ?? 'default',
-                  size: button.size ?? 'default',
-                })}
-                handlePropChange={createButtonPropHandler(button.id)}
-              />
-
-              <div className='mt-2 pt-2 border-t'>
-                <StyleConfig
-                  selectedComponent={createMockComponent(
-                    COMPONENT_TYPE.BUTTON,
-                    {
-                      id: button.id,
-                      variant: button.variant ?? 'default',
-                      size: button.size ?? 'default',
-                    }
-                  )}
-                  handlePropChange={createButtonPropHandler(button.id)}
-                />
-              </div>
-            </ItemEditor>
+              createPropHandler={createButtonPropHandler}
+            />
           ))
         )}
       </div>
     </div>
   );
-};
+});
 
-const CardProperty: CardPropertyComponent = ({
+function CardPropertyBase({
   selectedComponent,
   handlePropChange,
-}) => {
+}: CardPropertyProps) {
   return (
     <div className='space-y-6'>
-      <CardProperty.Basic
+      <BasicProperties
         selectedComponent={selectedComponent}
         handlePropChange={handlePropChange}
       />
-      <CardProperty.Content
+      <ContentProperties
         selectedComponent={selectedComponent}
         handlePropChange={handlePropChange}
       />
-      <CardProperty.Action
+      <ActionProperties
         selectedComponent={selectedComponent}
         handlePropChange={handlePropChange}
       />
     </div>
   );
-};
+}
 
-CardProperty.Basic = BasicProperties;
-CardProperty.Content = ContentProperties;
-CardProperty.Action = ActionProperties;
+const MemoizedCardProperty = memo(CardPropertyBase);
 
-export default CardProperty;
+export default MemoizedCardProperty;
