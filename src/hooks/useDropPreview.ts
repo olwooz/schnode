@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { DropTargetMonitor, useDrop } from 'react-dnd';
 
 import { DRAG_ITEM_TYPE } from '@/constants/component';
-import { DragItem, DropPreview } from '@/lib/types';
-import { CanvasComponent } from '@/lib/types';
+import { DragItem, DropPreview } from '@/types/dnd';
+import { CanvasComponent } from '@/types/dnd';
 import { calculatePosition } from '@/utils/canvas';
 
 export default function useDropPreview(

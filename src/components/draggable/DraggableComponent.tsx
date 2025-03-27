@@ -1,5 +1,5 @@
 import { ComponentRenderer } from '@/lib/component-renderer';
-import { CanvasComponent } from '@/lib/types';
+import { CanvasComponent } from '@/types/dnd';
 import { DRAG_ITEM_TYPE } from '@/constants/component';
 import { useDraggable } from '@/hooks/useDraggable';
 

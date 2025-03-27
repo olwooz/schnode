@@ -4,7 +4,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { CanvasComponent } from '@/lib/types';
+import { CanvasComponent } from '@/types/dnd';
 import { COMPONENT_TYPE } from '@/constants/component';
 import {
   ButtonProperty,
@@ -23,12 +23,14 @@ export function ConfigPanel({
   onUpdateComponent,
 }: ConfigPanelProps) {
   function handlePropChange(key: string, value: string) {
-    if (selectedComponent && onUpdateComponent) {
-      onUpdateComponent(selectedComponent.id, {
-        ...selectedComponent.props,
-        [key]: value,
-      });
+    if (!selectedComponent || !onUpdateComponent) {
+      return;
     }
+
+    onUpdateComponent(selectedComponent.id, {
+      ...selectedComponent.props,
+      [key]: value,
+    });
   }
 
   function renderPropertiesForm() {

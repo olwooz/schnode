@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { INPUT_TYPES } from '@/constants/input';
-import { CanvasComponent } from '@/lib/types';
+import { CanvasComponent } from '@/types/dnd';
 
 type InputPropertyProps = {
   selectedComponent: CanvasComponent;

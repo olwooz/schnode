@@ -2,7 +2,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { ComponentType } from '@/lib/types';
+import { ComponentType } from '@/types/dnd';
 import { DRAG_ITEM_TYPE } from '@/constants/component';
 import { useDraggable } from '@/hooks/useDraggable';
 

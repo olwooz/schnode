@@ -4,7 +4,7 @@ import { Eye, Pencil } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ComponentRenderer } from '@/lib/component-renderer';
-import { CanvasComponent } from '@/lib/types';
+import { CanvasComponent } from '@/types/dnd';
 import { DraggableComponent } from '@/components/draggable/DraggableComponent';
 import { GRID_SIZE } from '@/constants/canvas';
 import useDropPreview from '@/hooks/useDropPreview';

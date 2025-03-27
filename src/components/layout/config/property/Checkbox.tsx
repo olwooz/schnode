@@ -1,6 +1,6 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { CanvasComponent } from '@/lib/types';
+import { CanvasComponent } from '@/types/dnd';
 
 type CheckboxPropertyProps = {
   selectedComponent: CanvasComponent;

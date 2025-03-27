@@ -1,4 +1,4 @@
-import { ComponentLibraryItem } from '@/lib/types';
+import { ComponentLibraryItem } from '@/types/dnd';
 
 export const COMPONENT_TYPE = {
   BUTTON: 'button',

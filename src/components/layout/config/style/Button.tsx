@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { ButtonVariant, ButtonSize } from '@/types/shadcn-component';
-import { CanvasComponent } from '@/lib/types';
+import { CanvasComponent } from '@/types/dnd';
 import { BUTTON_SIZE, BUTTON_VARIANT } from '@/constants/button';
 
 type ButtonStyleProps = {

@@ -6,7 +6,7 @@ import { ComponentLibrary } from '@/components/layout/ComponentLibrary';
 import { Canvas } from '@/components/layout/Canvas';
 import { ConfigPanel } from '@/components/layout/ConfigPanel';
 import { DndProvider } from '@/components/DndProvider';
-import { CanvasComponent } from '@/lib/types';
+import { CanvasComponent } from '@/types/dnd';
 
 export default function Home() {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
