@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Plus } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -113,16 +113,20 @@ const ContentProperties: React.FC<CardPropertyProps> = ({
             variant='outline'
             size='sm'
             onClick={() => handleAddContentItem('input')}
+            className='flex items-center gap-1'
           >
-            Add Input
+            <Plus className='h-4 w-4' />
+            <span className='sr-only md:not-sr-only md:inline'>Input</span>
           </Button>
           <Button
             type='button'
             variant='outline'
             size='sm'
             onClick={() => handleAddContentItem('select')}
+            className='flex items-center gap-1'
           >
-            Add Select
+            <Plus className='h-4 w-4' />
+            <span className='sr-only md:not-sr-only md:inline'>Select</span>
           </Button>
         </div>
       </div>
@@ -186,8 +190,10 @@ const ActionProperties: React.FC<CardPropertyProps> = ({
           variant='outline'
           size='sm'
           onClick={handleAddActionButton}
+          className='flex items-center gap-1'
         >
-          Add Button
+          <Plus className='h-4 w-4' />
+          <span className='sr-only md:not-sr-only md:inline'>Button</span>
         </Button>
       </div>
 
