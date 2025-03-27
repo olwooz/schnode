@@ -50,7 +50,7 @@ export default function SelectProperty({
         <Label htmlFor='select-label'>Label</Label>
         <Input
           id='select-label'
-          value={selectedComponent.props.label as string}
+          value={selectedComponent.props.label ?? ''}
           onChange={(e) => handlePropChange('label', e.target.value)}
         />
       </div>
@@ -58,7 +58,7 @@ export default function SelectProperty({
         <Label htmlFor='select-placeholder'>Placeholder</Label>
         <Input
           id='select-placeholder'
-          value={selectedComponent.props.placeholder as string}
+          value={selectedComponent.props.placeholder ?? ''}
           onChange={(e) => handlePropChange('placeholder', e.target.value)}
         />
       </div>

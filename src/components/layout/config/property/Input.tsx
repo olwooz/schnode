@@ -25,7 +25,7 @@ export default function InputProperty({
         <Label htmlFor='input-label'>Label</Label>
         <Input
           id='input-label'
-          value={(selectedComponent.props.label as string) || ''}
+          value={selectedComponent.props.label ?? ''}
           onChange={(e) => handlePropChange('label', e.target.value)}
           placeholder='Enter label text'
         />
@@ -35,7 +35,7 @@ export default function InputProperty({
         <Label htmlFor='input-placeholder'>Placeholder</Label>
         <Input
           id='input-placeholder'
-          value={(selectedComponent.props.placeholder as string) || ''}
+          value={selectedComponent.props.placeholder ?? ''}
           onChange={(e) => handlePropChange('placeholder', e.target.value)}
           placeholder='Enter placeholder text'
         />
@@ -44,7 +44,7 @@ export default function InputProperty({
       <div className='space-y-2'>
         <Label>Input Type</Label>
         <Select
-          value={(selectedComponent.props.type as string) || INPUT_TYPES.TEXT}
+          value={selectedComponent.props.type ?? INPUT_TYPES.TEXT}
           onValueChange={(value) => handlePropChange('type', value)}
         >
           <SelectTrigger>

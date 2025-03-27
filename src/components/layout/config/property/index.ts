@@ -1,6 +1,13 @@
 import ButtonProperty from './Button';
+import CardProperty from './Card';
 import CheckboxProperty from './Checkbox';
 import InputProperty from './Input';
 import SelectProperty from './Select';
 
-export { ButtonProperty, CheckboxProperty, InputProperty, SelectProperty };
+export {
+  ButtonProperty,
+  CardProperty,
+  CheckboxProperty,
+  InputProperty,
+  SelectProperty,
+};

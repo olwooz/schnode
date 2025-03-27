@@ -50,7 +50,10 @@ interface SelectProps {
 
 interface CardProps {
   title: string;
+  description?: string;
   content: string;
+  contentItems?: string;
+  actionButtons?: string;
 }
 
 interface TableProps {
@@ -60,6 +63,19 @@ interface TableProps {
 interface CheckboxProps {
   label: string;
 }
+
+// Define types for content items and action buttons
+type ContentItem = {
+  id: string;
+  type: 'input' | 'select';
+  props: Record<string, string>;
+};
+
+type ActionButton = {
+  id: string;
+  text: string;
+  variant: string;
+};
 
 type ComponentProps = {
   button: ButtonProps;
@@ -153,13 +169,85 @@ export function ComponentRenderer({ type, props }: ComponentRendererProps) {
 
     case COMPONENT_TYPE.CARD: {
       const cardProps = { ...defaultProps.card, ...props } as CardProps;
+
+      // Parse content items if available
+      const contentItems = cardProps.contentItems
+        ? JSON.parse(cardProps.contentItems)
+        : [];
+
+      // Parse action buttons if available
+      const actionButtons = cardProps.actionButtons
+        ? JSON.parse(cardProps.actionButtons)
+        : [];
+
       return (
         <Card>
           <CardHeader>
             <CardTitle>{cardProps.title}</CardTitle>
+            {cardProps.description && (
+              <div className='text-sm text-muted-foreground mt-1'>
+                {cardProps.description}
+              </div>
+            )}
           </CardHeader>
           <CardContent>
-            <p>{cardProps.content}</p>
+            <div className='space-y-4'>
+              <p>{cardProps.content}</p>
+
+              {contentItems.length > 0 && (
+                <div className='space-y-3'>
+                  {contentItems.map((item: ContentItem) => (
+                    <div key={item.id}>
+                      {item.type === 'input' ? (
+                        <div className='grid w-full max-w-sm items-center gap-1.5'>
+                          <Label>{item.props.label}</Label>
+                          <Input
+                            placeholder={item.props.placeholder}
+                            type={item.props.type || 'text'}
+                          />
+                        </div>
+                      ) : (
+                        <div className='grid w-full max-w-sm items-center gap-1.5'>
+                          <Label>{item.props.label}</Label>
+                          <Select>
+                            <SelectTrigger>
+                              <SelectValue
+                                placeholder={item.props.placeholder}
+                              />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {JSON.parse(item.props.options).map(
+                                (option: string) => (
+                                  <SelectItem
+                                    key={option}
+                                    value={option.toLowerCase()}
+                                  >
+                                    {option}
+                                  </SelectItem>
+                                )
+                              )}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {actionButtons.length > 0 && (
+                <div className='flex flex-wrap gap-2 mt-4'>
+                  {actionButtons.map((button: ActionButton) => (
+                    <Button
+                      key={button.id}
+                      variant={button.variant as ButtonVariant}
+                    >
+                      {button.text}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
       );

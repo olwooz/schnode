@@ -17,7 +17,7 @@ export default function ButtonProperty({
         <Label htmlFor='button-text'>Button Text</Label>
         <Input
           id='button-text'
-          value={selectedComponent.props.children as string}
+          value={selectedComponent.props.children ?? ''}
           onChange={(e) => handlePropChange('children', e.target.value)}
         />
       </div>

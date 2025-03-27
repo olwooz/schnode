@@ -2,12 +2,11 @@
 
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { CanvasComponent } from '@/types/dnd';
 import { COMPONENT_TYPE } from '@/constants/component';
 import {
   ButtonProperty,
+  CardProperty,
   CheckboxProperty,
   InputProperty,
   SelectProperty,
@@ -78,29 +77,10 @@ export function ConfigPanel({
 
       case COMPONENT_TYPE.CARD:
         return (
-          <div className='space-y-4'>
-            <div className='space-y-2'>
-              <Label htmlFor='card-title'>Card Title</Label>
-              <Input
-                id='card-title'
-                value={
-                  (selectedComponent.props.title as string) || 'Card Title'
-                }
-                onChange={(e) => handlePropChange('title', e.target.value)}
-              />
-            </div>
-            <div className='space-y-2'>
-              <Label htmlFor='card-content'>Card Content</Label>
-              <Input
-                id='card-content'
-                value={
-                  (selectedComponent.props.content as string) ||
-                  'Card content goes here'
-                }
-                onChange={(e) => handlePropChange('content', e.target.value)}
-              />
-            </div>
-          </div>
+          <CardProperty
+            selectedComponent={selectedComponent}
+            handlePropChange={handlePropChange}
+          />
         );
 
       default:

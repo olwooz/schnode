@@ -17,7 +17,7 @@ export default function CheckboxProperty({
         <Label htmlFor='checkbox-label'>Label Text</Label>
         <Input
           id='checkbox-label'
-          value={selectedComponent.props.label as string}
+          value={selectedComponent.props.label ?? ''}
           onChange={(e) => handlePropChange('label', e.target.value)}
         />
       </div>
