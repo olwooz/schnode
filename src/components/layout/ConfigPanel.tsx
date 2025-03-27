@@ -6,7 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CanvasComponent } from '@/lib/types';
 import { COMPONENT_TYPE } from '@/constants/component';
-import { ButtonProperty } from '@/components/layout/config/property';
+import {
+  ButtonProperty,
+  CheckboxProperty,
+} from '@/components/layout/config/property';
 import { ButtonStyle } from '@/components/layout/config/style';
 
 type ConfigPanelProps = {
@@ -40,6 +43,14 @@ export function ConfigPanel({
       case COMPONENT_TYPE.BUTTON:
         return (
           <ButtonProperty
+            selectedComponent={selectedComponent}
+            handlePropChange={handlePropChange}
+          />
+        );
+
+      case COMPONENT_TYPE.CHECKBOX:
+        return (
+          <CheckboxProperty
             selectedComponent={selectedComponent}
             handlePropChange={handlePropChange}
           />
@@ -100,6 +111,27 @@ export function ConfigPanel({
     }
   }
 
+  function renderStyleForm() {
+    if (!selectedComponent) {
+      return null;
+    }
+
+    if (selectedComponent.type === COMPONENT_TYPE.BUTTON) {
+      return (
+        <ButtonStyle
+          selectedComponent={selectedComponent}
+          handlePropChange={handlePropChange}
+        />
+      );
+    }
+
+    return (
+      <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
+        No style variants available for this component
+      </div>
+    );
+  }
+
   return (
     <div className='flex h-full flex-col'>
       <div className='p-4'>
@@ -121,18 +153,7 @@ export function ConfigPanel({
             <div className='space-y-4'>{renderPropertiesForm()}</div>
           </TabsContent>
           <TabsContent value='styles' className='pt-4'>
-            <div className='space-y-4'>
-              {selectedComponent?.type === COMPONENT_TYPE.BUTTON ? (
-                <ButtonStyle
-                  selectedComponent={selectedComponent}
-                  handlePropChange={handlePropChange}
-                />
-              ) : (
-                <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
-                  Styling options coming soon
-                </div>
-              )}
-            </div>
+            <div className='space-y-4'>{renderStyleForm()}</div>
           </TabsContent>
         </Tabs>
       </div>

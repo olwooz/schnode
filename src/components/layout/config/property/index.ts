@@ -1,3 +1,3 @@
 import ButtonProperty from './Button';
-
-export { ButtonProperty };
+import CheckboxProperty from './Checkbox';
+export { ButtonProperty, CheckboxProperty };
