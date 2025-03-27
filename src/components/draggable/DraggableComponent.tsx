@@ -2,6 +2,7 @@ import { CanvasComponent } from '@/types/dnd';
 import { DRAG_ITEM_TYPE } from '@/constants/component-types';
 import { useDraggable } from '@/hooks/useDraggable';
 import ComponentRenderer from '@/components/renderer/ComponentRenderer';
+import { GlowEffect } from '@/components/motion-primitives/glow-effect';
 
 export function DraggableComponent({
   component,
@@ -48,11 +49,6 @@ export function DraggableComponent({
         p-2
         transition-opacity
         ${
-          isSelected && !isPreviewMode
-            ? 'outline outline-2 outline-blue-500'
-            : ''
-        }
-        ${
           !isPreviewMode
             ? 'hover:outline hover:outline-2 hover:outline-blue-300'
             : ''
@@ -65,7 +61,12 @@ export function DraggableComponent({
       }}
       onClick={onClick}
     >
-      <ComponentRenderer type={component.type} props={component.props} />
+      {isSelected && (
+        <GlowEffect key={component.id} mode='colorShift' scale={0.95} />
+      )}
+      <div className='relative'>
+        <ComponentRenderer type={component.type} props={component.props} />
+      </div>
     </div>
   );
 }
