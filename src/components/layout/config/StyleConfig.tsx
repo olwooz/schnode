@@ -6,8 +6,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { CanvasComponent } from '@/types/dnd';
 import { VARIANTS } from '@/constants/variant';
+import { CanvasComponent } from '@/types/dnd';
 import { isEmptyObject } from '@/utils/object';
 
 type StyleConfigProps = {

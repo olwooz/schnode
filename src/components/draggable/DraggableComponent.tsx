@@ -28,9 +28,12 @@ export function DraggableComponent({
       const dropResult = monitor.getDropResult<{
         position: { x: number; y: number };
       }>();
-      if (dropResult && dropResult.position) {
-        onMove(component.id, dropResult.position);
+
+      if (!dropResult || !dropResult.position) {
+        return;
       }
+
+      onMove(component.id, dropResult.position);
     },
     isPreviewMode,
   } as const);

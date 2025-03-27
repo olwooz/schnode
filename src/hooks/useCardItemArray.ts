@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
+
 import { CanvasComponent } from '@/types/dnd';
 
 export interface ItemWithId {
@@ -118,9 +119,11 @@ export function useCardItemArray<T extends ItemWithId>(
 
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      if (!timeoutRef.current) {
+        return;
       }
+
+      clearTimeout(timeoutRef.current);
     };
   }, []);
 

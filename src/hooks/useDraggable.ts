@@ -35,9 +35,11 @@ export function useDraggable<T extends DragItemBase>({
     }),
     canDrag: () => !isPreviewMode && (!canDrag || canDrag()),
     end: (item, monitor) => {
-      if (onDragEnd) {
-        onDragEnd(item, monitor);
+      if (!onDragEnd) {
+        return;
       }
+
+      onDragEnd(item, monitor);
     },
   });
 
@@ -49,6 +51,7 @@ export function useDraggable<T extends DragItemBase>({
     if (!draggableRef.current || isPreviewMode) {
       return;
     }
+
     drag(draggableRef.current);
   }, [drag, isPreviewMode]);
 

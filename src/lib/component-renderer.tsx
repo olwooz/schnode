@@ -11,9 +11,9 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ComponentType } from '@/types/dnd';
-import { COMPONENT_TYPE, DEFAULT_PROPS } from '@/constants/component';
 import { Label } from '@/components/ui/label';
+import { COMPONENT_TYPE, DEFAULT_PROPS } from '@/constants/component';
+import { ComponentType } from '@/types/dnd';
 import { ActionButton } from '@/types/card';
 import {
   ButtonProps,

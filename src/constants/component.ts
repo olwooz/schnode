@@ -4,9 +4,9 @@ import {
 } from '@/constants/variant';
 import { INPUT_TYPES } from '@/constants/input';
 import { BUTTON_SIZE, BUTTON_VARIANT } from '@/constants/variant';
+import { COMPONENT_TYPE, DRAG_ITEM_TYPE } from '@/constants/component-types';
 import { ComponentProps } from '@/types/component';
 import { ComponentLibraryItem } from '@/types/dnd';
-import { COMPONENT_TYPE, DRAG_ITEM_TYPE } from '@/constants/component-types';
 
 export { COMPONENT_TYPE, DRAG_ITEM_TYPE };
 

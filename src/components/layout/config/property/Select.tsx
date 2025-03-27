@@ -4,8 +4,8 @@ import { PlusCircle, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { CanvasComponent } from '@/types/dnd';
 import { SELECT_DEFAULT_OPTIONS } from '@/constants/variant';
+import { CanvasComponent } from '@/types/dnd';
 import { useLocalFormState } from '@/hooks/useLocalFormState';
 
 type SelectPropertyProps = {
@@ -55,10 +55,12 @@ export default function SelectProperty({
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleAddOption();
+    if (e.key !== 'Enter') {
+      return;
     }
+
+    e.preventDefault();
+    handleAddOption();
   }
 
   return (

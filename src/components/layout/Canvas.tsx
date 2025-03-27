@@ -3,11 +3,11 @@
 import { Eye, Pencil } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { ComponentRenderer } from '@/lib/component-renderer';
-import { CanvasComponent } from '@/types/dnd';
 import { DraggableComponent } from '@/components/draggable/DraggableComponent';
 import { GRID_SIZE } from '@/constants/canvas';
-import useDropPreview from '@/hooks/useDropPreview';
+import { ComponentRenderer } from '@/lib/component-renderer';
+import { CanvasComponent } from '@/types/dnd';
+import { useDropPreview } from '@/hooks/useDropPreview';
 
 type CanvasProps = {
   isPreviewMode: boolean;
@@ -34,15 +34,19 @@ export function Canvas({
   );
 
   function handleComponentClick(id: string) {
-    if (!isPreviewMode) {
-      onSelectComponent(id);
+    if (isPreviewMode) {
+      return;
     }
+
+    onSelectComponent(id);
   }
 
   function handleComponentMove(id: string, position: { x: number; y: number }) {
-    if (onUpdateComponent) {
-      onUpdateComponent(id, { position });
+    if (!onUpdateComponent) {
+      return;
     }
+
+    onUpdateComponent(id, { position });
   }
 
   function getComponentProps(componentId: string) {

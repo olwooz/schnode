@@ -7,7 +7,7 @@ import { DragItem, DropPreview } from '@/types/dnd';
 import { CanvasComponent } from '@/types/dnd';
 import { calculatePosition } from '@/utils/canvas';
 
-export default function useDropPreview(
+export function useDropPreview(
   isPreviewMode: boolean,
   onAddComponent: (component: CanvasComponent) => void
 ) {
@@ -44,18 +44,18 @@ export default function useDropPreview(
 
         hideDropPreview();
 
-        if (item.type === DRAG_ITEM_TYPE.COMPONENT) {
-          const newComponent: CanvasComponent = {
-            id: item.id || uuidv4(),
-            type: item.componentType,
-            props: {},
-            position,
-          };
-
-          onAddComponent(newComponent);
-        } else {
+        if (item.type !== DRAG_ITEM_TYPE.COMPONENT) {
           return { position };
         }
+
+        const newComponent: CanvasComponent = {
+          id: item.id || uuidv4(),
+          type: item.componentType,
+          props: {},
+          position,
+        };
+
+        onAddComponent(newComponent);
       },
       collect: (monitor) => {
         const isCurrentlyOver = !!monitor.isOver();
@@ -111,19 +111,23 @@ export default function useDropPreview(
   }, [drop]);
 
   useEffect(() => {
-    if (previewRef.current && dropPreview.isVisible) {
-      const { offsetWidth, offsetHeight } = previewRef.current;
-
-      if (
-        offsetWidth !== previewSize.width ||
-        offsetHeight !== previewSize.height
-      ) {
-        setPreviewSize({
-          width: offsetWidth,
-          height: offsetHeight,
-        });
-      }
+    if (!previewRef.current || !dropPreview.isVisible) {
+      return;
     }
+
+    const { offsetWidth, offsetHeight } = previewRef.current;
+
+    if (
+      offsetWidth === previewSize.width &&
+      offsetHeight === previewSize.height
+    ) {
+      return;
+    }
+
+    setPreviewSize({
+      width: offsetWidth,
+      height: offsetHeight,
+    });
   }, [
     dropPreview.isVisible,
     dropPreview.previewComponentType,

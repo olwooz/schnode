@@ -5,6 +5,7 @@ import { CanvasComponent } from '@/types/dnd';
 import { ContentItem } from '@/types/card';
 import { COMPONENT_TYPE } from '@/constants/component';
 import { SELECT_DEFAULT_OPTIONS } from '@/constants/variant';
+
 import { useCardItemArray } from './useCardItemArray';
 
 export function useCardContent(

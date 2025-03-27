@@ -2,7 +2,6 @@
 
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CanvasComponent } from '@/types/dnd';
 import { COMPONENT_TYPE } from '@/constants/component';
 import {
   ButtonProperty,
@@ -12,6 +11,7 @@ import {
   SelectProperty,
 } from '@/components/layout/config/property';
 import StyleConfig from '@/components/layout/config/StyleConfig';
+import { CanvasComponent } from '@/types/dnd';
 
 type ConfigPanelProps = {
   selectedComponent: CanvasComponent | null;
