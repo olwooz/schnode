@@ -5,9 +5,9 @@ import { Eye, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DraggableComponent } from '@/components/draggable/DraggableComponent';
 import { GRID_SIZE } from '@/constants/canvas';
-import { ComponentRenderer } from '@/lib/component-renderer';
 import { CanvasComponent } from '@/types/dnd';
 import { useDropPreview } from '@/hooks/useDropPreview';
+import ComponentRenderer from '@/components/renderer/ComponentRenderer';
 
 type CanvasProps = {
   isPreviewMode: boolean;

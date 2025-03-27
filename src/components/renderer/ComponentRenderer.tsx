@@ -9,7 +9,7 @@ type RendererProps = {
   props?: Partial<ComponentProps[keyof ComponentProps]>;
 };
 
-export function ComponentRenderer({ type, props }: RendererProps) {
+export default function ComponentRenderer({ type, props }: RendererProps) {
   const Renderer = COMPONENT_RENDERERS[type];
 
   if (!Renderer) {
