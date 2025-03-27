@@ -25,6 +25,7 @@ export type DragItem = {
   type: DragItemType;
   componentType: ComponentType;
   id: string;
+  initialPosition?: { x: number; y: number };
 };
 
 export type DropResult = {
@@ -32,4 +33,12 @@ export type DropResult = {
     x: number;
     y: number;
   };
+};
+
+export type DropPreview = {
+  isVisible: boolean;
+  previewComponentType: ComponentType | null;
+  position: { x: number; y: number };
+  isRelocation: boolean;
+  id?: string;
 };
