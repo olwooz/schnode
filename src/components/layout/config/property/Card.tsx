@@ -11,6 +11,7 @@ import { COMPONENT_TYPE } from '@/constants/component';
 import { createMockComponent } from '@/utils/canvas';
 import { useCardActionButton } from '@/hooks/useCardActionButton';
 import { useCardContent } from '@/hooks/useCardContent';
+import { useLocalFormState } from '@/hooks/useLocalFormState';
 
 import InputProperty from './Input';
 import SelectProperty from './Select';
@@ -59,14 +60,29 @@ const BasicProperties: React.FC<CardPropertyProps> = ({
   selectedComponent,
   handlePropChange,
 }) => {
+  const title = useLocalFormState(
+    selectedComponent.props.title ?? '',
+    (value) => handlePropChange('title', value)
+  );
+
+  const description = useLocalFormState(
+    selectedComponent.props.description ?? '',
+    (value) => handlePropChange('description', value)
+  );
+
+  const content = useLocalFormState(
+    selectedComponent.props.content ?? '',
+    (value) => handlePropChange('content', value)
+  );
+
   return (
     <div className='space-y-4'>
       <div className='space-y-2'>
         <Label htmlFor='card-title'>Title</Label>
         <Input
           id='card-title'
-          value={selectedComponent.props.title ?? ''}
-          onChange={(e) => handlePropChange('title', e.target.value)}
+          value={title.value}
+          onChange={(e) => title.setValue(e.target.value)}
         />
       </div>
 
@@ -74,8 +90,8 @@ const BasicProperties: React.FC<CardPropertyProps> = ({
         <Label htmlFor='card-description'>Description</Label>
         <Input
           id='card-description'
-          value={selectedComponent.props.description ?? ''}
-          onChange={(e) => handlePropChange('description', e.target.value)}
+          value={description.value}
+          onChange={(e) => description.setValue(e.target.value)}
           placeholder='Card description text'
         />
       </div>
@@ -84,8 +100,8 @@ const BasicProperties: React.FC<CardPropertyProps> = ({
         <Label htmlFor='card-content'>Content Text</Label>
         <Textarea
           id='card-content'
-          value={selectedComponent.props.content ?? ''}
-          onChange={(e) => handlePropChange('content', e.target.value)}
+          value={content.value}
+          onChange={(e) => content.setValue(e.target.value)}
           rows={3}
         />
       </div>

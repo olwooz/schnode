@@ -1,6 +1,7 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CanvasComponent } from '@/types/dnd';
+import { useLocalFormState } from '@/hooks/useLocalFormState';
 
 type ButtonPropertyProps = {
   selectedComponent: CanvasComponent;
@@ -11,14 +12,19 @@ export default function ButtonProperty({
   selectedComponent,
   handlePropChange,
 }: ButtonPropertyProps) {
+  const buttonText = useLocalFormState(
+    selectedComponent.props.children ?? '',
+    (value) => handlePropChange('children', value)
+  );
+
   return (
     <div className='space-y-4'>
       <div className='space-y-2'>
         <Label htmlFor='button-text'>Button Text</Label>
         <Input
           id='button-text'
-          value={selectedComponent.props.children ?? ''}
-          onChange={(e) => handlePropChange('children', e.target.value)}
+          value={buttonText.value}
+          onChange={(e) => buttonText.setValue(e.target.value)}
         />
       </div>
     </div>

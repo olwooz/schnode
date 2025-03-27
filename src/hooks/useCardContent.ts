@@ -13,12 +13,6 @@ export function useCardContent(
 ) {
   const [contentItems, setContentItems] = useState<ContentItem[]>([]);
 
-  useEffect(() => {
-    setContentItems(
-      parseJsonProp(selectedComponent.props.contentItems as string, [])
-    );
-  }, [selectedComponent]);
-
   function handleAddContentItem(type: 'input' | 'select') {
     const newItem: ContentItem = {
       id: uuidv4(),
@@ -71,6 +65,13 @@ export function useCardContent(
       handleUpdateContentItemProp(itemId, propName, value);
     };
   }
+
+  useEffect(() => {
+    setContentItems(
+      parseJsonProp(selectedComponent.props.contentItems as string, [])
+    );
+  }, [selectedComponent]);
+
   return {
     contentItems,
     handleAddContentItem,

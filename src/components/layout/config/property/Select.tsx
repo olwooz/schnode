@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { CanvasComponent } from '@/types/dnd';
 import { SELECT_DEFAULT_OPTIONS } from '@/constants/variant';
+import { useLocalFormState } from '@/hooks/useLocalFormState';
 
 type SelectPropertyProps = {
   selectedComponent: CanvasComponent;
@@ -18,31 +19,47 @@ export default function SelectProperty({
 }: SelectPropertyProps) {
   const [newOption, setNewOption] = useState('');
 
+  const label = useLocalFormState(
+    selectedComponent.props.label ?? '',
+    (value) => handlePropChange('label', value)
+  );
+
+  const placeholder = useLocalFormState(
+    selectedComponent.props.placeholder ?? '',
+    (value) => handlePropChange('placeholder', value)
+  );
+
   const options: string[] = selectedComponent.props.options
     ? JSON.parse(selectedComponent.props.options as string)
     : SELECT_DEFAULT_OPTIONS;
 
-  const handleAddOption = () => {
+  function handleAddOption() {
     if (!newOption.trim()) return;
 
     const updatedOptions = [...options, newOption.trim()];
     handlePropChange('options', JSON.stringify(updatedOptions));
     setNewOption('');
-  };
+  }
 
-  const handleRemoveOption = (index: number) => {
+  function handleRemoveOption(index: number) {
     const updatedOptions = options.filter(
       (_: string, i: number) => i !== index
     );
     handlePropChange('options', JSON.stringify(updatedOptions));
-  };
+  }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  function handleUpdateOption(index: number, value: string) {
+    const updatedOptions = [...options];
+    updatedOptions[index] = value;
+    handlePropChange('options', JSON.stringify(updatedOptions));
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleAddOption();
     }
-  };
+  }
 
   return (
     <div className='space-y-4'>
@@ -50,16 +67,16 @@ export default function SelectProperty({
         <Label htmlFor='select-label'>Label</Label>
         <Input
           id='select-label'
-          value={selectedComponent.props.label ?? ''}
-          onChange={(e) => handlePropChange('label', e.target.value)}
+          value={label.value}
+          onChange={(e) => label.setValue(e.target.value)}
         />
       </div>
       <div className='space-y-2'>
         <Label htmlFor='select-placeholder'>Placeholder</Label>
         <Input
           id='select-placeholder'
-          value={selectedComponent.props.placeholder ?? ''}
-          onChange={(e) => handlePropChange('placeholder', e.target.value)}
+          value={placeholder.value}
+          onChange={(e) => placeholder.setValue(e.target.value)}
         />
       </div>
       <div className='space-y-2'>
@@ -69,11 +86,7 @@ export default function SelectProperty({
             <div key={index} className='flex items-center gap-2'>
               <Input
                 value={option}
-                onChange={(e) => {
-                  const updatedOptions = [...options];
-                  updatedOptions[index] = e.target.value;
-                  handlePropChange('options', JSON.stringify(updatedOptions));
-                }}
+                onChange={(e) => handleUpdateOption(index, e.target.value)}
               />
               <Button
                 type='button'
