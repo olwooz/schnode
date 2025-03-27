@@ -2,14 +2,7 @@
 
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { COMPONENT_TYPE } from '@/constants/component';
-import {
-  ButtonProperty,
-  CardProperty,
-  CheckboxProperty,
-  InputProperty,
-  SelectProperty,
-} from '@/components/layout/config/property';
+import { PROPERTY_COMPONENTS } from '@/constants/component';
 import StyleConfig from '@/components/layout/config/StyleConfig';
 import { CanvasComponent } from '@/types/dnd';
 
@@ -42,54 +35,22 @@ export function ConfigPanel({
       );
     }
 
-    switch (selectedComponent.type) {
-      case COMPONENT_TYPE.BUTTON:
-        return (
-          <ButtonProperty
-            selectedComponent={selectedComponent}
-            handlePropChange={handlePropChange}
-          />
-        );
+    const PropertyComponent = PROPERTY_COMPONENTS[selectedComponent.type];
 
-      case COMPONENT_TYPE.CHECKBOX:
-        return (
-          <CheckboxProperty
-            selectedComponent={selectedComponent}
-            handlePropChange={handlePropChange}
-          />
-        );
-
-      case COMPONENT_TYPE.INPUT:
-        return (
-          <InputProperty
-            selectedComponent={selectedComponent}
-            handlePropChange={handlePropChange}
-          />
-        );
-
-      case COMPONENT_TYPE.SELECT:
-        return (
-          <SelectProperty
-            selectedComponent={selectedComponent}
-            handlePropChange={handlePropChange}
-          />
-        );
-
-      case COMPONENT_TYPE.CARD:
-        return (
-          <CardProperty
-            selectedComponent={selectedComponent}
-            handlePropChange={handlePropChange}
-          />
-        );
-
-      default:
-        return (
-          <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
-            Properties for this component type not yet implemented
-          </div>
-        );
+    if (PropertyComponent) {
+      return (
+        <PropertyComponent
+          selectedComponent={selectedComponent}
+          handlePropChange={handlePropChange}
+        />
+      );
     }
+
+    return (
+      <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
+        Properties for this component type not yet implemented
+      </div>
+    );
   }
 
   return (

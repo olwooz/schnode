@@ -1,9 +1,11 @@
 import { HTMLInputTypeAttribute } from 'react';
+
 import {
   ButtonVariant,
   ButtonSize,
   SelectTriggerSize,
 } from '@/types/shadcn-component';
+import { CanvasComponent } from '@/types/dnd';
 
 export type ButtonProps = {
   children: string;
@@ -53,4 +55,13 @@ export type ComponentProps = {
   card: CardProps;
   table: TableProps;
   checkbox: CheckboxProps;
+};
+
+export type PropertyComponentProps = {
+  selectedComponent: CanvasComponent;
+  handlePropChange: (key: string, value: string) => void;
+};
+
+export type ComponentRendererProps = {
+  props?: Partial<ComponentProps[keyof ComponentProps]>;
 };

@@ -4,11 +4,28 @@ import {
 } from '@/constants/variant';
 import { INPUT_TYPES } from '@/constants/input';
 import { BUTTON_SIZE, BUTTON_VARIANT } from '@/constants/variant';
-import { COMPONENT_TYPE, DRAG_ITEM_TYPE } from '@/constants/component-types';
-import { ComponentProps } from '@/types/component';
-import { ComponentLibraryItem } from '@/types/dnd';
-
-export { COMPONENT_TYPE, DRAG_ITEM_TYPE };
+import { COMPONENT_TYPE } from '@/constants/component-types';
+import {
+  ComponentProps,
+  ComponentRendererProps,
+  PropertyComponentProps,
+} from '@/types/component';
+import { ComponentLibraryItem, ComponentType } from '@/types/dnd';
+import {
+  ButtonProperty,
+  CardProperty,
+  CheckboxProperty,
+  InputProperty,
+  SelectProperty,
+} from '@/components/layout/config/property';
+import {
+  ButtonRenderer,
+  CheckboxRenderer,
+  InputRenderer,
+  SelectRenderer,
+  CardRenderer,
+  TableRenderer,
+} from '@/components/renderer';
 
 export const COMPONENT_LIBRARY_ITEMS: ComponentLibraryItem[] = [
   {
@@ -73,4 +90,27 @@ export const DEFAULT_PROPS: ComponentProps = {
   checkbox: {
     label: 'Checkbox',
   },
+};
+
+export const PROPERTY_COMPONENTS: Record<
+  ComponentType,
+  React.ComponentType<PropertyComponentProps> | null
+> = {
+  button: ButtonProperty,
+  checkbox: CheckboxProperty,
+  input: InputProperty,
+  select: SelectProperty,
+  card: CardProperty,
+  table: null,
+} as const;
+
+export const COMPONENT_RENDERERS: {
+  [key in ComponentType]: React.ComponentType<ComponentRendererProps>;
+} = {
+  button: ButtonRenderer,
+  checkbox: CheckboxRenderer,
+  input: InputRenderer,
+  select: SelectRenderer,
+  card: CardRenderer,
+  table: TableRenderer,
 };
