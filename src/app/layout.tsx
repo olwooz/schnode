@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+
+import { ThemeProvider } from '@/components/ThemeProvider';
 import './globals.css';
 
 const geistSans = Geist({
@@ -18,6 +20,25 @@ export const metadata: Metadata = {
     'A GUI tool for effortlessly building and customizing no-code apps using shadcn/ui components',
 };
 
+function ThemeScript() {
+  const themeScript = `
+    (function() {
+      try {
+        const storedTheme = localStorage.getItem('theme');
+        if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {
+        console.error('Failed to access localStorage for theme:', e);
+      }
+    })()
+  `;
+
+  return <script dangerouslySetInnerHTML={{ __html: themeScript }} />;
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,10 +46,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
+      <head>
+        <ThemeScript />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

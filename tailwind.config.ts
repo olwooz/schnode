@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss';
 const config = {
+  darkMode: 'class',
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
@@ -87,6 +88,13 @@ const config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+      },
+      transitionProperty: {
+        theme:
+          'color, background-color, border-color, text-decoration-color, fill, stroke',
+      },
+      transitionDuration: {
+        '300': '300ms',
       },
     },
   },
