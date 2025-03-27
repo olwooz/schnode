@@ -1,5 +1,7 @@
 'use client';
 
+import { HTMLInputTypeAttribute } from 'react';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -13,10 +15,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ComponentType } from '@/types/dnd';
 import { COMPONENT_TYPE } from '@/constants/component';
-import { ButtonVariant, ButtonSize } from '@/types/shadcn-component';
-import { BUTTON_SIZE } from '@/constants/variant';
+import {
+  ButtonVariant,
+  ButtonSize,
+  SelectTriggerSize,
+} from '@/types/shadcn-component';
+import {
+  BUTTON_SIZE,
+  SELECT_DEFAULT_OPTIONS,
+  SELECT_TRIGGER_SIZE,
+} from '@/constants/variant';
 import { BUTTON_VARIANT } from '@/constants/variant';
-import { HTMLInputTypeAttribute } from 'react';
 import { Label } from '@/components/ui/label';
 import { INPUT_TYPES } from '@/constants/input';
 
@@ -33,8 +42,10 @@ interface InputProps {
 }
 
 interface SelectProps {
+  label: string;
   placeholder: string;
   options: string[];
+  size?: SelectTriggerSize;
 }
 
 interface CardProps {
@@ -71,8 +82,10 @@ const defaultProps: ComponentProps = {
     type: INPUT_TYPES.TEXT,
   },
   select: {
+    label: 'Select',
     placeholder: 'Select an option',
-    options: ['Option 1', 'Option 2', 'Option 3'],
+    options: SELECT_DEFAULT_OPTIONS,
+    size: SELECT_TRIGGER_SIZE.DEFAULT,
   },
   card: {
     title: 'Card Title',
@@ -114,19 +127,27 @@ export function ComponentRenderer({ type, props }: ComponentRendererProps) {
 
     case COMPONENT_TYPE.SELECT: {
       const selectProps = { ...defaultProps.select, ...props } as SelectProps;
+      const options =
+        typeof selectProps.options === 'string'
+          ? JSON.parse(selectProps.options)
+          : selectProps.options;
+
       return (
-        <Select>
-          <SelectTrigger>
-            <SelectValue placeholder={selectProps.placeholder} />
-          </SelectTrigger>
-          <SelectContent>
-            {selectProps.options.map((option) => (
-              <SelectItem key={option} value={option.toLowerCase()}>
-                {option}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className='grid w-full max-w-sm items-center gap-1.5'>
+          <Label>{selectProps.label}</Label>
+          <Select>
+            <SelectTrigger size={selectProps.size}>
+              <SelectValue placeholder={selectProps.placeholder} />
+            </SelectTrigger>
+            <SelectContent>
+              {options.map((option: string) => (
+                <SelectItem key={option} value={option.toLowerCase()}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       );
     }
 

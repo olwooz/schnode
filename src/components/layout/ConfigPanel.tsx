@@ -10,6 +10,7 @@ import {
   ButtonProperty,
   CheckboxProperty,
   InputProperty,
+  SelectProperty,
 } from '@/components/layout/config/property';
 import StyleConfig from '@/components/layout/config/StyleConfig';
 
@@ -62,6 +63,14 @@ export function ConfigPanel({
       case COMPONENT_TYPE.INPUT:
         return (
           <InputProperty
+            selectedComponent={selectedComponent}
+            handlePropChange={handlePropChange}
+          />
+        );
+
+      case COMPONENT_TYPE.SELECT:
+        return (
+          <SelectProperty
             selectedComponent={selectedComponent}
             handlePropChange={handlePropChange}
           />

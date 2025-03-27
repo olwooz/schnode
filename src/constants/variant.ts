@@ -21,6 +21,8 @@ export const SELECT_TRIGGER_SIZE = {
   DEFAULT: 'default',
 } as const;
 
+export const SELECT_DEFAULT_OPTIONS = ['Option 1', 'Option 2', 'Option 3'];
+
 export const VARIANTS = {
   [COMPONENT_TYPE.BUTTON]: {
     variant: BUTTON_VARIANT,
