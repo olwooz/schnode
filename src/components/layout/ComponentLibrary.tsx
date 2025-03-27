@@ -1,7 +1,8 @@
 'use client';
 
 import { Separator } from '@/components/ui/separator';
-import { componentLibrary } from '@/constants/component-library';
+import { DraggableItem } from '@/components/draggable/DraggableItem';
+import { COMPONENT_LIBRARY_ITEMS } from '@/constants/component';
 
 export function ComponentLibrary() {
   return (
@@ -13,14 +14,13 @@ export function ComponentLibrary() {
       <Separator />
       <div className='flex-1 overflow-auto p-4'>
         <div className='space-y-4'>
-          {componentLibrary.map((component) => (
-            <div
-              key={component.id}
-              className='cursor-grab rounded-md border border-gray-200 bg-white p-3 shadow-sm hover:border-gray-300 hover:shadow'
-            >
-              <h3 className='font-medium'>{component.name}</h3>
-              <p className='text-xs text-gray-500'>{component.description}</p>
-            </div>
+          {COMPONENT_LIBRARY_ITEMS.map((item) => (
+            <DraggableItem
+              key={item.type}
+              type={item.type}
+              title={item.title}
+              description={item.description}
+            />
           ))}
         </div>
       </div>

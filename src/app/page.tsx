@@ -1,33 +1,85 @@
 'use client';
 
 import { useState } from 'react';
+
 import { ComponentLibrary } from '@/components/layout/ComponentLibrary';
 import { Canvas } from '@/components/layout/Canvas';
 import { ConfigPanel } from '@/components/layout/ConfigPanel';
+import { DndProvider } from '@/components/DndProvider';
+import { CanvasComponent } from '@/lib/types';
 
 export default function Home() {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
+  const [components, setComponents] = useState<CanvasComponent[]>([]);
+  const [selectedComponentId, setSelectedComponentId] = useState<string | null>(
+    null
+  );
 
   function togglePreviewMode() {
     setIsPreviewMode((prev) => !prev);
+    setSelectedComponentId(null);
   }
 
+  function handleAddComponent(component: CanvasComponent) {
+    setComponents((prev) => [...prev, component]);
+    setSelectedComponentId(component.id);
+  }
+
+  function handleSelectComponent(id: string | null) {
+    setSelectedComponentId(id);
+  }
+
+  function handleUpdateComponent(id: string, props: Record<string, unknown>) {
+    setComponents((prev) =>
+      prev.map((component) =>
+        component.id === id
+          ? { ...component, props: { ...component.props, ...props } }
+          : component
+      )
+    );
+  }
+
+  function handleRepositionComponent(
+    id: string,
+    updates: Partial<CanvasComponent>
+  ) {
+    setComponents((prev) =>
+      prev.map((component) =>
+        component.id === id ? { ...component, ...updates } : component
+      )
+    );
+  }
+
+  const selectedComponent = selectedComponentId
+    ? components.find((c) => c.id === selectedComponentId) || null
+    : null;
+
   return (
-    <div className='flex h-screen w-full overflow-hidden'>
-      <div className='w-64 border-r border-gray-200 bg-white shadow-sm'>
-        <ComponentLibrary />
-      </div>
+    <DndProvider>
+      <div className='flex h-screen w-full overflow-hidden'>
+        <div className='w-64 border-r border-gray-200 bg-white shadow-sm'>
+          <ComponentLibrary />
+        </div>
 
-      <div className='flex-1 bg-gray-50'>
-        <Canvas
-          isPreviewMode={isPreviewMode}
-          onTogglePreviewMode={togglePreviewMode}
-        />
-      </div>
+        <div className='flex-1 bg-gray-50'>
+          <Canvas
+            isPreviewMode={isPreviewMode}
+            onTogglePreviewMode={togglePreviewMode}
+            components={components}
+            selectedComponentId={selectedComponentId}
+            onSelectComponent={handleSelectComponent}
+            onAddComponent={handleAddComponent}
+            onUpdateComponent={handleRepositionComponent}
+          />
+        </div>
 
-      <div className='w-80 border-l border-gray-200 bg-white shadow-sm'>
-        <ConfigPanel />
+        <div className='w-80 border-l border-gray-200 bg-white shadow-sm'>
+          <ConfigPanel
+            selectedComponent={selectedComponent}
+            onUpdateComponent={handleUpdateComponent}
+          />
+        </div>
       </div>
-    </div>
+    </DndProvider>
   );
 }

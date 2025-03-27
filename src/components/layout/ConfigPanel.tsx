@@ -2,13 +2,117 @@
 
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { CanvasComponent } from '@/lib/types';
+import { COMPONENT_TYPE } from '@/constants/component';
 
-export function ConfigPanel() {
+type ConfigPanelProps = {
+  selectedComponent: CanvasComponent | null;
+  onUpdateComponent?: (id: string, props: Record<string, unknown>) => void;
+};
+
+export function ConfigPanel({
+  selectedComponent,
+  onUpdateComponent,
+}: ConfigPanelProps) {
+  function handlePropChange(key: string, value: string) {
+    if (selectedComponent && onUpdateComponent) {
+      onUpdateComponent(selectedComponent.id, {
+        ...selectedComponent.props,
+        [key]: value,
+      });
+    }
+  }
+
+  function renderPropertiesForm() {
+    if (!selectedComponent) {
+      return (
+        <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
+          No component selected
+        </div>
+      );
+    }
+
+    switch (selectedComponent.type) {
+      case COMPONENT_TYPE.BUTTON:
+        return (
+          <div className='space-y-4'>
+            <div className='space-y-2'>
+              <Label htmlFor='button-text'>Button Text</Label>
+              <Input
+                id='button-text'
+                value={(selectedComponent.props.children as string) || 'Button'}
+                onChange={(e) => handlePropChange('children', e.target.value)}
+              />
+            </div>
+          </div>
+        );
+
+      case COMPONENT_TYPE.INPUT:
+        return (
+          <div className='space-y-4'>
+            <div className='space-y-2'>
+              <Label htmlFor='input-placeholder'>Placeholder</Label>
+              <Input
+                id='input-placeholder'
+                value={
+                  (selectedComponent.props.placeholder as string) ||
+                  'Type here...'
+                }
+                onChange={(e) =>
+                  handlePropChange('placeholder', e.target.value)
+                }
+              />
+            </div>
+          </div>
+        );
+
+      case COMPONENT_TYPE.CARD:
+        return (
+          <div className='space-y-4'>
+            <div className='space-y-2'>
+              <Label htmlFor='card-title'>Card Title</Label>
+              <Input
+                id='card-title'
+                value={
+                  (selectedComponent.props.title as string) || 'Card Title'
+                }
+                onChange={(e) => handlePropChange('title', e.target.value)}
+              />
+            </div>
+            <div className='space-y-2'>
+              <Label htmlFor='card-content'>Card Content</Label>
+              <Input
+                id='card-content'
+                value={
+                  (selectedComponent.props.content as string) ||
+                  'Card content goes here'
+                }
+                onChange={(e) => handlePropChange('content', e.target.value)}
+              />
+            </div>
+          </div>
+        );
+
+      default:
+        return (
+          <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
+            Properties for this component type not yet implemented
+          </div>
+        );
+    }
+  }
+
   return (
     <div className='flex h-full flex-col'>
       <div className='p-4'>
         <h2 className='text-lg font-semibold'>Configuration</h2>
-        <p className='text-sm text-gray-500'>Customize selected component</p>
+        <p className='text-sm text-gray-500'>
+          {selectedComponent
+            ? `Editing ${selectedComponent.type} component`
+            : 'Select a component to configure'}
+        </p>
       </div>
       <Separator />
       <div className='flex-1 overflow-auto p-4'>
@@ -18,30 +122,12 @@ export function ConfigPanel() {
             <TabsTrigger value='styles'>Styles</TabsTrigger>
           </TabsList>
           <TabsContent value='properties' className='pt-4'>
-            <div className='space-y-4'>
-              <div>
-                <p className='text-sm font-medium mb-2'>Select a component</p>
-                <p className='text-xs text-gray-500'>
-                  Click on a component in the canvas to configure its properties
-                </p>
-              </div>
-
-              <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
-                No component selected
-              </div>
-            </div>
+            <div className='space-y-4'>{renderPropertiesForm()}</div>
           </TabsContent>
           <TabsContent value='styles' className='pt-4'>
             <div className='space-y-4'>
-              <div>
-                <p className='text-sm font-medium mb-2'>Component styling</p>
-                <p className='text-xs text-gray-500'>
-                  Customize the appearance of the selected component
-                </p>
-              </div>
-
               <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
-                No component selected
+                Styling options coming soon
               </div>
             </div>
           </TabsContent>
