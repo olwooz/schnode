@@ -1,6 +1,6 @@
 import { ComponentRenderer } from '@/lib/component-renderer';
 import { CanvasComponent } from '@/types/dnd';
-import { DRAG_ITEM_TYPE } from '@/constants/component';
+import { DRAG_ITEM_TYPE } from '@/constants/component-types';
 import { useDraggable } from '@/hooks/useDraggable';
 
 export function DraggableComponent({

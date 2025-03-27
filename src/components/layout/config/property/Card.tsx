@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { COMPONENT_TYPE } from '@/constants/component';
+import { COMPONENT_TYPE } from '@/constants/component-types';
 import { CanvasComponent } from '@/types/dnd';
 import { EditorItem, ContentItem, ActionButton } from '@/types/card';
 import { createMockComponent } from '@/utils/canvas';

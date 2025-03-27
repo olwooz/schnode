@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { DropTargetMonitor, useDrop } from 'react-dnd';
 
-import { DRAG_ITEM_TYPE } from '@/constants/component';
+import { DRAG_ITEM_TYPE } from '@/constants/component-types';
 import { DragItem, DropPreview } from '@/types/dnd';
 import { CanvasComponent } from '@/types/dnd';
 import { calculatePosition } from '@/utils/canvas';

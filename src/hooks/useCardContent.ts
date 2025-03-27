@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { CanvasComponent } from '@/types/dnd';
 import { ContentItem } from '@/types/card';
-import { COMPONENT_TYPE } from '@/constants/component';
+import { COMPONENT_TYPE } from '@/constants/component-types';
 import { SELECT_DEFAULT_OPTIONS } from '@/constants/variant';
 
 import { useCardItemArray } from './useCardItemArray';
