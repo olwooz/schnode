@@ -29,7 +29,7 @@ export default function Home() {
     setSelectedComponentId(id);
   }
 
-  function handleUpdateComponent(id: string, props: Record<string, unknown>) {
+  function handleUpdateComponent(id: string, props: Record<string, string>) {
     setComponents((prev) =>
       prev.map((component) =>
         component.id === id

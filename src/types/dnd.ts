@@ -6,7 +6,7 @@ export type ComponentType =
 export type CanvasComponent = {
   id: string;
   type: ComponentType;
-  props: Record<string, unknown>;
+  props: Record<string, string>;
   position: {
     x: number;
     y: number;

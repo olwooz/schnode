@@ -11,11 +11,11 @@ import {
   CheckboxProperty,
   InputProperty,
 } from '@/components/layout/config/property';
-import { ButtonStyle } from '@/components/layout/config/style';
+import StyleConfig from '@/components/layout/config/StyleConfig';
 
 type ConfigPanelProps = {
   selectedComponent: CanvasComponent | null;
-  onUpdateComponent?: (id: string, props: Record<string, unknown>) => void;
+  onUpdateComponent?: (id: string, props: Record<string, string>) => void;
 };
 
 export function ConfigPanel({
@@ -103,27 +103,6 @@ export function ConfigPanel({
     }
   }
 
-  function renderStyleForm() {
-    if (!selectedComponent) {
-      return null;
-    }
-
-    if (selectedComponent.type === COMPONENT_TYPE.BUTTON) {
-      return (
-        <ButtonStyle
-          selectedComponent={selectedComponent}
-          handlePropChange={handlePropChange}
-        />
-      );
-    }
-
-    return (
-      <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
-        No style variants available for this component
-      </div>
-    );
-  }
-
   return (
     <div className='flex h-full flex-col'>
       <div className='p-4'>
@@ -145,7 +124,14 @@ export function ConfigPanel({
             <div className='space-y-4'>{renderPropertiesForm()}</div>
           </TabsContent>
           <TabsContent value='styles' className='pt-4'>
-            <div className='space-y-4'>{renderStyleForm()}</div>
+            <div className='space-y-4'>
+              {selectedComponent && (
+                <StyleConfig
+                  selectedComponent={selectedComponent}
+                  handlePropChange={handlePropChange}
+                />
+              )}
+            </div>
           </TabsContent>
         </Tabs>
       </div>
