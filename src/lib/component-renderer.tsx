@@ -16,6 +16,9 @@ import { COMPONENT_TYPE } from '@/constants/component';
 import { ButtonVariant, ButtonSize } from '@/types/shadcn-component';
 import { BUTTON_SIZE } from '@/constants/button';
 import { BUTTON_VARIANT } from '@/constants/button';
+import { HTMLInputTypeAttribute } from 'react';
+import { Label } from '@/components/ui/label';
+import { INPUT_TYPES } from '@/constants/input';
 
 interface ButtonProps {
   children: string;
@@ -24,7 +27,9 @@ interface ButtonProps {
 }
 
 interface InputProps {
+  label: string;
   placeholder: string;
+  type: HTMLInputTypeAttribute;
 }
 
 interface SelectProps {
@@ -61,7 +66,9 @@ const defaultProps: ComponentProps = {
     size: BUTTON_SIZE.DEFAULT,
   },
   input: {
+    label: 'Input',
     placeholder: 'Type here...',
+    type: INPUT_TYPES.TEXT,
   },
   select: {
     placeholder: 'Select an option',
@@ -97,7 +104,12 @@ export function ComponentRenderer({ type, props }: ComponentRendererProps) {
 
     case COMPONENT_TYPE.INPUT: {
       const inputProps = { ...defaultProps.input, ...props } as InputProps;
-      return <Input placeholder={inputProps.placeholder} />;
+      return (
+        <div className='grid w-full max-w-sm items-center gap-1.5'>
+          <Label>{inputProps.label}</Label>
+          <Input placeholder={inputProps.placeholder} type={inputProps.type} />
+        </div>
+      );
     }
 
     case COMPONENT_TYPE.SELECT: {

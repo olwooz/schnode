@@ -9,6 +9,7 @@ import { COMPONENT_TYPE } from '@/constants/component';
 import {
   ButtonProperty,
   CheckboxProperty,
+  InputProperty,
 } from '@/components/layout/config/property';
 import { ButtonStyle } from '@/components/layout/config/style';
 
@@ -58,21 +59,10 @@ export function ConfigPanel({
 
       case COMPONENT_TYPE.INPUT:
         return (
-          <div className='space-y-4'>
-            <div className='space-y-2'>
-              <Label htmlFor='input-placeholder'>Placeholder</Label>
-              <Input
-                id='input-placeholder'
-                value={
-                  (selectedComponent.props.placeholder as string) ||
-                  'Type here...'
-                }
-                onChange={(e) =>
-                  handlePropChange('placeholder', e.target.value)
-                }
-              />
-            </div>
-          </div>
+          <InputProperty
+            selectedComponent={selectedComponent}
+            handlePropChange={handlePropChange}
+          />
         );
 
       case COMPONENT_TYPE.CARD:
