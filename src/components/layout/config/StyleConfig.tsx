@@ -32,7 +32,7 @@ export default function StyleConfig({
 
   return (
     <div className='space-y-4'>
-      {variant && (
+      {!isEmptyObject(variant) && (
         <div className='space-y-2'>
           <Label>Variant</Label>
           <Select
@@ -53,7 +53,7 @@ export default function StyleConfig({
         </div>
       )}
 
-      {size && (
+      {!isEmptyObject(size) && (
         <div className='space-y-2'>
           <Label>Size</Label>
           <Select
