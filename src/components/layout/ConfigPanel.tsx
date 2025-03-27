@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CanvasComponent } from '@/lib/types';
 import { COMPONENT_TYPE } from '@/constants/component';
+import { ButtonProperty } from '@/components/layout/config/property';
+import { ButtonStyle } from '@/components/layout/config/style';
 
 type ConfigPanelProps = {
   selectedComponent: CanvasComponent | null;
@@ -37,16 +39,10 @@ export function ConfigPanel({
     switch (selectedComponent.type) {
       case COMPONENT_TYPE.BUTTON:
         return (
-          <div className='space-y-4'>
-            <div className='space-y-2'>
-              <Label htmlFor='button-text'>Button Text</Label>
-              <Input
-                id='button-text'
-                value={(selectedComponent.props.children as string) || 'Button'}
-                onChange={(e) => handlePropChange('children', e.target.value)}
-              />
-            </div>
-          </div>
+          <ButtonProperty
+            selectedComponent={selectedComponent}
+            handlePropChange={handlePropChange}
+          />
         );
 
       case COMPONENT_TYPE.INPUT:
@@ -126,9 +122,16 @@ export function ConfigPanel({
           </TabsContent>
           <TabsContent value='styles' className='pt-4'>
             <div className='space-y-4'>
-              <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
-                Styling options coming soon
-              </div>
+              {selectedComponent?.type === COMPONENT_TYPE.BUTTON ? (
+                <ButtonStyle
+                  selectedComponent={selectedComponent}
+                  handlePropChange={handlePropChange}
+                />
+              ) : (
+                <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
+                  Styling options coming soon
+                </div>
+              )}
             </div>
           </TabsContent>
         </Tabs>

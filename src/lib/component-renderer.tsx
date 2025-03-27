@@ -13,16 +13,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ComponentType } from '@/lib/types';
 import { COMPONENT_TYPE } from '@/constants/component';
+import { ButtonVariant, ButtonSize } from '@/types/shadcn-component';
+import { BUTTON_SIZE } from '@/constants/button';
+import { BUTTON_VARIANT } from '@/constants/button';
 
 interface ButtonProps {
   children: string;
-  variant:
-    | 'default'
-    | 'destructive'
-    | 'outline'
-    | 'secondary'
-    | 'ghost'
-    | 'link';
+  variant?: ButtonVariant;
+  size?: ButtonSize;
 }
 
 interface InputProps {
@@ -59,7 +57,8 @@ type ComponentProps = {
 const defaultProps: ComponentProps = {
   button: {
     children: 'Button',
-    variant: 'default',
+    variant: BUTTON_VARIANT.DEFAULT,
+    size: BUTTON_SIZE.DEFAULT,
   },
   input: {
     placeholder: 'Type here...',
@@ -85,15 +84,14 @@ type ComponentRendererProps = {
   props?: Partial<ComponentProps[keyof ComponentProps]>;
 };
 
-export function ComponentRenderer({
-  type,
-  props = {},
-}: ComponentRendererProps) {
+export function ComponentRenderer({ type, props }: ComponentRendererProps) {
   switch (type) {
     case COMPONENT_TYPE.BUTTON: {
       const buttonProps = { ...defaultProps.button, ...props } as ButtonProps;
       return (
-        <Button variant={buttonProps.variant}>{buttonProps.children}</Button>
+        <Button variant={buttonProps.variant} size={buttonProps.size}>
+          {buttonProps.children}
+        </Button>
       );
     }
 
