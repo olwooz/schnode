@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Trash2 } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,14 +15,24 @@ export default function TableProperty({
   selectedComponent,
   handlePropChange,
 }: PropertyComponentProps) {
-  const { columns, error, handleAddRow, handleAddColumn, handleDeleteColumn } =
-    useTable(selectedComponent, handlePropChange);
+  const {
+    columns,
+    error,
+    handleAddRow,
+    handleAddColumn,
+    handleDeleteColumn,
+    handleUpdateColumn,
+  } = useTable(selectedComponent, handlePropChange);
 
   const [newColumn, setNewColumn] = useState<Column>({
     accessorKey: '',
     header: '',
   });
   const [newRow, setNewRow] = useState<Record<string, string>>({});
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedColumnAccessorKey, setSelectedColumnAccessorKey] = useState<
+    string | null
+  >(null);
 
   function addRow() {
     handleAddRow(newRow);
@@ -34,12 +44,37 @@ export default function TableProperty({
     resetNewColumn();
   }
 
+  function updateColumn() {
+    if (!selectedColumnAccessorKey) {
+      return;
+    }
+
+    handleUpdateColumn(selectedColumnAccessorKey, newColumn);
+    setIsEditMode(false);
+    setSelectedColumnAccessorKey(null);
+  }
+
   function resetNewRow() {
     setNewRow({});
   }
 
   function resetNewColumn() {
     setNewColumn({ accessorKey: '', header: '' });
+  }
+
+  function handleSelectColumn(column: Column) {
+    setSelectedColumnAccessorKey(column.accessorKey);
+    setNewColumn({
+      accessorKey: column.accessorKey,
+      header: column.header,
+    });
+    setIsEditMode(true);
+  }
+
+  function cancelEditMode() {
+    setSelectedColumnAccessorKey(null);
+    setIsEditMode(false);
+    resetNewColumn();
   }
 
   useEffect(() => {
@@ -74,7 +109,11 @@ export default function TableProperty({
                   {columns.map((col) => (
                     <div
                       key={col.accessorKey}
-                      className='flex items-center justify-between rounded bg-muted p-2 text-sm group relative'
+                      className={`flex items-center justify-between rounded bg-muted p-2 text-sm group relative ${
+                        selectedColumnAccessorKey === col.accessorKey
+                          ? 'bg-primary/20'
+                          : ''
+                      }`}
                     >
                       <div className='flex-1'>
                         <span className='font-semibold'>{col.header}</span>
@@ -82,14 +121,24 @@ export default function TableProperty({
                           ({col.accessorKey})
                         </span>
                       </div>
-                      <Button
-                        variant='ghost'
-                        size='icon'
-                        className='h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity absolute right-1'
-                        onClick={() => handleDeleteColumn(col.accessorKey)}
-                      >
-                        <Trash2 className='h-3 w-3 text-destructive' />
-                      </Button>
+                      <div className='opacity-0 group-hover:opacity-100 transition-opacity flex space-x-1'>
+                        <Button
+                          variant='ghost'
+                          size='icon'
+                          className='h-6 w-6'
+                          onClick={() => handleSelectColumn(col)}
+                        >
+                          <Pencil className='h-3 w-3' />
+                        </Button>
+                        <Button
+                          variant='ghost'
+                          size='icon'
+                          className='h-6 w-6'
+                          onClick={() => handleDeleteColumn(col.accessorKey)}
+                        >
+                          <Trash2 className='h-3 w-3 text-destructive' />
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -102,7 +151,9 @@ export default function TableProperty({
           </div>
 
           <div className='pt-2'>
-            <div className='text-sm font-medium mb-2'>Add New Column</div>
+            <div className='text-sm font-medium mb-2'>
+              {isEditMode ? 'Edit Column' : 'Add Column'}
+            </div>
             <div className='space-y-2'>
               <Label htmlFor='columnKey'>Column Key</Label>
               <Input
@@ -127,9 +178,23 @@ export default function TableProperty({
               />
             </div>
 
-            <Button onClick={addColumn} className='w-full mt-4'>
-              Add Column
-            </Button>
+            <div className='flex space-x-2 mt-4'>
+              <Button
+                onClick={isEditMode ? updateColumn : addColumn}
+                className='flex-1'
+              >
+                {isEditMode ? 'Update Column' : 'Add Column'}
+              </Button>
+              {isEditMode && (
+                <Button
+                  variant='outline'
+                  onClick={cancelEditMode}
+                  className='w-24'
+                >
+                  Cancel
+                </Button>
+              )}
+            </div>
           </div>
         </TabsContent>
 
