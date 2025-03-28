@@ -17,6 +17,7 @@ import {
   CheckboxProperty,
   InputProperty,
   SelectProperty,
+  TableProperty,
 } from '@/components/layout/config/property';
 import {
   ButtonRenderer,
@@ -26,6 +27,7 @@ import {
   CardRenderer,
   TableRenderer,
 } from '@/components/renderer';
+import { TABLE_SAMPLE_COLUMNS, TABLE_SAMPLE_DATA } from '@/constants/table';
 
 export const COMPONENT_LIBRARY_ITEMS: ComponentLibraryItem[] = [
   {
@@ -85,7 +87,9 @@ export const DEFAULT_PROPS: ComponentProps = {
     content: 'Card content goes here',
   },
   table: {
-    title: 'Data Table',
+    title: 'Table',
+    columns: TABLE_SAMPLE_COLUMNS,
+    data: TABLE_SAMPLE_DATA,
   },
   checkbox: {
     label: 'Checkbox',
@@ -101,7 +105,7 @@ export const PROPERTY_COMPONENTS: Record<
   input: InputProperty,
   select: SelectProperty,
   card: CardProperty,
-  table: null,
+  table: TableProperty,
 } as const;
 
 export const COMPONENT_RENDERERS: {

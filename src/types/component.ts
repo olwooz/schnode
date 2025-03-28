@@ -36,6 +36,8 @@ export type CardProps = {
 
 export type TableProps = {
   title: string;
+  columns?: string;
+  data?: string;
 };
 
 export type CheckboxProps = {
