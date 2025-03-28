@@ -1,122 +1,51 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { useEffect, useState } from 'react';
 import { Trash2 } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PropertyComponentProps, TableProps } from '@/types/component';
+import { PropertyComponentProps } from '@/types/component';
 import { Column } from '@/types/table';
+import { useTable } from '@/hooks/useTable';
 
 export default function TableProperty({
   selectedComponent,
   handlePropChange,
 }: PropertyComponentProps) {
-  const tableProps = selectedComponent.props as TableProps;
-
-  const currentColumns = useMemo(() => {
-    try {
-      return tableProps.columns
-        ? (JSON.parse(tableProps.columns) as Column[])
-        : [];
-    } catch {
-      return [];
-    }
-  }, [tableProps.columns]);
+  const { columns, error, handleAddRow, handleAddColumn, handleDeleteColumn } =
+    useTable(selectedComponent, handlePropChange);
 
   const [newColumn, setNewColumn] = useState<Column>({
     accessorKey: '',
     header: '',
   });
   const [newRow, setNewRow] = useState<Record<string, string>>({});
-  const [error, setError] = useState<string | null>(null);
 
-  function validateColumnKey(key: string): string | null {
-    if (!key.trim()) return 'Column key is required';
-
-    if (!/^[a-zA-Z0-9_]+$/.test(key)) {
-      return 'Column key can only contain letters, numbers, and underscores';
-    }
-
-    const reservedKeys = ['id', '__proto__', 'constructor', 'prototype'];
-    if (reservedKeys.includes(key)) {
-      return `"${key}" is a reserved key`;
-    }
-
-    return null;
+  function addRow() {
+    handleAddRow(newRow);
+    resetNewRow();
   }
 
-  function handleAddColumn() {
-    const keyError = validateColumnKey(newColumn.accessorKey);
-    if (keyError) {
-      setError(keyError);
-      return;
-    }
-
-    if (!newColumn.header) {
-      setError('Column header is required');
-      return;
-    }
-
-    try {
-      const currentColumnsData = [...currentColumns, newColumn];
-      const columnsJson = JSON.stringify(currentColumnsData);
-
-      handlePropChange('columns', columnsJson);
-
-      setNewColumn({ accessorKey: '', header: '' });
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('An error occurred while adding the column');
-      }
-    }
+  function addColumn() {
+    handleAddColumn(newColumn);
+    resetNewColumn();
   }
 
-  function handleDeleteColumn(accessorKey: string) {
-    try {
-      const updatedColumns = currentColumns.filter(
-        (col) => col.accessorKey !== accessorKey
-      );
-      handlePropChange('columns', JSON.stringify(updatedColumns));
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('An error occurred while deleting the column');
-      }
-    }
+  function resetNewRow() {
+    setNewRow({});
   }
 
-  function handleAddRow() {
-    try {
-      const currentData = tableProps.data ? JSON.parse(tableProps.data) : [];
-
-      const newRowData = {
-        id: uuidv4(),
-        ...Object.fromEntries(
-          currentColumns.map((col) => [
-            col.accessorKey,
-            newRow[col.accessorKey],
-          ])
-        ),
-      };
-
-      const updatedData = [...currentData, newRowData];
-      handlePropChange('data', JSON.stringify(updatedData));
-
-      setNewRow(
-        Object.fromEntries(currentColumns.map((col) => [col.accessorKey, '']))
-      );
-      setError(null);
-    } catch {
-      setError('An error occurred while adding the row');
-    }
+  function resetNewColumn() {
+    setNewColumn({ accessorKey: '', header: '' });
   }
+
+  useEffect(() => {
+    resetNewRow();
+    resetNewColumn();
+  }, [selectedComponent]);
 
   return (
     <div className='space-y-4'>
@@ -140,9 +69,9 @@ export default function TableProperty({
           <div className='space-y-2'>
             <Label>Current Columns</Label>
             <div className='max-h-40 overflow-y-auto rounded border p-2'>
-              {currentColumns.length > 0 ? (
+              {columns.length > 0 ? (
                 <div className='space-y-2'>
-                  {currentColumns.map((col) => (
+                  {columns.map((col) => (
                     <div
                       key={col.accessorKey}
                       className='flex items-center justify-between rounded bg-muted p-2 text-sm group relative'
@@ -198,7 +127,7 @@ export default function TableProperty({
               />
             </div>
 
-            <Button onClick={handleAddColumn} className='w-full mt-4'>
+            <Button onClick={addColumn} className='w-full mt-4'>
               Add Column
             </Button>
           </div>
@@ -206,7 +135,7 @@ export default function TableProperty({
 
         <TabsContent value='rows' className='space-y-4 pt-4'>
           <div className='space-y-4'>
-            {currentColumns.map((col) => (
+            {columns.map((col) => (
               <div key={col.accessorKey} className='space-y-2'>
                 <Label htmlFor={`row${col.accessorKey}`}>{col.header}</Label>
                 <Input
@@ -221,7 +150,7 @@ export default function TableProperty({
             ))}
           </div>
 
-          <Button onClick={handleAddRow} className='w-full'>
+          <Button onClick={addRow} className='w-full'>
             Add Row
           </Button>
         </TabsContent>

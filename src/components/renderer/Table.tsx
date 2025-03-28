@@ -15,43 +15,22 @@ import {
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
-  Row,
 } from '@tanstack/react-table';
 import { DEFAULT_PROPS } from '@/constants/component';
-import { Column } from '@/types/table';
 import { ComponentRendererProps, TableProps } from '@/types/component';
 
 export default function TableRenderer({ props }: ComponentRendererProps) {
   const tableProps = { ...DEFAULT_PROPS.table, ...props } as TableProps;
 
-  const data = useMemo(() => {
-    try {
-      return tableProps.data ? JSON.parse(tableProps.data) : [];
-    } catch (e) {
-      console.error('Error parsing table data:', e);
-      return [];
-    }
-  }, [tableProps.data]);
+  const data = useMemo(
+    () => (tableProps.data ? JSON.parse(tableProps.data) : []),
+    [tableProps.data]
+  );
 
-  const columns = useMemo(() => {
-    try {
-      const rawColumns: Column[] = tableProps.columns
-        ? JSON.parse(tableProps.columns)
-        : [];
-
-      return rawColumns.map((col) => {
-        return {
-          accessorKey: col.accessorKey,
-          header: col.header,
-          cell: ({ row }: { row: Row<object> }) =>
-            row.getValue(col.accessorKey),
-        };
-      });
-    } catch (e) {
-      console.error('Error processing table columns:', e);
-      return [];
-    }
-  }, [tableProps.columns]);
+  const columns = useMemo(
+    () => (tableProps.columns ? JSON.parse(tableProps.columns) : []),
+    [tableProps.columns]
+  );
 
   const table = useReactTable({
     data,
