@@ -34,7 +34,7 @@ export function useDropPreview(
           isVisible: true,
           previewComponentType: item.componentType,
           position,
-          isRelocation: false,
+          isRelocation: item.type === DRAG_ITEM_TYPE.PLACED_COMPONENT,
           ...(item.id && { id: item.id }),
         });
       },
