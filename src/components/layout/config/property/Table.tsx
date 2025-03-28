@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { Trash2 } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -76,6 +77,21 @@ export default function TableProperty({
     }
   }
 
+  function handleDeleteColumn(accessorKey: string) {
+    try {
+      const updatedColumns = currentColumns.filter(
+        (col) => col.accessorKey !== accessorKey
+      );
+      handlePropChange('columns', JSON.stringify(updatedColumns));
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An error occurred while deleting the column');
+      }
+    }
+  }
+
   function handleAddRow() {
     try {
       const currentData = tableProps.data ? JSON.parse(tableProps.data) : [];
@@ -126,10 +142,10 @@ export default function TableProperty({
             <div className='max-h-40 overflow-y-auto rounded border p-2'>
               {currentColumns.length > 0 ? (
                 <div className='space-y-2'>
-                  {currentColumns.map((col, index) => (
+                  {currentColumns.map((col) => (
                     <div
-                      key={index}
-                      className='flex items-center justify-between rounded bg-muted p-2 text-sm'
+                      key={col.accessorKey}
+                      className='flex items-center justify-between rounded bg-muted p-2 text-sm group relative'
                     >
                       <div className='flex-1'>
                         <span className='font-semibold'>{col.header}</span>
@@ -137,6 +153,14 @@ export default function TableProperty({
                           ({col.accessorKey})
                         </span>
                       </div>
+                      <Button
+                        variant='ghost'
+                        size='icon'
+                        className='h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity absolute right-1'
+                        onClick={() => handleDeleteColumn(col.accessorKey)}
+                      >
+                        <Trash2 className='h-3 w-3 text-destructive' />
+                      </Button>
                     </div>
                   ))}
                 </div>
