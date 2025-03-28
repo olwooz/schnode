@@ -62,9 +62,19 @@ export function ConfigPanel({
       <Separator />
       <div className='flex-1 overflow-auto p-4'>
         <Tabs defaultValue='properties' className='w-full'>
-          <TabsList className='grid w-full grid-cols-2'>
-            <TabsTrigger value='properties'>Properties</TabsTrigger>
-            <TabsTrigger value='styles'>Styles</TabsTrigger>
+          <TabsList className='grid w-full grid-cols-2 bg-background dark:bg-background '>
+            <TabsTrigger
+              className='data-[state=active]:bg-muted dark:data-[state=active]:bg-muted dark:data-[state=active]:border-none'
+              value='properties'
+            >
+              Properties
+            </TabsTrigger>
+            <TabsTrigger
+              className='data-[state=active]:bg-muted dark:data-[state=active]:bg-muted dark:data-[state=active]:border-none'
+              value='styles'
+            >
+              Styles
+            </TabsTrigger>
           </TabsList>
           {selectedComponent ? (
             <>

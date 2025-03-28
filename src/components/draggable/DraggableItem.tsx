@@ -42,7 +42,7 @@ export function DraggableItem({
         ${isPreviewMode ? 'cursor-default' : 'cursor-grab'} 
         rounded-md 
         border 
-        bg-neutral-100
+        bg-neutral-50
         dark:bg-neutral-900
         p-3 
         shadow-sm 

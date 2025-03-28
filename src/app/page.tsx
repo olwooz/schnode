@@ -56,7 +56,7 @@ export default function Home() {
 
   return (
     <DndProvider>
-      <div className='flex h-screen w-full overflow-hidden bg-neutral-100 dark:bg-neutral-900 transition-theme duration-300'>
+      <div className='flex h-screen w-full overflow-hidden bg-neutral-50 dark:bg-neutral-900 transition-theme duration-300'>
         <div className='w-64 border-r shadow-sm'>
           <ComponentLibrary isPreviewMode={isPreviewMode} />
         </div>
