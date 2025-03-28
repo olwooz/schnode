@@ -29,13 +29,14 @@ export default function Home() {
     setSelectedComponentId(id);
   }
 
-  function handleUpdateComponent(id: string, props: Record<string, string>) {
-    setComponents((prev) =>
-      prev.map((component) =>
-        component.id === id
-          ? { ...component, props: { ...component.props, ...props } }
-          : component
-      )
+  function handleUpdateComponent(id: string, key: string, value: string) {
+    setComponents(
+      components.map((component) => {
+        if (component.id === id) {
+          component.props[key] = value;
+        }
+        return component;
+      })
     );
   }
 

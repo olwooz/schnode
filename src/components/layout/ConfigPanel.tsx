@@ -9,7 +9,7 @@ import { memo } from 'react';
 
 type ConfigPanelProps = {
   selectedComponent: CanvasComponent | null;
-  onUpdateComponent?: (id: string, props: Record<string, string>) => void;
+  onUpdateComponent?: (id: string, key: string, value: string) => void;
 };
 
 function ConfigPanel({
@@ -21,10 +21,7 @@ function ConfigPanel({
       return;
     }
 
-    onUpdateComponent(selectedComponent.id, {
-      ...selectedComponent.props,
-      [key]: value,
-    });
+    onUpdateComponent(selectedComponent.id, key, value);
   }
 
   function renderPropertiesForm() {
