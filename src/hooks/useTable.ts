@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { CanvasComponent } from '@/types/dnd';
+import { useComponentActions } from '@/hooks/useComponentActions';
 
 export interface TableRow {
   id: string;
@@ -13,10 +14,8 @@ export interface TableColumn {
   header: string;
 }
 
-export function useTable(
-  selectedComponent: CanvasComponent,
-  handlePropChange: (propName: string, value: string) => void
-) {
+export function useTable(selectedComponent: CanvasComponent) {
+  const { handleUpdateComponent } = useComponentActions();
   const [rows, setRows] = useState<TableRow[]>(
     selectedComponent.props.data ? JSON.parse(selectedComponent.props.data) : []
   );
@@ -49,12 +48,20 @@ export function useTable(
 
   function updateRows(newRows: TableRow[]) {
     setRows(newRows);
-    handlePropChange('data', JSON.stringify(newRows));
+    handleUpdateComponent({
+      id: selectedComponent.id,
+      key: 'data',
+      value: JSON.stringify(newRows),
+    });
   }
 
   function updateColumns(newColumns: TableColumn[]) {
     setColumns(newColumns);
-    handlePropChange('columns', JSON.stringify(newColumns));
+    handleUpdateComponent({
+      id: selectedComponent.id,
+      key: 'columns',
+      value: JSON.stringify(newColumns),
+    });
   }
 
   function handleAddRow(rowData: Record<string, unknown> = {}) {

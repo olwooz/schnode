@@ -7,10 +7,7 @@ import { DEFAULT_PROPS } from '@/constants/component';
 
 import { useCardItemArray } from './useCardItemArray';
 
-export function useCardActionButton(
-  selectedComponent: CanvasComponent,
-  handlePropChange: (propName: string, value: string) => void
-) {
+export function useCardActionButton(selectedComponent: CanvasComponent) {
   const createNewActionButton = useCallback(() => {
     return {
       id: uuidv4(),
@@ -22,27 +19,17 @@ export function useCardActionButton(
     items: actionButtons,
     handleAddItem: handleAddActionButton,
     handleRemoveItem: handleRemoveActionButton,
-    createItemPropHandler,
+    handleUpdateItemProp,
   } = useCardItemArray<ActionButton>(
     selectedComponent,
     'actionButtons',
-    handlePropChange,
     createNewActionButton
-  );
-
-  const createButtonPropHandler = useCallback(
-    (buttonId: string) => {
-      return (propName: string, value: string) => {
-        createItemPropHandler(buttonId)(propName, value);
-      };
-    },
-    [createItemPropHandler]
   );
 
   return {
     actionButtons,
     handleAddActionButton,
     handleRemoveActionButton,
-    createButtonPropHandler,
+    handleUpdateItemProp,
   };
 }

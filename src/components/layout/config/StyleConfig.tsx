@@ -9,16 +9,21 @@ import { Label } from '@/components/ui/label';
 import { VARIANTS } from '@/constants/variant';
 import { CanvasComponent } from '@/types/dnd';
 import { isEmptyObject } from '@/utils/object';
+import {
+  UpdateComponentProps,
+  useComponentActions,
+} from '@/hooks/useComponentActions';
 
 type StyleConfigProps = {
   selectedComponent: CanvasComponent;
-  handlePropChange: (prop: string, value: string) => void;
+  handleUpdateItemProp?: ({ id, key, value }: UpdateComponentProps) => void;
 };
 
 export default function StyleConfig({
   selectedComponent,
-  handlePropChange,
+  handleUpdateItemProp,
 }: StyleConfigProps) {
+  const { handleUpdateComponent } = useComponentActions();
   const variant = VARIANTS[selectedComponent.type].variant;
   const size = VARIANTS[selectedComponent.type].size;
 
@@ -37,7 +42,15 @@ export default function StyleConfig({
           <Label>Variant</Label>
           <Select
             value={selectedComponent.props.variant || 'default'}
-            onValueChange={(value) => handlePropChange('variant', value)}
+            onValueChange={(value) =>
+              (handleUpdateItemProp
+                ? handleUpdateItemProp
+                : handleUpdateComponent)({
+                id: selectedComponent.id,
+                key: 'variant',
+                value,
+              })
+            }
           >
             <SelectTrigger>
               <SelectValue placeholder='Select variant' />
@@ -58,7 +71,15 @@ export default function StyleConfig({
           <Label>Size</Label>
           <Select
             value={selectedComponent.props.size || 'default'}
-            onValueChange={(value) => handlePropChange('size', value)}
+            onValueChange={(value) =>
+              (handleUpdateItemProp
+                ? handleUpdateItemProp
+                : handleUpdateComponent)({
+                id: selectedComponent.id,
+                key: 'size',
+                value,
+              })
+            }
           >
             <SelectTrigger>
               <SelectValue placeholder='Select size' />

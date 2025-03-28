@@ -10,11 +10,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PropertyComponentProps } from '@/types/component';
 import { Column } from '@/types/table';
 import { useTable } from '@/hooks/useTable';
+import { useComponentActions } from '@/hooks/useComponentActions';
 
 export default function TableProperty({
   selectedComponent,
-  handlePropChange,
 }: PropertyComponentProps) {
+  const { handleUpdateComponent } = useComponentActions();
   const {
     columns,
     error,
@@ -22,7 +23,7 @@ export default function TableProperty({
     handleAddColumn,
     handleDeleteColumn,
     handleUpdateColumn,
-  } = useTable(selectedComponent, handlePropChange);
+  } = useTable(selectedComponent);
 
   const [newColumn, setNewColumn] = useState<Column>({
     accessorKey: '',
@@ -89,7 +90,13 @@ export default function TableProperty({
         <Input
           id='title'
           value={selectedComponent.props.title ?? ''}
-          onChange={(e) => handlePropChange('title', e.target.value)}
+          onChange={(e) =>
+            handleUpdateComponent({
+              id: selectedComponent.id,
+              key: 'title',
+              value: e.target.value,
+            })
+          }
           placeholder='Enter table title'
         />
       </div>

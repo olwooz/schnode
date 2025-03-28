@@ -1,63 +1,22 @@
 'use client';
 
 import { useState } from 'react';
+import { useSetAtom } from 'jotai';
 
 import DndProvider from '@/components/DndProvider';
 import ComponentLibrary from '@/components/layout/ComponentLibrary';
 import Canvas from '@/components/layout/Canvas';
 import ConfigPanel from '@/components/layout/ConfigPanel';
-import { CanvasComponent } from '@/types/dnd';
+import { selectedComponentAtom } from '@/atoms/component';
 
 export default function Home() {
+  const setSelectedComponent = useSetAtom(selectedComponentAtom);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
-  const [components, setComponents] = useState<CanvasComponent[]>([]);
-  const [selectedComponentId, setSelectedComponentId] = useState<string | null>(
-    null
-  );
 
   function togglePreviewMode() {
     setIsPreviewMode((prev) => !prev);
-    setSelectedComponentId(null);
+    setSelectedComponent(null);
   }
-
-  function handleAddComponent(component: CanvasComponent) {
-    setComponents((prev) => [...prev, component]);
-    setSelectedComponentId(component.id);
-  }
-
-  function handleSelectComponent(id: string | null) {
-    setSelectedComponentId(id);
-  }
-
-  function handleUpdateComponent(id: string, key: string, value: string) {
-    setComponents(
-      components.map((component) => {
-        if (component.id === id) {
-          component.props[key] = value;
-        }
-        return component;
-      })
-    );
-  }
-
-  function handleRepositionComponent(
-    id: string,
-    updates: Partial<CanvasComponent>
-  ) {
-    setComponents((prev) =>
-      prev.map((component) =>
-        component.id === id ? { ...component, ...updates } : component
-      )
-    );
-  }
-
-  function handleDeleteComponent(id: string) {
-    setComponents((prev) => prev.filter((component) => component.id !== id));
-  }
-
-  const selectedComponent = selectedComponentId
-    ? components.find((c) => c.id === selectedComponentId) || null
-    : null;
 
   return (
     <DndProvider>
@@ -70,20 +29,11 @@ export default function Home() {
           <Canvas
             isPreviewMode={isPreviewMode}
             onTogglePreviewMode={togglePreviewMode}
-            components={components}
-            selectedComponentId={selectedComponentId}
-            onSelectComponent={handleSelectComponent}
-            onAddComponent={handleAddComponent}
-            onUpdateComponent={handleRepositionComponent}
-            onDeleteComponent={handleDeleteComponent}
           />
         </div>
 
         <div className='w-80 border-l shadow-sm'>
-          <ConfigPanel
-            selectedComponent={selectedComponent}
-            onUpdateComponent={handleUpdateComponent}
-          />
+          <ConfigPanel />
         </div>
       </div>
     </DndProvider>

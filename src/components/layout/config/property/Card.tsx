@@ -12,6 +12,10 @@ import { createMockComponent } from '@/utils/canvas';
 import { useCardActionButton } from '@/hooks/useCardActionButton';
 import { useCardContent } from '@/hooks/useCardContent';
 import { useLocalFormState } from '@/hooks/useLocalFormState';
+import {
+  useComponentActions,
+  UpdateComponentProps,
+} from '@/hooks/useComponentActions';
 
 import InputProperty from './Input';
 import SelectProperty from './Select';
@@ -53,11 +57,11 @@ const ItemEditor = memo(function ItemEditor({
 const ContentItemComponent = memo(function ContentItemComponent({
   item,
   onRemove,
-  createPropHandler,
+  handleUpdateItemProp,
 }: {
   item: ContentItem;
   onRemove: (id: string) => void;
-  createPropHandler: (id: string) => (propName: string, value: string) => void;
+  handleUpdateItemProp: ({ id, key, value }: UpdateComponentProps) => void;
 }) {
   return (
     <ItemEditor
@@ -72,7 +76,7 @@ const ContentItemComponent = memo(function ContentItemComponent({
             ...item.props,
             id: item.id,
           })}
-          handlePropChange={createPropHandler(item.id)}
+          handleUpdateItemProp={handleUpdateItemProp}
         />
       ) : (
         <SelectProperty
@@ -80,7 +84,7 @@ const ContentItemComponent = memo(function ContentItemComponent({
             ...item.props,
             id: item.id,
           })}
-          handlePropChange={createPropHandler(item.id)}
+          handleUpdateItemProp={handleUpdateItemProp}
         />
       )}
     </ItemEditor>
@@ -90,11 +94,11 @@ const ContentItemComponent = memo(function ContentItemComponent({
 const ActionButtonComponent = memo(function ActionButtonComponent({
   button,
   onRemove,
-  createPropHandler,
+  handleUpdateItemProp,
 }: {
   button: ActionButton;
   onRemove: (id: string) => void;
-  createPropHandler: (id: string) => (propName: string, value: string) => void;
+  handleUpdateItemProp: ({ id, key, value }: UpdateComponentProps) => void;
 }) {
   return (
     <ItemEditor
@@ -110,7 +114,7 @@ const ActionButtonComponent = memo(function ActionButtonComponent({
           variant: button.variant ?? 'default',
           size: button.size ?? 'default',
         })}
-        handlePropChange={createPropHandler(button.id)}
+        handleUpdateItemProp={handleUpdateItemProp}
       />
 
       <div className='mt-2 pt-2 border-t'>
@@ -120,7 +124,7 @@ const ActionButtonComponent = memo(function ActionButtonComponent({
             variant: button.variant ?? 'default',
             size: button.size ?? 'default',
           })}
-          handlePropChange={createPropHandler(button.id)}
+          handleUpdateItemProp={handleUpdateItemProp}
         />
       </div>
     </ItemEditor>
@@ -129,26 +133,40 @@ const ActionButtonComponent = memo(function ActionButtonComponent({
 
 type CardPropertyProps = {
   selectedComponent: CanvasComponent;
-  handlePropChange: (prop: string, value: string) => void;
 };
 
 const BasicProperties = memo(function BasicProperties({
   selectedComponent,
-  handlePropChange,
 }: CardPropertyProps) {
+  const { handleUpdateComponent } = useComponentActions();
   const title = useLocalFormState(
     selectedComponent.props.title ?? '',
-    (value) => handlePropChange('title', value)
+    (value) =>
+      handleUpdateComponent({
+        id: selectedComponent.id,
+        key: 'title',
+        value,
+      })
   );
 
   const description = useLocalFormState(
     selectedComponent.props.description ?? '',
-    (value) => handlePropChange('description', value)
+    (value) =>
+      handleUpdateComponent({
+        id: selectedComponent.id,
+        key: 'description',
+        value,
+      })
   );
 
   const content = useLocalFormState(
     selectedComponent.props.content ?? '',
-    (value) => handlePropChange('content', value)
+    (value) =>
+      handleUpdateComponent({
+        id: selectedComponent.id,
+        key: 'content',
+        value,
+      })
   );
 
   return (
@@ -187,14 +205,13 @@ const BasicProperties = memo(function BasicProperties({
 
 const ContentProperties = memo(function ContentProperties({
   selectedComponent,
-  handlePropChange,
 }: CardPropertyProps) {
   const {
     contentItems,
     handleAddContentItem,
     handleRemoveContentItem,
-    createContentItemPropHandler,
-  } = useCardContent(selectedComponent, handlePropChange);
+    handleUpdateContentItemProp,
+  } = useCardContent(selectedComponent);
 
   const EmptyContent = memo(function EmptyContent() {
     return (
@@ -241,7 +258,7 @@ const ContentProperties = memo(function ContentProperties({
               key={item.id}
               item={item}
               onRemove={handleRemoveContentItem}
-              createPropHandler={createContentItemPropHandler}
+              handleUpdateItemProp={handleUpdateContentItemProp}
             />
           ))
         )}
@@ -252,14 +269,13 @@ const ContentProperties = memo(function ContentProperties({
 
 const ActionProperties = memo(function ActionProperties({
   selectedComponent,
-  handlePropChange,
 }: CardPropertyProps) {
   const {
     actionButtons,
     handleAddActionButton,
     handleRemoveActionButton,
-    createButtonPropHandler,
-  } = useCardActionButton(selectedComponent, handlePropChange);
+    handleUpdateItemProp,
+  } = useCardActionButton(selectedComponent);
 
   const EmptyActions = memo(function EmptyActions() {
     return (
@@ -294,7 +310,7 @@ const ActionProperties = memo(function ActionProperties({
               key={button.id}
               button={button}
               onRemove={handleRemoveActionButton}
-              createPropHandler={createButtonPropHandler}
+              handleUpdateItemProp={handleUpdateItemProp}
             />
           ))
         )}
@@ -303,24 +319,12 @@ const ActionProperties = memo(function ActionProperties({
   );
 });
 
-function CardPropertyBase({
-  selectedComponent,
-  handlePropChange,
-}: CardPropertyProps) {
+function CardPropertyBase({ selectedComponent }: CardPropertyProps) {
   return (
     <div className='space-y-6'>
-      <BasicProperties
-        selectedComponent={selectedComponent}
-        handlePropChange={handlePropChange}
-      />
-      <ContentProperties
-        selectedComponent={selectedComponent}
-        handlePropChange={handlePropChange}
-      />
-      <ActionProperties
-        selectedComponent={selectedComponent}
-        handlePropChange={handlePropChange}
-      />
+      <BasicProperties selectedComponent={selectedComponent} />
+      <ContentProperties selectedComponent={selectedComponent} />
+      <ActionProperties selectedComponent={selectedComponent} />
     </div>
   );
 }

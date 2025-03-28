@@ -5,11 +5,7 @@ import {
 import { INPUT_TYPES } from '@/constants/input';
 import { BUTTON_SIZE, BUTTON_VARIANT } from '@/constants/variant';
 import { COMPONENT_TYPE } from '@/constants/component-types';
-import {
-  ComponentProps,
-  ComponentRendererProps,
-  PropertyComponentProps,
-} from '@/types/component';
+import { ComponentProps, ComponentRendererProps } from '@/types/component';
 import { ComponentLibraryItem, ComponentType } from '@/types/dnd';
 import {
   ButtonProperty,
@@ -96,10 +92,7 @@ export const DEFAULT_PROPS: ComponentProps = {
   },
 };
 
-export const PROPERTY_COMPONENTS: Record<
-  ComponentType,
-  React.ComponentType<PropertyComponentProps> | null
-> = {
+export const PROPERTY_COMPONENTS = {
   button: ButtonProperty,
   checkbox: CheckboxProperty,
   input: InputProperty,

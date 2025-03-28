@@ -4,25 +4,12 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PROPERTY_COMPONENTS } from '@/constants/component';
 import StyleConfig from '@/components/layout/config/StyleConfig';
-import { CanvasComponent } from '@/types/dnd';
 import { memo } from 'react';
+import { useAtomValue } from 'jotai';
+import { selectedComponentAtom } from '@/atoms/component';
 
-type ConfigPanelProps = {
-  selectedComponent: CanvasComponent | null;
-  onUpdateComponent?: (id: string, key: string, value: string) => void;
-};
-
-function ConfigPanel({
-  selectedComponent,
-  onUpdateComponent,
-}: ConfigPanelProps) {
-  function handlePropChange(key: string, value: string) {
-    if (!selectedComponent || !onUpdateComponent) {
-      return;
-    }
-
-    onUpdateComponent(selectedComponent.id, key, value);
-  }
+function ConfigPanel() {
+  const selectedComponent = useAtomValue(selectedComponentAtom);
 
   function renderPropertiesForm() {
     if (!selectedComponent) {
@@ -32,12 +19,7 @@ function ConfigPanel({
     const PropertyComponent = PROPERTY_COMPONENTS[selectedComponent.type];
 
     if (PropertyComponent) {
-      return (
-        <PropertyComponent
-          selectedComponent={selectedComponent}
-          handlePropChange={handlePropChange}
-        />
-      );
+      return <PropertyComponent selectedComponent={selectedComponent} />;
     }
 
     return (
@@ -81,10 +63,7 @@ function ConfigPanel({
               </TabsContent>
               <TabsContent value='styles' className='pt-4'>
                 <div className='space-y-4'>
-                  <StyleConfig
-                    selectedComponent={selectedComponent}
-                    handlePropChange={handlePropChange}
-                  />
+                  <StyleConfig selectedComponent={selectedComponent} />
                 </div>
               </TabsContent>
             </>

@@ -1,6 +1,10 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 
 import { CanvasComponent } from '@/types/dnd';
+import {
+  UpdateComponentProps,
+  useComponentActions,
+} from '@/hooks/useComponentActions';
 
 export interface ItemWithId {
   id: string;
@@ -10,9 +14,9 @@ export interface ItemWithId {
 export function useCardItemArray<T extends ItemWithId>(
   selectedComponent: CanvasComponent,
   propName: 'contentItems' | 'actionButtons',
-  handlePropChange: (propName: string, value: string) => void,
   createNewItem: (arg?: unknown) => T
 ) {
+  const { handleUpdateComponent } = useComponentActions();
   const [items, setItems] = useState<T[]>([]);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -27,10 +31,14 @@ export function useCardItemArray<T extends ItemWithId>(
     timeoutRef.current = setTimeout(() => {
       const serialized = JSON.stringify(itemsRef.current);
       lastPropRef.current = serialized;
-      handlePropChange(propName, serialized);
+      handleUpdateComponent({
+        id: selectedComponent.id,
+        key: propName,
+        value: serialized,
+      });
       timeoutRef.current = null;
     }, 300);
-  }, [handlePropChange, propName]);
+  }, [handleUpdateComponent, selectedComponent.id, propName]);
 
   const updateItems = useCallback(
     (newItems: T[]) => {
@@ -58,42 +66,33 @@ export function useCardItemArray<T extends ItemWithId>(
   );
 
   const handleUpdateItemProp = useCallback(
-    (itemId: string, propPath: string, propValue: unknown) => {
+    ({ id, key, value }: UpdateComponentProps) => {
       updateItems(
         itemsRef.current.map((item) => {
-          if (item.id !== itemId) return item;
+          if (item.id !== id) return item;
 
-          const isNestedProp = propPath.includes('.');
+          const isNestedProp = key.includes('.');
 
           if (isNestedProp) {
-            const [objName, propName] = propPath.split('.');
+            const [objName, propName] = key.split('.');
             const objValue = (item[objName] as Record<string, unknown>) || {};
             return {
               ...item,
               [objName]: {
                 ...objValue,
-                [propName]: propValue,
+                [propName]: value,
               },
             } as T;
           }
 
           return {
             ...item,
-            [propPath]: propValue,
+            [key]: value,
           } as T;
         })
       );
     },
     [updateItems]
-  );
-
-  const createItemPropHandler = useCallback(
-    (itemId: string) => {
-      return (propName: string, value: unknown) => {
-        handleUpdateItemProp(itemId, propName, value);
-      };
-    },
-    [handleUpdateItemProp]
   );
 
   useEffect(() => {
@@ -132,6 +131,5 @@ export function useCardItemArray<T extends ItemWithId>(
     handleAddItem,
     handleRemoveItem,
     handleUpdateItemProp,
-    createItemPropHandler,
   };
 }

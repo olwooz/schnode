@@ -3,14 +3,16 @@ import { COMPONENT_TYPE, DRAG_ITEM_TYPE } from '@/constants/component-types';
 export type ComponentType =
   (typeof COMPONENT_TYPE)[keyof typeof COMPONENT_TYPE];
 
+export type CanvasPosition = {
+  x: number;
+  y: number;
+};
+
 export type CanvasComponent = {
   id: string;
   type: ComponentType;
   props: Record<string, string>;
-  position: {
-    x: number;
-    y: number;
-  };
+  position: CanvasPosition;
 };
 
 export type ComponentLibraryItem = {

@@ -2,19 +2,29 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CanvasComponent } from '@/types/dnd';
 import { useLocalFormState } from '@/hooks/useLocalFormState';
+import {
+  UpdateComponentProps,
+  useComponentActions,
+} from '@/hooks/useComponentActions';
 
 type ButtonPropertyProps = {
   selectedComponent: CanvasComponent;
-  handlePropChange: (prop: string, value: string) => void;
+  handleUpdateItemProp?: ({ id, key, value }: UpdateComponentProps) => void;
 };
 
 export default function ButtonProperty({
   selectedComponent,
-  handlePropChange,
+  handleUpdateItemProp,
 }: ButtonPropertyProps) {
+  const { handleUpdateComponent } = useComponentActions();
   const buttonText = useLocalFormState(
     selectedComponent.props.children ?? '',
-    (value) => handlePropChange('children', value)
+    (value) =>
+      (handleUpdateItemProp ? handleUpdateItemProp : handleUpdateComponent)({
+        id: selectedComponent.id,
+        key: 'children',
+        value,
+      })
   );
 
   return (

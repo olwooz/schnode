@@ -10,29 +10,49 @@ import {
 import { INPUT_TYPES } from '@/constants/input';
 import { CanvasComponent } from '@/types/dnd';
 import { useLocalFormState } from '@/hooks/useLocalFormState';
+import {
+  UpdateComponentProps,
+  useComponentActions,
+} from '@/hooks/useComponentActions';
 
 type InputPropertyProps = {
   selectedComponent: CanvasComponent;
-  handlePropChange: (prop: string, value: string) => void;
+  handleUpdateItemProp?: ({ id, key, value }: UpdateComponentProps) => void;
 };
 
 export default function InputProperty({
   selectedComponent,
-  handlePropChange,
+  handleUpdateItemProp,
 }: InputPropertyProps) {
+  const { handleUpdateComponent } = useComponentActions();
   const label = useLocalFormState(
     selectedComponent.props.label ?? '',
-    (value) => handlePropChange('label', value)
+    (value) =>
+      (handleUpdateItemProp ? handleUpdateItemProp : handleUpdateComponent)({
+        id: selectedComponent.id,
+        key: 'label',
+        value,
+      })
   );
 
   const placeholder = useLocalFormState(
     selectedComponent.props.placeholder ?? '',
-    (value) => handlePropChange('placeholder', value)
+    (value) =>
+      (handleUpdateItemProp ? handleUpdateItemProp : handleUpdateComponent)({
+        id: selectedComponent.id,
+        key: 'placeholder',
+        value,
+      })
   );
 
   const inputType = useLocalFormState(
     selectedComponent.props.type ?? INPUT_TYPES.TEXT,
-    (value) => handlePropChange('type', value)
+    (value) =>
+      (handleUpdateItemProp ? handleUpdateItemProp : handleUpdateComponent)({
+        id: selectedComponent.id,
+        key: 'type',
+        value,
+      })
   );
 
   return (

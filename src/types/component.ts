@@ -61,7 +61,6 @@ export type ComponentProps = {
 
 export type PropertyComponentProps = {
   selectedComponent: CanvasComponent;
-  handlePropChange: (key: string, value: string) => void;
 };
 
 export type ComponentRendererProps = {

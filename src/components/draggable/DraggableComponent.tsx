@@ -1,26 +1,30 @@
-import { CanvasComponent } from '@/types/dnd';
+import { useAtomValue } from 'jotai';
+import { Trash2 } from 'lucide-react';
+
+import { selectedComponentAtom } from '@/atoms/component';
 import { DRAG_ITEM_TYPE } from '@/constants/component-types';
+import { CanvasComponent } from '@/types/dnd';
 import { useDraggable } from '@/hooks/useDraggable';
 import ComponentRenderer from '@/components/renderer/ComponentRenderer';
 import { GlowEffect } from '@/components/motion-primitives/glow-effect';
 import { Button } from '@/components/ui/button';
-import { Trash2 } from 'lucide-react';
+import { useComponentActions } from '@/hooks/useComponentActions';
 
 export function DraggableComponent({
   component,
-  isSelected,
   isPreviewMode,
-  onClick,
-  onMove,
-  onDelete,
 }: {
   component: CanvasComponent;
-  isSelected: boolean;
   isPreviewMode: boolean;
-  onClick: () => void;
-  onMove: (id: string, position: { x: number; y: number }) => void;
-  onDelete: (id: string) => void;
 }) {
+  const {
+    handleSelectComponent,
+    handleRepositionComponent,
+    handleDeleteComponent,
+  } = useComponentActions();
+  const selectedComponent = useAtomValue(selectedComponentAtom);
+  const isSelected = component.id === selectedComponent?.id;
+
   const { draggableRef, isDragging } = useDraggable({
     type: DRAG_ITEM_TYPE.PLACED_COMPONENT,
     item: () => ({
@@ -38,13 +42,17 @@ export function DraggableComponent({
         return;
       }
 
-      onMove(component.id, dropResult.position);
+      handleRepositionComponent(component.id, dropResult.position);
     },
     isPreviewMode,
   } as const);
 
+  function handleSelect() {
+    handleSelectComponent(component.id);
+  }
+
   function handleDelete() {
-    onDelete(component.id);
+    handleDeleteComponent(component.id);
   }
 
   return (
@@ -68,7 +76,7 @@ export function DraggableComponent({
         left: `${component.position.x}px`,
         top: `${component.position.y}px`,
       }}
-      onClick={onClick}
+      onClick={handleSelect}
     >
       {!isPreviewMode && (
         <div className='absolute top-0 right-0 -mt-3 -mr-3 opacity-0 group-hover:opacity-100 z-10'>

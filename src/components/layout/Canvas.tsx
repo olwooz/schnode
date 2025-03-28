@@ -1,56 +1,28 @@
 'use client';
 
+import { useAtomValue } from 'jotai';
 import { Eye, Pencil } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { DraggableComponent } from '@/components/draggable/DraggableComponent';
 import { GRID_SIZE } from '@/constants/canvas';
-import { CanvasComponent } from '@/types/dnd';
 import { useDropPreview } from '@/hooks/useDropPreview';
 import ComponentRenderer from '@/components/renderer/ComponentRenderer';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { componentsAtom } from '@/atoms/component';
 
 type CanvasProps = {
   isPreviewMode: boolean;
   onTogglePreviewMode: () => void;
-  components: CanvasComponent[];
-  selectedComponentId: string | null;
-  onSelectComponent: (id: string | null) => void;
-  onAddComponent: (component: CanvasComponent) => void;
-  onUpdateComponent?: (id: string, updates: Partial<CanvasComponent>) => void;
-  onDeleteComponent: (id: string) => void;
 };
 
 export default function Canvas({
   isPreviewMode,
   onTogglePreviewMode,
-  components,
-  selectedComponentId,
-  onSelectComponent,
-  onAddComponent,
-  onUpdateComponent,
-  onDeleteComponent,
 }: CanvasProps) {
-  const { dropRef, previewRef, dropPreview, isOver } = useDropPreview(
-    isPreviewMode,
-    onAddComponent
-  );
-
-  function handleComponentClick(id: string) {
-    if (isPreviewMode) {
-      return;
-    }
-
-    onSelectComponent(id);
-  }
-
-  function handleComponentMove(id: string, position: { x: number; y: number }) {
-    if (!onUpdateComponent) {
-      return;
-    }
-
-    onUpdateComponent(id, { position });
-  }
+  const components = useAtomValue(componentsAtom);
+  const { dropRef, previewRef, dropPreview, isOver } =
+    useDropPreview(isPreviewMode);
 
   function getComponentProps(componentId: string) {
     const component = components.find((comp) => comp.id === componentId);
@@ -127,11 +99,7 @@ export default function Canvas({
               <DraggableComponent
                 key={component.id}
                 component={component}
-                isSelected={component.id === selectedComponentId}
                 isPreviewMode={isPreviewMode}
-                onClick={() => handleComponentClick(component.id)}
-                onMove={handleComponentMove}
-                onDelete={onDeleteComponent}
               />
             ))
           ) : (

@@ -7,11 +7,9 @@ import { COMPONENT_TYPE } from '@/constants/component-types';
 import { SELECT_DEFAULT_OPTIONS } from '@/constants/variant';
 
 import { useCardItemArray } from './useCardItemArray';
+import { UpdateComponentProps } from '@/hooks/useComponentActions';
 
-export function useCardContent(
-  selectedComponent: CanvasComponent,
-  handlePropChange: (propName: string, value: string) => void
-) {
+export function useCardContent(selectedComponent: CanvasComponent) {
   const createNewContentItem = useCallback((type?: unknown) => {
     const itemType = (type as 'input' | 'select') || 'input';
     return {
@@ -32,11 +30,10 @@ export function useCardContent(
     items: contentItems,
     handleAddItem,
     handleRemoveItem: handleRemoveContentItem,
-    createItemPropHandler,
+    handleUpdateItemProp,
   } = useCardItemArray<ContentItem>(
     selectedComponent,
     'contentItems',
-    handlePropChange,
     createNewContentItem
   );
 
@@ -47,19 +44,17 @@ export function useCardContent(
     [handleAddItem]
   );
 
-  const createContentItemPropHandler = useCallback(
-    (itemId: string) => {
-      return (propName: string, value: string) => {
-        createItemPropHandler(itemId)(`props.${propName}`, value);
-      };
+  const handleUpdateContentItemProp = useCallback(
+    ({ id, key, value }: UpdateComponentProps) => {
+      handleUpdateItemProp({ id, key: `props.${key}`, value });
     },
-    [createItemPropHandler]
+    [handleUpdateItemProp]
   );
 
   return {
     contentItems,
     handleAddContentItem,
     handleRemoveContentItem,
-    createContentItemPropHandler,
+    handleUpdateContentItemProp,
   };
 }

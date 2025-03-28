@@ -7,11 +7,10 @@ import { DragItem, DropPreview } from '@/types/dnd';
 import { CanvasComponent } from '@/types/dnd';
 import { calculatePosition } from '@/utils/canvas';
 import { DEFAULT_PROPS } from '@/constants/component';
+import { useComponentActions } from '@/hooks/useComponentActions';
 
-export function useDropPreview(
-  isPreviewMode: boolean,
-  onAddComponent: (component: CanvasComponent) => void
-) {
+export function useDropPreview(isPreviewMode: boolean) {
+  const { handleAddComponent } = useComponentActions();
   const [dropPreview, setDropPreview] = useState<DropPreview>({
     isVisible: false,
     previewComponentType: null,
@@ -59,7 +58,7 @@ export function useDropPreview(
           position,
         };
 
-        onAddComponent(newComponent);
+        handleAddComponent(newComponent);
       },
       collect: (monitor) => {
         const isCurrentlyOver = !!monitor.isOver();

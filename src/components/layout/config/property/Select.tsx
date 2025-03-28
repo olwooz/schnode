@@ -7,37 +7,60 @@ import { Button } from '@/components/ui/button';
 import { SELECT_DEFAULT_OPTIONS } from '@/constants/variant';
 import { CanvasComponent } from '@/types/dnd';
 import { useLocalFormState } from '@/hooks/useLocalFormState';
+import {
+  useComponentActions,
+  UpdateComponentProps,
+} from '@/hooks/useComponentActions';
 
 type SelectPropertyProps = {
   selectedComponent: CanvasComponent;
-  handlePropChange: (prop: string, value: string) => void;
+  handleUpdateItemProp?: ({ id, key, value }: UpdateComponentProps) => void;
 };
 
 export default function SelectProperty({
   selectedComponent,
-  handlePropChange,
+  handleUpdateItemProp,
 }: SelectPropertyProps) {
+  const { handleUpdateComponent } = useComponentActions();
   const [newOption, setNewOption] = useState('');
 
   const label = useLocalFormState(
     selectedComponent.props.label ?? '',
-    (value) => handlePropChange('label', value)
+    (value) =>
+      (handleUpdateItemProp ? handleUpdateItemProp : handleUpdateComponent)({
+        id: selectedComponent.id,
+        key: 'label',
+        value,
+      })
   );
 
   const placeholder = useLocalFormState(
     selectedComponent.props.placeholder ?? '',
-    (value) => handlePropChange('placeholder', value)
+    (value) =>
+      (handleUpdateItemProp ? handleUpdateItemProp : handleUpdateComponent)({
+        id: selectedComponent.id,
+        key: 'placeholder',
+        value,
+      })
   );
 
   const options: string[] = selectedComponent.props.options
     ? JSON.parse(selectedComponent.props.options as string)
     : SELECT_DEFAULT_OPTIONS;
 
+  function updateOptions(updatedOptions: string) {
+    (handleUpdateItemProp ? handleUpdateItemProp : handleUpdateComponent)({
+      id: selectedComponent.id,
+      key: 'options',
+      value: updatedOptions,
+    });
+  }
+
   function handleAddOption() {
     if (!newOption.trim()) return;
 
     const updatedOptions = [...options, newOption.trim()];
-    handlePropChange('options', JSON.stringify(updatedOptions));
+    updateOptions(JSON.stringify(updatedOptions));
     setNewOption('');
   }
 
@@ -45,13 +68,13 @@ export default function SelectProperty({
     const updatedOptions = options.filter(
       (_: string, i: number) => i !== index
     );
-    handlePropChange('options', JSON.stringify(updatedOptions));
+    updateOptions(JSON.stringify(updatedOptions));
   }
 
   function handleUpdateOption(index: number, value: string) {
     const updatedOptions = [...options];
     updatedOptions[index] = value;
-    handlePropChange('options', JSON.stringify(updatedOptions));
+    updateOptions(JSON.stringify(updatedOptions));
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
