@@ -34,13 +34,13 @@ export function DraggableItem({
   return (
     <div className='relative group'>
       <div className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
-        <GlowEffect mode='colorShift' scale={0.95} />
+        {!isPreviewMode && <GlowEffect mode='colorShift' scale={0.95} />}
       </div>
       <div
         ref={draggableRef}
         className={`
         relative
-        ${isPreviewMode ? 'cursor-default' : 'cursor-grab'} 
+        ${isPreviewMode ? 'cursor-not-allowed' : 'cursor-grab'} 
         rounded-md 
         border 
         bg-neutral-50

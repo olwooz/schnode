@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useAtomValue } from 'jotai';
 import {
   flexRender,
   getCoreRowModel,
@@ -22,12 +23,15 @@ import { TableRowEditor } from '@/components/renderer/TableRowEditor';
 import { DEFAULT_PROPS } from '@/constants/component';
 import { ComponentRendererProps, TableProps } from '@/types/component';
 import { TableRowData } from '@/types/table';
+import { isPreviewModeAtom } from '@/atoms/mode';
+import { cn } from '@/lib/utils';
 
 interface ExtendedComponentProps extends ComponentRendererProps {
   componentId?: string;
 }
 
 export default function TableRenderer({ props }: ExtendedComponentProps) {
+  const isPreviewMode = useAtomValue(isPreviewModeAtom);
   const tableProps = { ...DEFAULT_PROPS.table, ...props } as TableProps;
   const [selectedRow, setSelectedRow] = useState<TableRowData | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -56,6 +60,10 @@ export default function TableRenderer({ props }: ExtendedComponentProps) {
   const rows = table.getRowModel().rows;
 
   function handleRowClick(row: Row<TableRowData>) {
+    if (isPreviewMode) {
+      return;
+    }
+
     setSelectedRow(row.original);
     setEditedValues(row.original);
     setIsDialogOpen(true);
@@ -89,7 +97,10 @@ export default function TableRenderer({ props }: ExtendedComponentProps) {
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                   onClick={() => handleRowClick(row)}
-                  className='cursor-pointer hover:bg-muted/50'
+                  className={cn(
+                    'cursor-pointer hover:bg-muted/50',
+                    isPreviewMode && 'cursor-default'
+                  )}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

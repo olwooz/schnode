@@ -1,6 +1,7 @@
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { componentsAtom, selectedComponentAtom } from '@/atoms/component';
 import { CanvasComponent, CanvasPosition } from '@/types/dnd';
+import { isPreviewModeAtom } from '@/atoms/mode';
 
 export type UpdateComponentProps = {
   id?: string;
@@ -9,6 +10,7 @@ export type UpdateComponentProps = {
 };
 
 export const useComponentActions = () => {
+  const isPreviewMode = useAtomValue(isPreviewModeAtom);
   const [components, setComponents] = useAtom(componentsAtom);
   const setSelectedComponent = useSetAtom(selectedComponentAtom);
 
@@ -18,6 +20,10 @@ export const useComponentActions = () => {
   }
 
   function handleSelectComponent(id: string | null) {
+    if (isPreviewMode) {
+      return;
+    }
+
     const component = components.find((component) => component.id === id);
 
     if (!component) {
