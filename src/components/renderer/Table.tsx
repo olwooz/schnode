@@ -1,6 +1,14 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  getPaginationRowModel,
+  Row,
+  ColumnDef,
+} from '@tanstack/react-table';
 
 import {
   Table,
@@ -10,24 +18,29 @@ import {
   TableRow,
   TableCell,
 } from '@/components/ui/table';
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
-} from '@tanstack/react-table';
+import { TableRowEditor } from '@/components/renderer/TableRowEditor';
 import { DEFAULT_PROPS } from '@/constants/component';
 import { ComponentRendererProps, TableProps } from '@/types/component';
+import { TableRowData } from '@/types/table';
 
-export default function TableRenderer({ props }: ComponentRendererProps) {
+interface ExtendedComponentProps extends ComponentRendererProps {
+  componentId?: string;
+}
+
+export default function TableRenderer({ props }: ExtendedComponentProps) {
   const tableProps = { ...DEFAULT_PROPS.table, ...props } as TableProps;
+  const [selectedRow, setSelectedRow] = useState<TableRowData | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editedValues, setEditedValues] = useState<TableRowData>(
+    {} as TableRowData
+  );
 
-  const data = useMemo(
+  const data = useMemo<TableRowData[]>(
     () => (tableProps.data ? JSON.parse(tableProps.data) : []),
     [tableProps.data]
   );
 
-  const columns = useMemo(
+  const columns = useMemo<ColumnDef<TableRowData>[]>(
     () => (tableProps.columns ? JSON.parse(tableProps.columns) : []),
     [tableProps.columns]
   );
@@ -41,6 +54,12 @@ export default function TableRenderer({ props }: ComponentRendererProps) {
 
   const headerGroups = table.getHeaderGroups();
   const rows = table.getRowModel().rows;
+
+  function handleRowClick(row: Row<TableRowData>) {
+    setSelectedRow(row.original);
+    setEditedValues(row.original);
+    setIsDialogOpen(true);
+  }
 
   return (
     <div className='space-y-4'>
@@ -69,6 +88,8 @@ export default function TableRenderer({ props }: ComponentRendererProps) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  onClick={() => handleRowClick(row)}
+                  className='cursor-pointer hover:bg-muted/50'
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -93,6 +114,15 @@ export default function TableRenderer({ props }: ComponentRendererProps) {
           </TableBody>
         </Table>
       </div>
+      <TableRowEditor
+        isDialogOpen={isDialogOpen}
+        setIsDialogOpen={setIsDialogOpen}
+        data={data}
+        editedValues={editedValues}
+        setEditedValues={setEditedValues}
+        selectedRow={selectedRow}
+        columns={columns}
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { CanvasComponent } from '@/types/dnd';
@@ -16,13 +16,19 @@ export interface TableColumn {
 
 export function useTable(selectedComponent: CanvasComponent) {
   const { handleUpdateComponent } = useComponentActions();
-  const [rows, setRows] = useState<TableRow[]>(
-    selectedComponent.props.data ? JSON.parse(selectedComponent.props.data) : []
+  const rows = useMemo<TableRow[]>(
+    () =>
+      selectedComponent.props.data
+        ? JSON.parse(selectedComponent.props.data)
+        : [],
+    [selectedComponent.props.data]
   );
-  const [columns, setColumns] = useState<TableColumn[]>(
-    selectedComponent.props.columns
-      ? JSON.parse(selectedComponent.props.columns)
-      : []
+  const columns = useMemo<TableColumn[]>(
+    () =>
+      selectedComponent.props.columns
+        ? JSON.parse(selectedComponent.props.columns)
+        : [],
+    [selectedComponent.props.columns]
   );
   const [error, setError] = useState<string | null>(null);
 
@@ -47,7 +53,6 @@ export function useTable(selectedComponent: CanvasComponent) {
   }
 
   function updateRows(newRows: TableRow[]) {
-    setRows(newRows);
     handleUpdateComponent({
       id: selectedComponent.id,
       key: 'data',
@@ -56,7 +61,6 @@ export function useTable(selectedComponent: CanvasComponent) {
   }
 
   function updateColumns(newColumns: TableColumn[]) {
-    setColumns(newColumns);
     handleUpdateComponent({
       id: selectedComponent.id,
       key: 'columns',
