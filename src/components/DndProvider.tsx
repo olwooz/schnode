@@ -8,6 +8,6 @@ type DndProviderProps = {
   children: ReactNode;
 };
 
-export function DndProvider({ children }: DndProviderProps) {
+export default function DndProvider({ children }: DndProviderProps) {
   return <ReactDndProvider backend={HTML5Backend}>{children}</ReactDndProvider>;
 }

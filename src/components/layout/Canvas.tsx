@@ -20,7 +20,7 @@ type CanvasProps = {
   onUpdateComponent?: (id: string, updates: Partial<CanvasComponent>) => void;
 };
 
-export function Canvas({
+export default function Canvas({
   isPreviewMode,
   onTogglePreviewMode,
   components,
