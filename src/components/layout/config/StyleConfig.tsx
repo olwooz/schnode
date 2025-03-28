@@ -24,7 +24,7 @@ export default function StyleConfig({
 
   if (isEmptyObject(variant) && isEmptyObject(size)) {
     return (
-      <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
+      <div className='rounded-md border p-4 text-center text-sm text-neutral-500'>
         No style variants available for this component
       </div>
     );

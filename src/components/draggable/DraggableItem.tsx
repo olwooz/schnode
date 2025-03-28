@@ -33,21 +33,17 @@ export function DraggableItem({
     <div
       ref={draggableRef}
       className={`
-        cursor-${isPreviewMode ? 'default' : 'grab'} 
+        ${isPreviewMode ? 'cursor-default' : 'cursor-grab'} 
         rounded-md 
         border 
-        border-gray-200 
-        bg-white 
         p-3 
         shadow-sm 
-        hover:border-gray-300 
         hover:shadow 
-        transition-all duration-200
         ${isDragging ? 'opacity-0' : 'opacity-100'}
       `}
     >
       <h3 className='font-medium'>{title}</h3>
-      <p className='text-xs text-gray-500'>{description}</p>
+      <p className='text-xs text-neutral-500'>{description}</p>
     </div>
   );
 }

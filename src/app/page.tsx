@@ -56,12 +56,12 @@ export default function Home() {
 
   return (
     <DndProvider>
-      <div className='flex h-screen w-full overflow-hidden'>
-        <div className='w-64 border-r border-gray-200 bg-white shadow-sm'>
+      <div className='flex h-screen w-full overflow-hidden bg-neutral-100 dark:bg-neutral-900 transition-theme duration-300'>
+        <div className='w-64 border-r shadow-sm'>
           <ComponentLibrary isPreviewMode={isPreviewMode} />
         </div>
 
-        <div className='flex-1 bg-gray-50'>
+        <div className='flex-1'>
           <Canvas
             isPreviewMode={isPreviewMode}
             onTogglePreviewMode={togglePreviewMode}
@@ -73,7 +73,7 @@ export default function Home() {
           />
         </div>
 
-        <div className='w-80 border-l border-gray-200 bg-white shadow-sm'>
+        <div className='w-80 border-l shadow-sm'>
           <ConfigPanel
             selectedComponent={selectedComponent}
             onUpdateComponent={handleUpdateComponent}

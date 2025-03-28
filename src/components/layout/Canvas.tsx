@@ -8,6 +8,7 @@ import { GRID_SIZE } from '@/constants/canvas';
 import { CanvasComponent } from '@/types/dnd';
 import { useDropPreview } from '@/hooks/useDropPreview';
 import ComponentRenderer from '@/components/renderer/ComponentRenderer';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 type CanvasProps = {
   isPreviewMode: boolean;
@@ -60,13 +61,16 @@ export function Canvas({
         <h2 className='text-lg font-semibold'>
           {isPreviewMode ? 'Preview Mode' : 'Edit Mode'}
         </h2>
-        <Button onClick={onTogglePreviewMode} variant='default' size='icon'>
-          {isPreviewMode ? (
-            <Pencil className='h-4 w-4' />
-          ) : (
-            <Eye className='h-4 w-4' />
-          )}
-        </Button>
+        <div className='flex items-center gap-2'>
+          <ThemeToggle />
+          <Button onClick={onTogglePreviewMode} variant='default' size='icon'>
+            {isPreviewMode ? (
+              <Pencil className='h-4 w-4' />
+            ) : (
+              <Eye className='h-4 w-4' />
+            )}
+          </Button>
+        </div>
       </div>
       <div className='flex-1 overflow-auto p-4'>
         <div
@@ -76,13 +80,9 @@ export function Canvas({
             relative
             min-h-[calc(100vh-12rem)] 
             rounded-lg 
-            ${
-              isPreviewMode
-                ? 'bg-white'
-                : 'border-2 border-dashed border-gray-300 bg-white'
-            } 
+            ${isPreviewMode ? '' : 'border-2 border-dashed'} 
             p-4
-            ${isOver && !isPreviewMode ? 'bg-blue-50' : ''}
+            ${isOver && !isPreviewMode ? 'bg-blue-50 dark:bg-blue-900/20' : ''}
             ${!isPreviewMode ? 'bg-grid' : ''}
           `}
           style={
@@ -133,7 +133,7 @@ export function Canvas({
             ))
           ) : (
             <div className='flex items-center justify-center h-full'>
-              <p className='text-gray-500'>
+              <p className='text-neutral-500'>
                 {isPreviewMode
                   ? 'No components to preview'
                   : 'Drag components here to build your interface'}

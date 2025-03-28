@@ -29,7 +29,7 @@ export function ConfigPanel({
   function renderPropertiesForm() {
     if (!selectedComponent) {
       return (
-        <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
+        <div className='rounded-md border p-4 text-center text-sm text-neutral-500'>
           No component selected
         </div>
       );
@@ -47,7 +47,7 @@ export function ConfigPanel({
     }
 
     return (
-      <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-gray-500'>
+      <div className='rounded-md border border-gray-200 p-4 text-center text-sm text-neutral-500'>
         Properties for this component type not yet implemented
       </div>
     );
@@ -57,7 +57,7 @@ export function ConfigPanel({
     <div className='flex h-full flex-col'>
       <div className='p-4'>
         <h2 className='text-lg font-semibold'>Configuration</h2>
-        <p className='text-sm text-gray-500'>
+        <p className='text-sm text-neutral-500'>
           {selectedComponent
             ? `Editing ${selectedComponent.type} component`
             : 'Select a component to configure'}

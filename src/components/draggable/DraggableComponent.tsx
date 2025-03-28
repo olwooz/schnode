@@ -44,7 +44,7 @@ export function DraggableComponent({
       ref={draggableRef}
       className={`
         absolute 
-        cursor-${isPreviewMode ? 'default' : 'move'} 
+        ${isPreviewMode ? 'cursor-default' : 'cursor-move'} 
         rounded 
         p-2
         transition-opacity

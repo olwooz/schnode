@@ -13,7 +13,9 @@ export function ComponentLibrary({ isPreviewMode }: ComponentLibraryProps) {
     <div className='flex h-full flex-col'>
       <div className='p-4'>
         <h2 className='text-lg font-semibold'>Component Library</h2>
-        <p className='text-sm text-gray-500'>Drag components onto the canvas</p>
+        <p className='text-sm text-neutral-500'>
+          Drag components onto the canvas
+        </p>
       </div>
       <Separator />
       <div className='flex-1 overflow-auto p-4'>
