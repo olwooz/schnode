@@ -7,7 +7,7 @@ export function useTogglePreviewMode() {
   const setSelectedComponent = useSetAtom(selectedComponentAtom);
 
   function togglePreviewMode() {
-    if (isPreviewMode) {
+    if (!isPreviewMode) {
       setSelectedComponent(null);
     }
 
