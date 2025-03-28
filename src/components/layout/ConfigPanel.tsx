@@ -28,11 +28,7 @@ export function ConfigPanel({
 
   function renderPropertiesForm() {
     if (!selectedComponent) {
-      return (
-        <div className='rounded-md border p-4 text-center text-sm text-neutral-500'>
-          No component selected
-        </div>
-      );
+      return null;
     }
 
     const PropertyComponent = PROPERTY_COMPONENTS[selectedComponent.type];
@@ -70,19 +66,25 @@ export function ConfigPanel({
             <TabsTrigger value='properties'>Properties</TabsTrigger>
             <TabsTrigger value='styles'>Styles</TabsTrigger>
           </TabsList>
-          <TabsContent value='properties' className='pt-4'>
-            <div className='space-y-4'>{renderPropertiesForm()}</div>
-          </TabsContent>
-          <TabsContent value='styles' className='pt-4'>
-            <div className='space-y-4'>
-              {selectedComponent && (
-                <StyleConfig
-                  selectedComponent={selectedComponent}
-                  handlePropChange={handlePropChange}
-                />
-              )}
+          {selectedComponent ? (
+            <>
+              <TabsContent value='properties' className='pt-4'>
+                <div className='space-y-4'>{renderPropertiesForm()}</div>
+              </TabsContent>
+              <TabsContent value='styles' className='pt-4'>
+                <div className='space-y-4'>
+                  <StyleConfig
+                    selectedComponent={selectedComponent}
+                    handlePropChange={handlePropChange}
+                  />
+                </div>
+              </TabsContent>
+            </>
+          ) : (
+            <div className='rounded-md border p-4 text-center text-sm text-neutral-500'>
+              No component selected
             </div>
-          </TabsContent>
+          )}
         </Tabs>
       </div>
     </div>
