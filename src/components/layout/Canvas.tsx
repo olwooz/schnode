@@ -1,25 +1,18 @@
 'use client';
 
 import { useAtomValue } from 'jotai';
-import { Eye, Pencil } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import ComponentRenderer from '@/components/renderer/ComponentRenderer';
 import { DraggableComponent } from '@/components/draggable/DraggableComponent';
+import { PreviewToggle } from '@/components/ui/preview-toggle';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { GRID_SIZE } from '@/constants/canvas';
 import { useDropPreview } from '@/hooks/useDropPreview';
-import ComponentRenderer from '@/components/renderer/ComponentRenderer';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { componentsAtom } from '@/atoms/component';
+import { isPreviewModeAtom } from '@/atoms/mode';
 
-type CanvasProps = {
-  isPreviewMode: boolean;
-  onTogglePreviewMode: () => void;
-};
-
-export default function Canvas({
-  isPreviewMode,
-  onTogglePreviewMode,
-}: CanvasProps) {
+export default function Canvas() {
+  const isPreviewMode = useAtomValue(isPreviewModeAtom);
   const components = useAtomValue(componentsAtom);
   const { dropRef, previewRef, dropPreview, isOver } =
     useDropPreview(isPreviewMode);
@@ -37,13 +30,7 @@ export default function Canvas({
         </h2>
         <div className='flex items-center gap-2'>
           <ThemeToggle />
-          <Button onClick={onTogglePreviewMode} variant='default' size='icon'>
-            {isPreviewMode ? (
-              <Pencil className='h-4 w-4' />
-            ) : (
-              <Eye className='h-4 w-4' />
-            )}
-          </Button>
+          <PreviewToggle />
         </div>
       </div>
       <div className='flex-1 overflow-auto p-4'>
@@ -96,11 +83,7 @@ export default function Canvas({
 
           {components.length > 0 ? (
             components.map((component) => (
-              <DraggableComponent
-                key={component.id}
-                component={component}
-                isPreviewMode={isPreviewMode}
-              />
+              <DraggableComponent key={component.id} component={component} />
             ))
           ) : (
             <div className='flex items-center justify-center h-full'>

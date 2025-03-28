@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai';
 import { Trash2 } from 'lucide-react';
 
 import { selectedComponentAtom } from '@/atoms/component';
+import { isPreviewModeAtom } from '@/atoms/mode';
 import { DRAG_ITEM_TYPE } from '@/constants/component-types';
 import { CanvasComponent } from '@/types/dnd';
 import { useDraggable } from '@/hooks/useDraggable';
@@ -12,11 +13,10 @@ import { useComponentActions } from '@/hooks/useComponentActions';
 
 export function DraggableComponent({
   component,
-  isPreviewMode,
 }: {
   component: CanvasComponent;
-  isPreviewMode: boolean;
 }) {
+  const isPreviewMode = useAtomValue(isPreviewModeAtom);
   const {
     handleSelectComponent,
     handleRepositionComponent,

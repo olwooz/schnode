@@ -5,11 +5,7 @@ import { DraggableItem } from '@/components/draggable/DraggableItem';
 import { COMPONENT_LIBRARY_ITEMS } from '@/constants/component';
 import { memo } from 'react';
 
-type ComponentLibraryProps = {
-  isPreviewMode: boolean;
-};
-
-function ComponentLibrary({ isPreviewMode }: ComponentLibraryProps) {
+function ComponentLibrary() {
   return (
     <div className='flex h-full flex-col'>
       <div className='p-4'>
@@ -27,7 +23,6 @@ function ComponentLibrary({ isPreviewMode }: ComponentLibraryProps) {
               type={item.type}
               title={item.title}
               description={item.description}
-              isPreviewMode={isPreviewMode}
             />
           ))}
         </div>

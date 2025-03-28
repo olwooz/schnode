@@ -1,25 +1,26 @@
 'use client';
 
+import { useAtomValue } from 'jotai';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ComponentType } from '@/types/dnd';
 import { DRAG_ITEM_TYPE } from '@/constants/component-types';
 import { useDraggable } from '@/hooks/useDraggable';
 import { GlowEffect } from '@/components/motion-primitives/glow-effect';
+import { isPreviewModeAtom } from '@/atoms/mode';
 
 type DraggableItemProps = {
   type: ComponentType;
   title: string;
   description: string;
-  isPreviewMode: boolean;
 };
 
 export function DraggableItem({
   type,
   title,
   description,
-  isPreviewMode,
 }: DraggableItemProps) {
+  const isPreviewMode = useAtomValue(isPreviewModeAtom);
   const { draggableRef } = useDraggable({
     type: DRAG_ITEM_TYPE.COMPONENT,
     item: () => ({
