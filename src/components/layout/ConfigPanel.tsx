@@ -5,13 +5,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PROPERTY_COMPONENTS } from '@/constants/component';
 import StyleConfig from '@/components/layout/config/StyleConfig';
 import { CanvasComponent } from '@/types/dnd';
+import { memo } from 'react';
 
 type ConfigPanelProps = {
   selectedComponent: CanvasComponent | null;
   onUpdateComponent?: (id: string, props: Record<string, string>) => void;
 };
 
-export function ConfigPanel({
+function ConfigPanel({
   selectedComponent,
   onUpdateComponent,
 }: ConfigPanelProps) {
@@ -100,3 +101,5 @@ export function ConfigPanel({
     </div>
   );
 }
+
+export default memo(ConfigPanel);

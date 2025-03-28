@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 
-import { ComponentLibrary } from '@/components/layout/ComponentLibrary';
-import { Canvas } from '@/components/layout/Canvas';
-import { ConfigPanel } from '@/components/layout/ConfigPanel';
-import { DndProvider } from '@/components/DndProvider';
+import DndProvider from '@/components/DndProvider';
+import ComponentLibrary from '@/components/layout/ComponentLibrary';
+import Canvas from '@/components/layout/Canvas';
+import ConfigPanel from '@/components/layout/ConfigPanel';
 import { CanvasComponent } from '@/types/dnd';
 
 export default function Home() {
