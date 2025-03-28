@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { DropTargetMonitor, useDrop } from 'react-dnd';
 
-import { DRAG_ITEM_TYPE } from '@/constants/component-types';
+import { DRAG_ITEM_TYPE, COMPONENT_TYPE } from '@/constants/component-types';
 import { DragItem, DropPreview } from '@/types/dnd';
 import { CanvasComponent } from '@/types/dnd';
 import { calculatePosition } from '@/utils/canvas';
+import { DEFAULT_PROPS } from '@/constants/component';
 
 export function useDropPreview(
   isPreviewMode: boolean,
@@ -51,7 +52,10 @@ export function useDropPreview(
         const newComponent: CanvasComponent = {
           id: item.id || uuidv4(),
           type: item.componentType,
-          props: {},
+          props: {
+            ...(item.componentType === COMPONENT_TYPE.TABLE &&
+              DEFAULT_PROPS.table),
+          },
           position,
         };
 
