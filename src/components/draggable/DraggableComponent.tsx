@@ -3,6 +3,8 @@ import { DRAG_ITEM_TYPE } from '@/constants/component-types';
 import { useDraggable } from '@/hooks/useDraggable';
 import ComponentRenderer from '@/components/renderer/ComponentRenderer';
 import { GlowEffect } from '@/components/motion-primitives/glow-effect';
+import { Button } from '@/components/ui/button';
+import { Trash2 } from 'lucide-react';
 
 export function DraggableComponent({
   component,
@@ -10,12 +12,14 @@ export function DraggableComponent({
   isPreviewMode,
   onClick,
   onMove,
+  onDelete,
 }: {
   component: CanvasComponent;
   isSelected: boolean;
   isPreviewMode: boolean;
   onClick: () => void;
   onMove: (id: string, position: { x: number; y: number }) => void;
+  onDelete: (id: string) => void;
 }) {
   const { draggableRef, isDragging } = useDraggable({
     type: DRAG_ITEM_TYPE.PLACED_COMPONENT,
@@ -39,6 +43,10 @@ export function DraggableComponent({
     isPreviewMode,
   } as const);
 
+  function handleDelete() {
+    onDelete(component.id);
+  }
+
   return (
     <div
       ref={draggableRef}
@@ -48,6 +56,7 @@ export function DraggableComponent({
         rounded 
         p-2
         transition-opacity
+        group
         ${
           !isPreviewMode
             ? 'hover:outline hover:outline-2 hover:outline-blue-300'
@@ -61,6 +70,18 @@ export function DraggableComponent({
       }}
       onClick={onClick}
     >
+      {!isPreviewMode && (
+        <div className='absolute top-0 right-0 -mt-3 -mr-3 opacity-0 group-hover:opacity-100 z-10'>
+          <Button
+            variant='destructive'
+            size='icon'
+            className='h-6 w-6'
+            onClick={handleDelete}
+          >
+            <Trash2 className='h-3 w-3' />
+          </Button>
+        </div>
+      )}
       {isSelected && (
         <GlowEffect key={component.id} mode='colorShift' scale={0.95} />
       )}

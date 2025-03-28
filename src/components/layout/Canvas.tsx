@@ -18,6 +18,7 @@ type CanvasProps = {
   onSelectComponent: (id: string | null) => void;
   onAddComponent: (component: CanvasComponent) => void;
   onUpdateComponent?: (id: string, updates: Partial<CanvasComponent>) => void;
+  onDeleteComponent: (id: string) => void;
 };
 
 export default function Canvas({
@@ -28,6 +29,7 @@ export default function Canvas({
   onSelectComponent,
   onAddComponent,
   onUpdateComponent,
+  onDeleteComponent,
 }: CanvasProps) {
   const { dropRef, previewRef, dropPreview, isOver } = useDropPreview(
     isPreviewMode,
@@ -129,6 +131,7 @@ export default function Canvas({
                 isPreviewMode={isPreviewMode}
                 onClick={() => handleComponentClick(component.id)}
                 onMove={handleComponentMove}
+                onDelete={onDeleteComponent}
               />
             ))
           ) : (

@@ -50,6 +50,10 @@ export default function Home() {
     );
   }
 
+  function handleDeleteComponent(id: string) {
+    setComponents((prev) => prev.filter((component) => component.id !== id));
+  }
+
   const selectedComponent = selectedComponentId
     ? components.find((c) => c.id === selectedComponentId) || null
     : null;
@@ -70,6 +74,7 @@ export default function Home() {
             onSelectComponent={handleSelectComponent}
             onAddComponent={handleAddComponent}
             onUpdateComponent={handleRepositionComponent}
+            onDeleteComponent={handleDeleteComponent}
           />
         </div>
 
