@@ -6,6 +6,7 @@ import ComponentRenderer from '@/components/renderer/ComponentRenderer';
 import { DraggableComponent } from '@/components/draggable/DraggableComponent';
 import { PreviewToggle } from '@/components/ui/preview-toggle';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { LayoutIO } from '@/components/layout/LayoutIO';
 import { GRID_SIZE } from '@/constants/canvas';
 import { useDropPreview } from '@/hooks/useDropPreview';
 import { componentsAtom } from '@/atoms/component';
@@ -29,6 +30,7 @@ export default function Canvas() {
           {isPreviewMode ? 'Preview Mode' : 'Edit Mode'}
         </h2>
         <div className='flex items-center gap-2'>
+          <LayoutIO />
           <ThemeToggle />
           <PreviewToggle />
         </div>
@@ -56,30 +58,28 @@ export default function Canvas() {
               : undefined
           }
         >
-          {dropPreview.isVisible &&
-            dropPreview.previewComponentType &&
-            !isPreviewMode && (
-              <div
-                ref={previewRef}
-                className='absolute rounded border-2 border-dashed border-blue-500 bg-blue-100 p-2 z-10 pointer-events-none opacity-80'
-                style={{
-                  left: `${dropPreview.position.x}px`,
-                  top: `${dropPreview.position.y}px`,
-                  boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)',
-                }}
-              >
-                {dropPreview.previewComponentType && (
-                  <ComponentRenderer
-                    type={dropPreview.previewComponentType}
-                    props={
-                      dropPreview.isRelocation && dropPreview.id
-                        ? getComponentProps(dropPreview.id)
-                        : {}
-                    }
-                  />
-                )}
-              </div>
-            )}
+          {dropPreview.previewComponentType && !isPreviewMode && (
+            <div
+              ref={previewRef}
+              className='absolute rounded border-2 border-dashed border-blue-500 bg-blue-100 p-2 z-10 pointer-events-none opacity-80'
+              style={{
+                left: `${dropPreview.position.x}px`,
+                top: `${dropPreview.position.y}px`,
+                boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)',
+              }}
+            >
+              {dropPreview.previewComponentType && (
+                <ComponentRenderer
+                  type={dropPreview.previewComponentType}
+                  props={
+                    dropPreview.isRelocation && dropPreview.id
+                      ? getComponentProps(dropPreview.id)
+                      : {}
+                  }
+                />
+              )}
+            </div>
+          )}
 
           {components.length > 0 ? (
             components.map((component) => (
