@@ -24,7 +24,7 @@ export default function Canvas() {
   }
 
   return (
-    <div className='flex h-full flex-col'>
+    <div className='flex h-full flex-col' data-testid='canvas'>
       <div className='mb-4 flex items-center justify-between p-4'>
         <h2 className='text-lg font-semibold'>
           {isPreviewMode ? 'Preview Mode' : 'Edit Mode'}
