@@ -43,4 +43,12 @@ next-env.d.ts
 app-plan.md
 requirements.md
 to-do-list.md
+e2e-test-plan.md
 .cursorrules
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
