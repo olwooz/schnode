@@ -2,6 +2,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { componentsAtom, selectedComponentAtom } from '@/atoms/component';
 import { CanvasComponent, CanvasPosition } from '@/types/dnd';
 import { isPreviewModeAtom } from '@/atoms/mode';
+import { useBindings } from '@/hooks/useBindings';
 
 export type UpdateComponentProps = {
   id?: string;
@@ -13,6 +14,7 @@ export const useComponentActions = () => {
   const isPreviewMode = useAtomValue(isPreviewModeAtom);
   const [components, setComponents] = useAtom(componentsAtom);
   const setSelectedComponent = useSetAtom(selectedComponentAtom);
+  const { deleteBindingsForComponent } = useBindings();
 
   function handleAddComponent(component: CanvasComponent) {
     setComponents((prev) => [...prev, component]);
@@ -21,6 +23,11 @@ export const useComponentActions = () => {
 
   function handleSelectComponent(id: string | null) {
     if (isPreviewMode) {
+      return;
+    }
+
+    if (id === null) {
+      setSelectedComponent(null);
       return;
     }
 
@@ -58,13 +65,26 @@ export const useComponentActions = () => {
 
   function handleDeleteComponent(id: string) {
     setComponents((prev) => prev.filter((component) => component.id !== id));
+    deleteBindingsForComponent(id);
+    setSelectedComponent((prev) => (prev?.id === id ? null : prev));
+  }
+
+  function getComponentById(id: string): CanvasComponent | undefined {
+    return components.find((component) => component.id === id);
+  }
+
+  function getComponentsByType(type: string): CanvasComponent[] {
+    return components.filter((component) => component.type === type);
   }
 
   return {
+    components,
     handleAddComponent,
     handleSelectComponent,
     handleUpdateComponent,
     handleRepositionComponent,
     handleDeleteComponent,
+    getComponentById,
+    getComponentsByType,
   };
 };
