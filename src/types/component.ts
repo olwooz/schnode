@@ -38,6 +38,7 @@ export type TableProps = {
   title: string;
   columns?: string;
   data?: string;
+  apiEndpoint?: string;
 };
 
 export type CheckboxProps = {

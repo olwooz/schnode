@@ -1,14 +1,24 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, Download } from 'lucide-react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { PropertyComponentProps } from '@/types/component';
 import { Column } from '@/types/table';
+import { TableRowData } from '@/types/table';
 import { useTable } from '@/hooks/useTable';
 import { useComponentActions } from '@/hooks/useComponentActions';
 
@@ -34,6 +44,11 @@ export default function TableProperty({
   const [selectedColumnAccessorKey, setSelectedColumnAccessorKey] = useState<
     string | null
   >(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [showColumnsDialog, setShowColumnsDialog] = useState(false);
+  const [pendingColumns, setPendingColumns] = useState<Column[]>([]);
+  const [loadedData, setLoadedData] = useState<TableRowData[]>([]);
 
   function addRow() {
     handleAddRow(newRow);
@@ -78,6 +93,89 @@ export default function TableProperty({
     resetNewColumn();
   }
 
+  async function handleLoadFromApi() {
+    setIsLoading(true);
+    setApiError(null);
+
+    try {
+      const apiEndpoint = selectedComponent.props.apiEndpoint;
+
+      if (!apiEndpoint) {
+        setApiError('API endpoint URL is required');
+        return;
+      }
+
+      const response = await fetch(apiEndpoint);
+
+      if (!response.ok) {
+        throw new Error(`Failed to load data: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (!Array.isArray(data)) {
+        throw new Error('API response must be an array of objects');
+      }
+
+      if (data.length === 0) {
+        throw new Error('API returned an empty array');
+      }
+
+      const rowsWithIds = data.map((row) => ({
+        id: row.id || uuidv4(),
+        ...row,
+      }));
+
+      setLoadedData(rowsWithIds);
+
+      const firstRow = rowsWithIds[0];
+      const detectedColumns = Object.keys(firstRow)
+        .filter((key) => key !== 'id')
+        .map((key) => ({
+          accessorKey: key,
+          header:
+            key.charAt(0).toUpperCase() +
+            key
+              .slice(1)
+              .replace(/([A-Z])/g, ' $1')
+              .trim(),
+        }));
+
+      if (columns.length > 0) {
+        setPendingColumns(detectedColumns);
+        setShowColumnsDialog(true);
+      } else {
+        loadColumnsAndData(detectedColumns, rowsWithIds);
+      }
+    } catch (error) {
+      setApiError(
+        error instanceof Error ? error.message : 'Failed to load data'
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  function loadColumnsAndData(newColumns: Column[], rowsData: TableRowData[]) {
+    handleUpdateComponent({
+      id: selectedComponent.id,
+      key: 'columns',
+      value: JSON.stringify(newColumns),
+    });
+
+    handleUpdateComponent({
+      id: selectedComponent.id,
+      key: 'data',
+      value: JSON.stringify(rowsData),
+    });
+
+    setShowColumnsDialog(false);
+  }
+
+  function handleCancelLoad() {
+    setShowColumnsDialog(false);
+  }
+
   useEffect(() => {
     resetNewRow();
     resetNewColumn();
@@ -99,6 +197,46 @@ export default function TableProperty({
           }
           placeholder='Enter table title'
         />
+      </div>
+
+      <div className='space-y-2'>
+        <Label htmlFor='apiEndpoint'>API Endpoint</Label>
+        <div className='flex space-x-2'>
+          <Input
+            id='apiEndpoint'
+            value={selectedComponent.props.apiEndpoint ?? ''}
+            onChange={(e) =>
+              handleUpdateComponent({
+                id: selectedComponent.id,
+                key: 'apiEndpoint',
+                value: e.target.value,
+              })
+            }
+            placeholder='https://api.example.com/data'
+            className='flex-1'
+          />
+          <Button
+            onClick={handleLoadFromApi}
+            disabled={isLoading}
+            variant='outline'
+            className='flex-shrink-0'
+          >
+            {isLoading ? (
+              <span className='flex items-center gap-1'>
+                <span className='h-3 w-3 animate-spin rounded-full border-2 border-primary border-t-transparent'></span>
+                Loading
+              </span>
+            ) : (
+              <span className='flex items-center gap-1'>
+                <Download className='h-4 w-4' />
+                Load
+              </span>
+            )}
+          </Button>
+        </div>
+        {apiError && (
+          <div className='text-sm text-red-500 mt-1'>{apiError}</div>
+        )}
       </div>
 
       <Tabs defaultValue='columns' className='w-full pt-4'>
@@ -227,6 +365,29 @@ export default function TableProperty({
           </Button>
         </TabsContent>
       </Tabs>
+
+      <Dialog open={showColumnsDialog} onOpenChange={setShowColumnsDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Load Table Data</DialogTitle>
+            <DialogDescription>
+              The API data will override your current table data. Would you like
+              to proceed?
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+            <Button variant='outline' onClick={handleCancelLoad}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => loadColumnsAndData(pendingColumns, loadedData)}
+            >
+              Load Data
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {error && <div className='text-sm text-red-500 mt-2'>{error}</div>}
     </div>
