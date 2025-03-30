@@ -1,11 +1,13 @@
 'use client';
 
+import { memo } from 'react';
+import { useAtomValue } from 'jotai';
+
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PROPERTY_COMPONENTS } from '@/constants/component';
 import StyleConfig from '@/components/layout/config/StyleConfig';
-import { memo } from 'react';
-import { useAtomValue } from 'jotai';
+import BindingConfig from '@/components/layout/config/BindingConfig';
 import { selectedComponentAtom } from '@/atoms/component';
 
 function ConfigPanel() {
@@ -42,8 +44,9 @@ function ConfigPanel() {
       <Separator />
       <div className='flex-1 overflow-auto p-4'>
         <Tabs defaultValue='properties' className='w-full'>
-          <TabsList className='grid w-full grid-cols-2'>
+          <TabsList className='grid w-full grid-cols-3'>
             <TabsTrigger value='properties'>Properties</TabsTrigger>
+            <TabsTrigger value='bindings'>Bindings</TabsTrigger>
             <TabsTrigger value='styles'>Styles</TabsTrigger>
           </TabsList>
           {selectedComponent ? (
@@ -54,6 +57,11 @@ function ConfigPanel() {
               <TabsContent value='styles' className='pt-4'>
                 <div className='space-y-4'>
                   <StyleConfig selectedComponent={selectedComponent} />
+                </div>
+              </TabsContent>
+              <TabsContent value='bindings' className='pt-4'>
+                <div className='space-y-4'>
+                  <BindingConfig selectedComponent={selectedComponent} />
                 </div>
               </TabsContent>
             </>
