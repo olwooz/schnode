@@ -30,7 +30,7 @@ export default function ToggleColumnForm({
 }: ToggleColumnFormProps) {
   const components = useAtomValue(componentsAtom);
   const [config, setConfig] = useState<ToggleColumnConfig>({
-    columnId: '',
+    accessorKey: '',
     defaultVisible: true,
   });
 
@@ -47,7 +47,10 @@ export default function ToggleColumnForm({
   }, [binding.config]);
 
   function handleColumnChange(columnId: string) {
-    const newConfig = { ...config, columnId };
+    const selectedColumn = tableColumns.find((col) => col.header === columnId);
+    const accessorKey = selectedColumn?.accessorKey || '';
+
+    const newConfig = { ...config, accessorKey };
     setConfig(newConfig);
     updateBinding(binding.id, { config: newConfig });
   }
@@ -58,7 +61,13 @@ export default function ToggleColumnForm({
 
       <div className='space-y-2'>
         <Label htmlFor='columnSelector'>Select Table Column</Label>
-        <Select value={config.columnId} onValueChange={handleColumnChange}>
+        <Select
+          value={
+            tableColumns.find((col) => col.accessorKey === config.accessorKey)
+              ?.header || ''
+          }
+          onValueChange={handleColumnChange}
+        >
           <SelectTrigger id='columnSelector'>
             <SelectValue placeholder='Select a column to toggle' />
           </SelectTrigger>

@@ -3,10 +3,27 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { bindingsAtom, selectedBindingAtom } from '@/atoms/binding';
 import { ComponentBinding, BindingType, BindingConfig } from '@/types/binding';
+import { isToggleColumnConfig } from '@/utils/binding';
 
 export function useBindings() {
   const [bindings, setBindings] = useAtom(bindingsAtom);
   const [selectedBinding, setSelectedBinding] = useAtom(selectedBindingAtom);
+
+  function dispatchResetColumnVisibilityEvent(binding: ComponentBinding) {
+    if (
+      binding.type === BindingType.TOGGLE_COLUMN &&
+      isToggleColumnConfig(binding.config)
+    ) {
+      const resetEvent = new CustomEvent('resetColumnVisibility', {
+        detail: {
+          accessorKey: binding.config.accessorKey,
+          targetId: binding.targetId,
+        },
+        bubbles: true,
+      });
+      document.dispatchEvent(resetEvent);
+    }
+  }
 
   function createBinding(
     sourceId: string,
@@ -32,6 +49,8 @@ export function useBindings() {
   ): boolean {
     let found = false;
 
+    const oldBinding = bindings.find((b) => b.id === bindingId);
+
     setBindings((prev) =>
       prev.map((binding) => {
         if (binding.id === bindingId) {
@@ -46,14 +65,38 @@ export function useBindings() {
       setSelectedBinding((prev) => (prev ? { ...prev, ...updates } : null));
     }
 
+    if (
+      found &&
+      oldBinding &&
+      oldBinding.type === BindingType.TOGGLE_COLUMN &&
+      isToggleColumnConfig(oldBinding.config)
+    ) {
+      const targetChanged =
+        updates.targetId !== undefined &&
+        updates.targetId !== oldBinding.targetId;
+      const configChanged =
+        updates.config !== undefined &&
+        isToggleColumnConfig(updates.config) &&
+        updates.config.accessorKey !== oldBinding.config.accessorKey;
+
+      if (targetChanged || configChanged) {
+        dispatchResetColumnVisibilityEvent(oldBinding);
+      }
+    }
+
     return found;
   }
 
   function deleteBinding(bindingId: string): boolean {
-    const bindingExists = bindings.some((b) => b.id === bindingId);
+    const bindingToDelete = bindings.find((b) => b.id === bindingId);
+    const bindingExists = bindingToDelete !== undefined;
 
     if (!bindingExists) {
       return false;
+    }
+
+    if (bindingToDelete) {
+      dispatchResetColumnVisibilityEvent(bindingToDelete);
     }
 
     setBindings((prev) => prev.filter((b) => b.id !== bindingId));
@@ -73,6 +116,10 @@ export function useBindings() {
     if (bindingsToDelete.length === 0) {
       return 0;
     }
+
+    bindingsToDelete.forEach((binding) => {
+      dispatchResetColumnVisibilityEvent(binding);
+    });
 
     setBindings((prev) =>
       prev.filter(

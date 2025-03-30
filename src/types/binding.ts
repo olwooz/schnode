@@ -6,7 +6,7 @@ export enum BindingType {
 }
 
 export interface ToggleColumnConfig {
-  columnId: string;
+  accessorKey: string;
   defaultVisible: boolean;
 }
 

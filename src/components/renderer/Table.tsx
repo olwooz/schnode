@@ -9,6 +9,7 @@ import {
   getPaginationRowModel,
   Row,
   ColumnDef,
+  VisibilityState,
 } from '@tanstack/react-table';
 
 import {
@@ -32,7 +33,10 @@ interface ExtendedComponentProps extends ComponentRendererProps {
   componentId?: string;
 }
 
-export default function TableRenderer({ props }: ExtendedComponentProps) {
+export default function TableRenderer({
+  props,
+  componentId,
+}: ExtendedComponentProps) {
   const isPreviewMode = useAtomValue(isPreviewModeAtom);
   const tableProps = { ...DEFAULT_PROPS.table, ...props } as TableProps;
   const [selectedRow, setSelectedRow] = useState<TableRowData | null>(null);
@@ -40,6 +44,7 @@ export default function TableRenderer({ props }: ExtendedComponentProps) {
   const [editedValues, setEditedValues] = useState<TableRowData>(
     {} as TableRowData
   );
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const data = useMemo<TableRowData[]>(
     () => (tableProps.data ? JSON.parse(tableProps.data) : []),
@@ -53,11 +58,61 @@ export default function TableRenderer({ props }: ExtendedComponentProps) {
 
   const showPagination = getBooleanValue(tableProps.showPagination);
 
+  useEffect(() => {
+    const handleColumnToggle = (event: CustomEvent) => {
+      const { accessorKey, isVisible, targetId } = event.detail;
+
+      if (targetId === componentId) {
+        setColumnVisibility((prev) => ({
+          ...prev,
+          [accessorKey]: isVisible,
+        }));
+      }
+    };
+
+    const handleColumnReset = (event: CustomEvent) => {
+      const { accessorKey, targetId } = event.detail;
+
+      if (targetId === componentId) {
+        setColumnVisibility((prev) => {
+          const updated = { ...prev };
+          delete updated[accessorKey];
+          return updated;
+        });
+      }
+    };
+
+    document.addEventListener(
+      'toggleColumn',
+      handleColumnToggle as EventListener
+    );
+
+    document.addEventListener(
+      'resetColumnVisibility',
+      handleColumnReset as EventListener
+    );
+
+    return () => {
+      document.removeEventListener(
+        'toggleColumn',
+        handleColumnToggle as EventListener
+      );
+      document.removeEventListener(
+        'resetColumnVisibility',
+        handleColumnReset as EventListener
+      );
+    };
+  }, [componentId]);
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      columnVisibility,
+    },
+    onColumnVisibilityChange: setColumnVisibility,
   });
 
   const headerGroups = table.getHeaderGroups();

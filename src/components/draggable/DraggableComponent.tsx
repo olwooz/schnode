@@ -51,7 +51,8 @@ export function DraggableComponent({
     handleSelectComponent(component.id);
   }
 
-  function handleDelete() {
+  function handleDelete(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
     handleDeleteComponent(component.id);
   }
 
@@ -94,7 +95,11 @@ export function DraggableComponent({
         <GlowEffect key={component.id} mode='colorShift' scale={0.95} />
       )}
       <div className='relative'>
-        <ComponentRenderer type={component.type} props={component.props} />
+        <ComponentRenderer
+          type={component.type}
+          props={component.props}
+          componentId={component.id}
+        />
       </div>
     </div>
   );

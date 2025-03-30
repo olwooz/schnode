@@ -68,4 +68,5 @@ export type PropertyComponentProps = {
 
 export type ComponentRendererProps = {
   props?: Partial<ComponentProps[keyof ComponentProps]>;
+  componentId?: string;
 };
