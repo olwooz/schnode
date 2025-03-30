@@ -23,7 +23,11 @@ import {
   CardRenderer,
   TableRenderer,
 } from '@/components/renderer';
-import { TABLE_SAMPLE_COLUMNS, TABLE_SAMPLE_DATA } from '@/constants/table';
+import {
+  TABLE_DEFAULT_PAGE_SIZE,
+  TABLE_SAMPLE_COLUMNS,
+  TABLE_SAMPLE_DATA,
+} from '@/constants/table';
 
 export const COMPONENT_LIBRARY_ITEMS: ComponentLibraryItem[] = [
   {
@@ -86,6 +90,8 @@ export const DEFAULT_PROPS: ComponentProps = {
     title: 'Table',
     columns: TABLE_SAMPLE_COLUMNS,
     data: TABLE_SAMPLE_DATA,
+    showPagination: 'true',
+    pageSize: TABLE_DEFAULT_PAGE_SIZE,
   },
   checkbox: {
     label: 'Checkbox',

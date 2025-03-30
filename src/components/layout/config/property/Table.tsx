@@ -16,11 +16,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { PropertyComponentProps } from '@/types/component';
 import { Column } from '@/types/table';
 import { TableRowData } from '@/types/table';
 import { useTable } from '@/hooks/useTable';
 import { useComponentActions } from '@/hooks/useComponentActions';
+import { TABLE_DEFAULT_PAGE_SIZE, TABLE_SIZES } from '@/constants/table';
 
 export default function TableProperty({
   selectedComponent,
@@ -239,7 +248,66 @@ export default function TableProperty({
         )}
       </div>
 
-      <Tabs defaultValue='columns' className='w-full pt-4'>
+      <div className='space-y-4'>
+        <h3 className='text-sm font-medium'>Pagination Settings</h3>
+
+        <div className='flex items-center justify-between py-1'>
+          <Label
+            htmlFor='showPagination'
+            className='cursor-pointer text-muted-foreground'
+          >
+            Show Pagination
+          </Label>
+          <Switch
+            id='showPagination'
+            checked={selectedComponent.props.showPagination === 'true'}
+            onCheckedChange={(checked: boolean) =>
+              handleUpdateComponent({
+                id: selectedComponent.id,
+                key: 'showPagination',
+                value: checked.toString(),
+              })
+            }
+          />
+        </div>
+
+        <div className='space-y-2'>
+          <Label
+            htmlFor='pageSize'
+            className={
+              selectedComponent.props.showPagination !== 'true'
+                ? 'text-muted-foreground'
+                : ''
+            }
+          >
+            Rows Per Page
+          </Label>
+          <Select
+            value={selectedComponent.props.pageSize ?? TABLE_DEFAULT_PAGE_SIZE}
+            onValueChange={(value) =>
+              handleUpdateComponent({
+                id: selectedComponent.id,
+                key: 'pageSize',
+                value,
+              })
+            }
+            disabled={selectedComponent.props.showPagination !== 'true'}
+          >
+            <SelectTrigger id='pageSize' className='w-full'>
+              <SelectValue placeholder='Select rows per page' />
+            </SelectTrigger>
+            <SelectContent>
+              {TABLE_SIZES.map((size) => (
+                <SelectItem key={size} value={size}>
+                  {size} rows
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <Tabs defaultValue='columns' className='w-full'>
         <TabsList className='grid w-full grid-cols-2'>
           <TabsTrigger value='columns'>Columns</TabsTrigger>
           <TabsTrigger value='rows'>Rows</TabsTrigger>
@@ -247,7 +315,7 @@ export default function TableProperty({
 
         <TabsContent value='columns' className='space-y-4 pt-4'>
           <div className='space-y-2'>
-            <Label>Current Columns</Label>
+            <Label className='text-sm font-medium'>Current Columns</Label>
             <div className='max-h-40 overflow-y-auto rounded border p-2'>
               {columns.length > 0 ? (
                 <div className='space-y-2'>
@@ -345,24 +413,35 @@ export default function TableProperty({
 
         <TabsContent value='rows' className='space-y-4 pt-4'>
           <div className='space-y-4'>
-            {columns.map((col) => (
-              <div key={col.accessorKey} className='space-y-2'>
-                <Label htmlFor={`row${col.accessorKey}`}>{col.header}</Label>
-                <Input
-                  id={`row${col.accessorKey}`}
-                  value={newRow[col.accessorKey] ?? ''}
-                  onChange={(e) =>
-                    setNewRow({ ...newRow, [col.accessorKey]: e.target.value })
-                  }
-                  placeholder={`Enter ${col.header}`}
-                />
+            {columns.length > 0 ? (
+              columns.map((col) => (
+                <div key={col.accessorKey} className='space-y-2'>
+                  <Label htmlFor={`row${col.accessorKey}`}>{col.header}</Label>
+                  <Input
+                    id={`row${col.accessorKey}`}
+                    value={newRow[col.accessorKey] ?? ''}
+                    onChange={(e) =>
+                      setNewRow({
+                        ...newRow,
+                        [col.accessorKey]: e.target.value,
+                      })
+                    }
+                    placeholder={`Enter ${col.header}`}
+                  />
+                </div>
+              ))
+            ) : (
+              <div className='py-2 text-center text-sm text-muted-foreground'>
+                Define columns first to add row data
               </div>
-            ))}
+            )}
           </div>
 
-          <Button onClick={addRow} className='w-full'>
-            Add Row
-          </Button>
+          {columns.length > 0 && (
+            <Button onClick={addRow} className='w-full'>
+              Add Row
+            </Button>
+          )}
         </TabsContent>
       </Tabs>
 

@@ -41,3 +41,6 @@ export const TABLE_SAMPLE_COLUMNS = JSON.stringify([
 ]);
 
 export const TABLE_SAMPLE_DATA = JSON.stringify(sampleRows);
+
+export const TABLE_DEFAULT_PAGE_SIZE = '5';
+export const TABLE_SIZES = ['5', '10'];

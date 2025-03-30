@@ -39,6 +39,8 @@ export type TableProps = {
   columns?: string;
   data?: string;
   apiEndpoint?: string;
+  pageSize?: string;
+  showPagination?: string;
 };
 
 export type CheckboxProps = {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import {
   flexRender,
@@ -20,11 +20,13 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import { TableRowEditor } from '@/components/renderer/TableRowEditor';
+import { TablePagination } from '@/components/renderer/TablePagination';
 import { DEFAULT_PROPS } from '@/constants/component';
 import { ComponentRendererProps, TableProps } from '@/types/component';
 import { TableRowData } from '@/types/table';
 import { isPreviewModeAtom } from '@/atoms/mode';
 import { cn } from '@/lib/utils';
+import { getBooleanValue } from '@/utils/string';
 
 interface ExtendedComponentProps extends ComponentRendererProps {
   componentId?: string;
@@ -49,6 +51,8 @@ export default function TableRenderer({ props }: ExtendedComponentProps) {
     [tableProps.columns]
   );
 
+  const showPagination = getBooleanValue(tableProps.showPagination);
+
   const table = useReactTable({
     data,
     columns,
@@ -58,6 +62,7 @@ export default function TableRenderer({ props }: ExtendedComponentProps) {
 
   const headerGroups = table.getHeaderGroups();
   const rows = table.getRowModel().rows;
+  const setPageSize = table.setPageSize;
 
   function handleRowClick(row: Row<TableRowData>) {
     if (isPreviewMode) {
@@ -69,8 +74,16 @@ export default function TableRenderer({ props }: ExtendedComponentProps) {
     setIsDialogOpen(true);
   }
 
+  useEffect(() => {
+    if (!tableProps.pageSize) {
+      return;
+    }
+
+    setPageSize(parseInt(tableProps.pageSize));
+  }, [tableProps.pageSize, setPageSize]);
+
   return (
-    <div className='space-y-4'>
+    <div className='w-[640px] space-y-4'>
       <h3 className='text-lg font-medium'>{tableProps.title}</h3>
       <div className='rounded-md border'>
         <Table>
@@ -103,7 +116,10 @@ export default function TableRenderer({ props }: ExtendedComponentProps) {
                   )}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      className='max-w-[240px] overflow-hidden text-ellipsis'
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -125,6 +141,9 @@ export default function TableRenderer({ props }: ExtendedComponentProps) {
           </TableBody>
         </Table>
       </div>
+
+      {showPagination && data.length > 0 && <TablePagination table={table} />}
+
       <TableRowEditor
         isDialogOpen={isDialogOpen}
         setIsDialogOpen={setIsDialogOpen}
