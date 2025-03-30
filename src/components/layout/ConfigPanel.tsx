@@ -30,7 +30,7 @@ function ConfigPanel() {
   }
 
   return (
-    <div className='flex h-full flex-col'>
+    <div className='flex h-full flex-col' data-testid='config-panel'>
       <div className='p-4'>
         <h2 className='text-lg font-semibold'>Configuration</h2>
         <p className='text-sm text-neutral-500'>

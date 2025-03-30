@@ -7,7 +7,7 @@ import { memo } from 'react';
 
 function ComponentLibrary() {
   return (
-    <div className='flex h-full flex-col'>
+    <div className='flex h-full flex-col' data-testid='component-library'>
       <div className='p-4'>
         <h2 className='text-lg font-semibold'>Component Library</h2>
         <p className='text-sm text-neutral-500'>
