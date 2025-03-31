@@ -19,6 +19,7 @@ export default function CheckboxRenderer({
   const bindings = useAtomValue(bindingsAtom);
   const [isChecked, setIsChecked] = useState(true);
   const [currentBindingId, setCurrentBindingId] = useState<string | null>(null);
+  const checkboxId = `checkbox-${componentId}`;
 
   const columnToggleBinding = componentId
     ? bindings.find(
@@ -62,11 +63,11 @@ export default function CheckboxRenderer({
   return (
     <div className='flex items-center space-x-2'>
       <Checkbox
-        id='checkbox'
+        id={checkboxId}
         checked={isChecked}
         onCheckedChange={handleCheckedChange}
       />
-      <label htmlFor='checkbox' className='text-sm font-medium'>
+      <label htmlFor={checkboxId} className='text-sm font-medium'>
         {checkboxProps.label}
       </label>
     </div>

@@ -80,7 +80,7 @@ export default function SelectProperty({
 
     setErrorIndex(null);
     const updatedOptions = [...options];
-    updatedOptions[index] = value.trim();
+    updatedOptions[index] = value;
     updateOptions(JSON.stringify(updatedOptions));
   }
 
