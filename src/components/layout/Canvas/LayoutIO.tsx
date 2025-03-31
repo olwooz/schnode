@@ -32,21 +32,28 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { componentsAtom } from '@/atoms/component';
+import { bindingsAtom } from '@/atoms/binding';
 import {
   downloadLayout,
   readLayoutFile,
   deserializeLayout,
 } from '@/utils/layout-io';
 import { CanvasComponent } from '@/types/dnd';
+import { ComponentBinding } from '@/types/binding';
 
 export function LayoutIO() {
   const [components, setComponents] = useAtom(componentsAtom);
+  const [bindings, setBindings] = useAtom(bindingsAtom);
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [importedComponents, setImportedComponents] = useState<
     CanvasComponent[] | null
   >(null);
+  const [importedBindings, setImportedBindings] = useState<
+    ComponentBinding[] | null
+  >(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleExport() {
@@ -54,7 +61,7 @@ export function LayoutIO() {
       alert('There are no components to export.');
       return;
     }
-    downloadLayout(components);
+    downloadLayout(components, bindings);
   }
 
   function handleImportClick() {
@@ -81,7 +88,15 @@ export function LayoutIO() {
     try {
       const file = e.target.files[0];
       const content = await readLayoutFile(file);
-      deserializeLayout(content);
+      const layoutData = deserializeLayout(content);
+
+      setImportedComponents(layoutData.components);
+
+      if (components.length > 0) {
+        setIsConfirmDialogOpen(true);
+      } else {
+        applyImport(layoutData.components, layoutData.bindings);
+      }
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : 'Failed to parse layout file'
@@ -101,16 +116,16 @@ export function LayoutIO() {
     try {
       const file = fileInputRef.current.files[0];
       const content = await readLayoutFile(file);
-      const parsedComponents = deserializeLayout(content);
+      const layoutData = deserializeLayout(content);
 
       if (components.length > 0) {
-        setImportedComponents(parsedComponents);
+        setImportedComponents(layoutData.components);
+        setImportedBindings(layoutData.bindings);
         setIsConfirmDialogOpen(true);
         return;
       }
 
-      setComponents(parsedComponents);
-      closeImportDialog();
+      applyImport(layoutData.components, layoutData.bindings);
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : 'Failed to import layout'
@@ -119,17 +134,28 @@ export function LayoutIO() {
   }
 
   function handleConfirmImport() {
-    if (importedComponents) {
-      setComponents(importedComponents);
-      setImportedComponents(null);
-      setIsConfirmDialogOpen(false);
-      closeImportDialog();
+    if (importedComponents && importedBindings) {
+      applyImport(importedComponents, importedBindings);
     }
+    setIsConfirmDialogOpen(false);
   }
 
   function handleCancelImport() {
     setImportedComponents(null);
+    setImportedBindings(null);
     setIsConfirmDialogOpen(false);
+  }
+
+  function applyImport(
+    newComponents: CanvasComponent[],
+    newBindings: ComponentBinding[]
+  ) {
+    setComponents(newComponents);
+    setBindings(newBindings);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    setIsImportDialogOpen(false);
   }
 
   return (
@@ -163,10 +189,10 @@ export function LayoutIO() {
       <Dialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Load Layout</DialogTitle>
+            <DialogTitle>Import Layout</DialogTitle>
             <DialogDescription>
-              Upload a JSON file to load a previously exported layout. This will
-              replace your current layout.
+              Upload a JSON file to import a previously exported layout. This
+              will replace your current layout.
             </DialogDescription>
           </DialogHeader>
 
@@ -207,8 +233,9 @@ export function LayoutIO() {
           <AlertDialogHeader>
             <AlertDialogTitle>Replace Current Layout?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action will replace your current layout with the imported
-              one. This cannot be undone. Are you sure you want to continue?
+              This action will replace your current layout and bindings with the
+              imported one. This cannot be undone. Are you sure you want to
+              continue?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
