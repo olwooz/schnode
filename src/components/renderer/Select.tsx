@@ -80,7 +80,7 @@ export default function SelectRenderer({
         </SelectTrigger>
         <SelectContent>
           {options.map((option: string) => (
-            <SelectItem key={option} value={option}>
+            <SelectItem key={option} value={option.toLowerCase()}>
               {option}
             </SelectItem>
           ))}
