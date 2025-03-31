@@ -15,6 +15,16 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Disclosure,
+  DisclosureContent,
+  DisclosureTrigger,
+} from '@/components/motion-primitives/disclosure';
+import {
+  ToggleColumnForm,
+  FilterTableForm,
+  SortTableForm,
+} from '@/components/layout/config/binding';
 
 import { CanvasComponent } from '@/types/dnd';
 import { BindingType, ComponentBinding } from '@/types/binding';
@@ -25,15 +35,6 @@ import {
   getCompatibleSourceComponents,
   getCompatibleTargetComponents,
 } from '@/utils/binding';
-
-import ToggleColumnForm from '@/components/layout/config/binding/ToggleColumnForm';
-import FilterTableForm from '@/components/layout/config/binding/FilterTableForm';
-import SortTableForm from '@/components/layout/config/binding/SortTableForm';
-import {
-  Disclosure,
-  DisclosureContent,
-  DisclosureTrigger,
-} from '@/components/motion-primitives/disclosure';
 
 const BINDING_TYPE_LABELS: Record<BindingType, string> = {
   [BindingType.TOGGLE_COLUMN]: 'Toggle Column Visibility',
