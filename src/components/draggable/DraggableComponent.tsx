@@ -8,8 +8,11 @@ import { CanvasComponent } from '@/types/dnd';
 import { useDraggable } from '@/hooks/useDraggable';
 import ComponentRenderer from '@/components/renderer/ComponentRenderer';
 import { GlowEffect } from '@/components/motion-primitives/glow-effect';
+import { BorderTrail } from '@/components/motion-primitives/border-trail';
 import { Button } from '@/components/ui/button';
 import { useComponentActions } from '@/hooks/useComponentActions';
+import { useBindings } from '@/hooks/useBindings';
+import { cn } from '@/lib/utils';
 
 export function DraggableComponent({
   component,
@@ -24,6 +27,8 @@ export function DraggableComponent({
   } = useComponentActions();
   const selectedComponent = useAtomValue(selectedComponentAtom);
   const isSelected = component.id === selectedComponent?.id;
+  const { hasBindings } = useBindings();
+  const hasBoundBindings = hasBindings(component.id, selectedComponent?.id);
 
   const { draggableRef, isDragging } = useDraggable({
     type: DRAG_ITEM_TYPE.PLACED_COMPONENT,
@@ -59,6 +64,7 @@ export function DraggableComponent({
   return (
     <div
       ref={draggableRef}
+      id={`component-${component.id}`}
       className={`
         absolute 
         ${isPreviewMode ? 'cursor-default' : 'cursor-move'} 
@@ -79,6 +85,13 @@ export function DraggableComponent({
       }}
       onClick={handleSelect}
     >
+      <BorderTrail
+        className={cn(`${hasBoundBindings ? 'opacity-100' : 'opacity-0'}`)}
+        style={{
+          boxShadow:
+            '0px 0px 60px 30px rgb(255 255 255 / 50%), 0 0 100px 60px rgb(0 0 0 / 50%), 0 0 140px 90px rgb(0 0 0 / 50%)',
+        }}
+      />
       {!isPreviewMode && (
         <div className='absolute top-0 right-0 -mt-3 -mr-3 opacity-0 group-hover:opacity-100 z-10'>
           <Button

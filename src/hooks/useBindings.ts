@@ -193,9 +193,15 @@ export function useBindings() {
     return bindings.filter((b) => b.type === type);
   }
 
-  function hasBindings(componentId: string): boolean {
+  function hasBindings(sourceId: string, targetId?: string): boolean {
+    if (!targetId) {
+      return false;
+    }
+
     return bindings.some(
-      (b) => b.sourceId === componentId || b.targetId === componentId
+      (b) =>
+        [b.sourceId, b.targetId].includes(sourceId) &&
+        [b.sourceId, b.targetId].includes(targetId)
     );
   }
 
