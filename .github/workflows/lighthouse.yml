@@ -60,7 +60,7 @@ jobs:
           script: |
             const fs = require('fs');
             const path = require('path');
-            const resultsPath = path.join(process.env.GITHUB_WORKSPACE, 'lhci_reports', 'manifest.json');
+            const resultsPath = path.join(process.env.GITHUB_WORKSPACE, 'lighthouse-reports', 'manifest.json');
             const results = JSON.parse(fs.readFileSync(resultsPath));
             const totalReports = results.length;
             const averageScores = {
