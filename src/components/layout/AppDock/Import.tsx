@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { useAtom } from 'jotai';
-import { AlertCircle, Download, Upload } from 'lucide-react';
+import { useAtom, useSetAtom } from 'jotai';
+import { AlertCircle, Download } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -13,12 +13,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,17 +27,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { componentsAtom } from '@/atoms/component';
 import { bindingsAtom } from '@/atoms/binding';
-import {
-  downloadLayout,
-  readLayoutFile,
-  deserializeLayout,
-} from '@/utils/layout-io';
+import { readLayoutFile, deserializeLayout } from '@/utils/layout-io';
 import { CanvasComponent } from '@/types/dnd';
 import { ComponentBinding } from '@/types/binding';
 
-export function LayoutIO() {
+export function Import() {
   const [components, setComponents] = useAtom(componentsAtom);
-  const [bindings, setBindings] = useAtom(bindingsAtom);
+  const setBindings = useSetAtom(bindingsAtom);
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -55,14 +45,6 @@ export function LayoutIO() {
   >(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  function handleExport() {
-    if (components.length === 0) {
-      alert('There are no components to export.');
-      return;
-    }
-    downloadLayout(components, bindings);
-  }
 
   function handleImportClick() {
     setErrorMessage('');
@@ -160,31 +142,14 @@ export function LayoutIO() {
 
   return (
     <>
-      <TooltipProvider>
-        <div className='flex space-x-2'>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant='default' size='icon' onClick={handleExport}>
-                <Upload className='h-4 w-4' />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Export layout as JSON file</p>
-            </TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant='default' size='icon' onClick={handleImportClick}>
-                <Download className='h-4 w-4' />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Import layout from JSON file</p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
-      </TooltipProvider>
+      <Button
+        className='rounded-full hover:bg-transparent'
+        variant='ghost'
+        size='icon'
+        onClick={handleImportClick}
+      >
+        <Download className='h-4 w-4' />
+      </Button>
 
       <Dialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen}>
         <DialogContent>

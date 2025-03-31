@@ -7,6 +7,7 @@ import ComponentLibrary from '@/components/layout/ComponentLibrary';
 import Canvas from '@/components/layout/Canvas';
 import ConfigPanel from '@/components/layout/ConfigPanel';
 import { PanelToggle } from '@/components/layout/PanelToggle';
+import { AppDock } from '@/components/layout/AppDock';
 
 export default function Home() {
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
@@ -80,6 +81,7 @@ export default function Home() {
           />
         )}
       </div>
+      <AppDock />
     </DndProvider>
   );
 }

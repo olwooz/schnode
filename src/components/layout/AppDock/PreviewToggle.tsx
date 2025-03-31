@@ -9,10 +9,11 @@ export function PreviewToggle() {
   return (
     <Button
       onClick={togglePreviewMode}
-      variant='default'
+      variant='ghost'
       size='icon'
       title={isPreviewMode ? 'Switch to edit mode' : 'Switch to preview mode'}
       disabled={isMobile}
+      className='hover:bg-transparent'
     >
       {isPreviewMode ? (
         <Pencil className='h-4 w-4' />

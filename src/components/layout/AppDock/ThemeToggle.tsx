@@ -19,7 +19,7 @@ export function ThemeToggle() {
       size='icon'
       onClick={toggleTheme}
       title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-      className='rounded-full'
+      className='hover:bg-transparent'
     >
       {theme === 'light' ? (
         <Moon className='h-4 w-4' />

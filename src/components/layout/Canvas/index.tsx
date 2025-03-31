@@ -4,9 +4,6 @@ import { useAtomValue } from 'jotai';
 
 import ComponentRenderer from '@/components/renderer/ComponentRenderer';
 import { DraggableComponent } from '@/components/draggable/DraggableComponent';
-import { PreviewToggle } from '@/components/layout/Canvas/PreviewToggle';
-import { ThemeToggle } from '@/components/layout/Canvas/ThemeToggle';
-import { LayoutIO } from '@/components/layout/Canvas/LayoutIO';
 import { MobileNotice } from '@/components/layout/Canvas/MobileNotice';
 import { GRID_SIZE } from '@/constants/canvas';
 import { useDropPreview } from '@/hooks/useDropPreview';
@@ -33,11 +30,6 @@ export default function Canvas() {
         >
           {isPreviewMode ? 'Preview Mode' : 'Edit Mode'}
         </h2>
-        <div className='flex items-center gap-1 md:gap-2'>
-          <LayoutIO />
-          <ThemeToggle />
-          <PreviewToggle />
-        </div>
       </div>
 
       <MobileNotice />
