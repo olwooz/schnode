@@ -22,7 +22,7 @@ export function isFilterTableConfig(
 export function isSortTableConfig(
   config: BindingConfig
 ): config is SortTableConfig {
-  return 'columnId' in config && 'direction' in config;
+  return 'id' in config;
 }
 
 export function isViewTableRowConfig(
@@ -48,8 +48,7 @@ export function createDefaultBindingConfig(type: BindingType): BindingConfig {
       };
     case BindingType.SORT_TABLE:
       return {
-        columnId: '',
-        direction: 'asc' as const,
+        id: '',
       };
     case BindingType.VIEW_TABLE_ROW:
       return {
@@ -97,7 +96,7 @@ export function validateBindingConfig(
     case BindingType.FILTER_TABLE:
       return isFilterTableConfig(config) && Boolean(config.id);
     case BindingType.SORT_TABLE:
-      return isSortTableConfig(config) && Boolean(config.columnId);
+      return isSortTableConfig(config) && Boolean(config.id);
     case BindingType.VIEW_TABLE_ROW:
       return isViewTableRowConfig(config) && config.displayFields.length > 0;
     default:

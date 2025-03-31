@@ -12,6 +12,8 @@ import {
   ColumnDef,
   VisibilityState,
   ColumnFiltersState,
+  SortingState,
+  getSortedRowModel,
 } from '@tanstack/react-table';
 
 import {
@@ -31,14 +33,10 @@ import { isPreviewModeAtom } from '@/atoms/mode';
 import { cn } from '@/lib/utils';
 import { getBooleanValue } from '@/utils/string';
 
-interface ExtendedComponentProps extends ComponentRendererProps {
-  componentId?: string;
-}
-
 export default function TableRenderer({
   props,
   componentId,
-}: ExtendedComponentProps) {
+}: ComponentRendererProps) {
   const isPreviewMode = useAtomValue(isPreviewModeAtom);
   const tableProps = { ...DEFAULT_PROPS.table, ...props } as TableProps;
   const [selectedRow, setSelectedRow] = useState<TableRowData | null>(null);
@@ -48,6 +46,7 @@ export default function TableRenderer({
   );
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnSorts, setColumnSorts] = useState<SortingState>([]);
 
   const data = useMemo<TableRowData[]>(
     () => (tableProps.data ? JSON.parse(tableProps.data) : []),
@@ -67,12 +66,15 @@ export default function TableRenderer({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     state: {
       columnVisibility,
       columnFilters,
+      sorting: columnSorts,
     },
     onColumnVisibilityChange: setColumnVisibility,
     onColumnFiltersChange: setColumnFilters,
+    onSortingChange: setColumnSorts,
   });
 
   const headerGroups = table.getHeaderGroups();
@@ -128,23 +130,25 @@ export default function TableRenderer({
     const handleTableFilter = (event: CustomEvent) => {
       const { id, filterValue, targetId } = event.detail;
 
-      if (targetId === componentId) {
-        setColumnFilters((prev) => {
-          const filtered = prev.filter((filter) => filter.id !== id);
-
-          if (filterValue) {
-            return [
-              ...filtered,
-              {
-                id,
-                value: filterValue,
-              },
-            ];
-          }
-
-          return filtered;
-        });
+      if (targetId !== componentId) {
+        return;
       }
+
+      setColumnFilters((prev) => {
+        const filtered = prev.filter((filter) => filter.id !== id);
+
+        if (filterValue) {
+          return [
+            ...filtered,
+            {
+              id,
+              value: filterValue,
+            },
+          ];
+        }
+
+        return filtered;
+      });
     };
 
     const handleTableFilterReset = (event: CustomEvent) => {
@@ -155,6 +159,40 @@ export default function TableRenderer({
       }
 
       setColumnFilters((prev) => prev.filter((filter) => filter.id !== id));
+    };
+
+    const handleTableSort = (event: CustomEvent) => {
+      const { id, desc, sort, targetId } = event.detail;
+
+      if (targetId !== componentId) {
+        return;
+      }
+
+      setColumnSorts((prev) => {
+        const filtered = prev.filter((sort) => sort.id !== id);
+
+        if (sort) {
+          return [
+            ...filtered,
+            {
+              id,
+              desc,
+            },
+          ];
+        }
+
+        return filtered;
+      });
+    };
+
+    const handleTableSortReset = (event: CustomEvent) => {
+      const { id, targetId } = event.detail;
+
+      if (targetId !== componentId) {
+        return;
+      }
+
+      setColumnSorts((prev) => prev.filter((sort) => sort.id !== id));
     };
 
     document.addEventListener(
@@ -177,6 +215,12 @@ export default function TableRenderer({
       handleTableFilterReset as EventListener
     );
 
+    document.addEventListener('sortTable', handleTableSort as EventListener);
+
+    document.addEventListener(
+      'resetTableSort',
+      handleTableSortReset as EventListener
+    );
     return () => {
       document.removeEventListener(
         'toggleColumn',
@@ -193,6 +237,14 @@ export default function TableRenderer({
       document.removeEventListener(
         'resetTableFilter',
         handleTableFilterReset as EventListener
+      );
+      document.removeEventListener(
+        'sortTable',
+        handleTableSort as EventListener
+      );
+      document.removeEventListener(
+        'resetTableSort',
+        handleTableSortReset as EventListener
       );
     };
   }, [componentId]);

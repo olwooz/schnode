@@ -3,7 +3,11 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { bindingsAtom, selectedBindingAtom } from '@/atoms/binding';
 import { ComponentBinding, BindingType, BindingConfig } from '@/types/binding';
-import { isToggleColumnConfig, isFilterTableConfig } from '@/utils/binding';
+import {
+  isToggleColumnConfig,
+  isFilterTableConfig,
+  isSortTableConfig,
+} from '@/utils/binding';
 
 export function useBindings() {
   const [bindings, setBindings] = useAtom(bindingsAtom);
@@ -41,11 +45,29 @@ export function useBindings() {
     }
   }
 
+  function dispatchResetTableSortEvent(binding: ComponentBinding) {
+    if (
+      binding.type === BindingType.SORT_TABLE &&
+      isSortTableConfig(binding.config)
+    ) {
+      const resetEvent = new CustomEvent('resetTableSort', {
+        detail: {
+          id: binding.config.id,
+          targetId: binding.targetId,
+        },
+        bubbles: true,
+      });
+      document.dispatchEvent(resetEvent);
+    }
+  }
+
   function dispatchResetEventForBinding(binding: ComponentBinding) {
     if (binding.type === BindingType.TOGGLE_COLUMN) {
       dispatchResetColumnVisibilityEvent(binding);
     } else if (binding.type === BindingType.FILTER_TABLE) {
       dispatchResetTableFilterEvent(binding);
+    } else if (binding.type === BindingType.SORT_TABLE) {
+      dispatchResetTableSortEvent(binding);
     }
   }
 
@@ -119,6 +141,21 @@ export function useBindings() {
 
         if (targetChanged || configChanged) {
           dispatchResetTableFilterEvent(oldBinding);
+        }
+      } else if (
+        oldBinding.type === BindingType.SORT_TABLE &&
+        isSortTableConfig(oldBinding.config)
+      ) {
+        const targetChanged =
+          updates.targetId !== undefined &&
+          updates.targetId !== oldBinding.targetId;
+        const configChanged =
+          updates.config !== undefined &&
+          isSortTableConfig(updates.config) &&
+          updates.config.id !== oldBinding.config.id;
+
+        if (targetChanged || configChanged) {
+          dispatchResetTableSortEvent(oldBinding);
         }
       }
     }

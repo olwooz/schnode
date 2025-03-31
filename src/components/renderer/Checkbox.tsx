@@ -8,14 +8,10 @@ import { bindingsAtom } from '@/atoms/binding';
 import { BindingType } from '@/types/binding';
 import { isToggleColumnConfig } from '@/utils/binding';
 
-interface ExtendedComponentProps extends ComponentRendererProps {
-  componentId?: string;
-}
-
 export default function CheckboxRenderer({
   props,
   componentId,
-}: ExtendedComponentProps) {
+}: ComponentRendererProps) {
   const checkboxProps = {
     ...DEFAULT_PROPS.checkbox,
     ...props,

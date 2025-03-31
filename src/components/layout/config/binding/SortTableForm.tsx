@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 import { ComponentBinding, SortTableConfig } from '@/types/binding';
 import { componentsAtom } from '@/atoms/component';
@@ -31,8 +30,7 @@ export default function SortTableForm({
 }: SortTableFormProps) {
   const components = useAtomValue(componentsAtom);
   const [config, setConfig] = useState<SortTableConfig>({
-    columnId: '',
-    direction: 'asc',
+    id: '',
   });
 
   const tableComponent = components.find((c) => c.id === binding.targetId);
@@ -48,13 +46,10 @@ export default function SortTableForm({
   }, [binding.config]);
 
   function handleColumnChange(columnId: string) {
-    const newConfig = { ...config, columnId };
-    setConfig(newConfig);
-    updateBinding(binding.id, { config: newConfig });
-  }
+    const selectedColumn = tableColumns.find((col) => col.header === columnId);
+    const accessorKey = selectedColumn?.accessorKey || '';
 
-  function handleDirectionChange(direction: SortTableConfig['direction']) {
-    const newConfig = { ...config, direction };
+    const newConfig = { ...config, id: accessorKey };
     setConfig(newConfig);
     updateBinding(binding.id, { config: newConfig });
   }
@@ -65,7 +60,13 @@ export default function SortTableForm({
 
       <div className='space-y-2'>
         <Label htmlFor='columnSelector'>Select Table Column to Sort</Label>
-        <Select value={config.columnId} onValueChange={handleColumnChange}>
+        <Select
+          value={
+            tableColumns.find((col) => col.accessorKey === config.id)?.header ||
+            ''
+          }
+          onValueChange={handleColumnChange}
+        >
           <SelectTrigger id='columnSelector'>
             <SelectValue placeholder='Select a column to sort' />
           </SelectTrigger>
@@ -79,29 +80,6 @@ export default function SortTableForm({
             )}
           </SelectContent>
         </Select>
-      </div>
-
-      <div className='space-y-2'>
-        <Label>Default Sort Direction</Label>
-        <RadioGroup
-          value={config.direction}
-          onValueChange={(value) =>
-            handleDirectionChange(value as SortTableConfig['direction'])
-          }
-        >
-          <div className='flex items-center space-x-2'>
-            <RadioGroupItem value='asc' id='sortAsc' />
-            <Label htmlFor='sortAsc' className='cursor-pointer'>
-              Ascending
-            </Label>
-          </div>
-          <div className='flex items-center space-x-2'>
-            <RadioGroupItem value='desc' id='sortDesc' />
-            <Label htmlFor='sortDesc' className='cursor-pointer'>
-              Descending
-            </Label>
-          </div>
-        </RadioGroup>
       </div>
 
       <div className='text-sm text-muted-foreground pt-2'>

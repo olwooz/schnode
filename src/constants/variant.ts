@@ -22,7 +22,7 @@ export const SELECT_TRIGGER_SIZE = {
   DEFAULT: 'default',
 } as const;
 
-export const SELECT_DEFAULT_OPTIONS = ['Option 1', 'Option 2', 'Option 3'];
+export const SELECT_DEFAULT_OPTIONS = ['None', 'Asc', 'Desc'];
 
 export const VARIANTS: Record<
   ComponentType,

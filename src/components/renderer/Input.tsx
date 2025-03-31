@@ -9,14 +9,10 @@ import { bindingsAtom } from '@/atoms/binding';
 import { BindingType } from '@/types/binding';
 import { isFilterTableConfig } from '@/utils/binding';
 
-interface ExtendedComponentProps extends ComponentRendererProps {
-  componentId?: string;
-}
-
 export default function InputRenderer({
   props,
   componentId,
-}: ExtendedComponentProps) {
+}: ComponentRendererProps) {
   const inputProps = { ...DEFAULT_PROPS.input, ...props } as InputProps;
   const bindings = useAtomValue(bindingsAtom);
   const [inputValue, setInputValue] = useState('');

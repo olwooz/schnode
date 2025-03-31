@@ -15,8 +15,7 @@ export interface FilterTableConfig {
 }
 
 export interface SortTableConfig {
-  columnId: string;
-  direction: 'asc' | 'desc';
+  id: string;
 }
 
 export interface ViewTableRowConfig {
