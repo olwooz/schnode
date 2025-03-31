@@ -42,7 +42,7 @@ export function TableColumnList({
                   <Button
                     variant='ghost'
                     size='icon'
-                    className='h-6 w-6'
+                    className='h-6 w-6 edit-column-btn'
                     onClick={() => handleSelectColumn(col)}
                   >
                     <Pencil className='h-3 w-3' />

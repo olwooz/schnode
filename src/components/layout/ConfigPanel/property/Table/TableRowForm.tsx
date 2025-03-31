@@ -29,6 +29,7 @@ export function TableRowForm({ columns, handleAddRow }: TableRowFormProps) {
           <Label htmlFor={`row${col.accessorKey}`}>{col.header}</Label>
           <Input
             id={`row${col.accessorKey}`}
+            className='row-input'
             value={newRow[col.accessorKey] ?? ''}
             onChange={(e) =>
               setNewRow({
