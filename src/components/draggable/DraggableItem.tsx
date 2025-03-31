@@ -8,20 +8,23 @@ import { DRAG_ITEM_TYPE } from '@/constants/component-types';
 import { useDraggable } from '@/hooks/useDraggable';
 import { GlowEffect } from '@/components/motion-primitives/glow-effect';
 import { isPreviewModeAtom } from '@/atoms/mode';
+import { useEffect } from 'react';
 
 type DraggableItemProps = {
   type: ComponentType;
   title: string;
   description: string;
+  closePanel: () => void;
 };
 
 export function DraggableItem({
   type,
   title,
   description,
+  closePanel,
 }: DraggableItemProps) {
   const isPreviewMode = useAtomValue(isPreviewModeAtom);
-  const { draggableRef } = useDraggable({
+  const { draggableRef, isDragging } = useDraggable({
     type: DRAG_ITEM_TYPE.COMPONENT,
     item: () => ({
       type: DRAG_ITEM_TYPE.COMPONENT,
@@ -30,6 +33,14 @@ export function DraggableItem({
     }),
     isPreviewMode,
   });
+
+  useEffect(() => {
+    if (!isDragging) {
+      return;
+    }
+
+    closePanel();
+  }, [isDragging, closePanel]);
 
   return (
     <div className='relative group'>
@@ -40,18 +51,27 @@ export function DraggableItem({
         ref={draggableRef}
         className={`
         relative
-        ${isPreviewMode ? 'cursor-not-allowed' : 'cursor-grab'} 
+        ${
+          isPreviewMode
+            ? 'cursor-not-allowed'
+            : 'cursor-grab active:cursor-grabbing'
+        } 
         rounded-md 
         border 
         bg-neutral-50
         dark:bg-neutral-900
-        p-3 
+        p-2 md:p-3
         shadow-sm 
         hover:shadow 
+        touch-manipulation
+        transition-all
+        active:scale-95
+        select-none
       `}
+        data-testid={`draggable-${type}`}
       >
-        <h3 className='font-medium'>{title}</h3>
-        <p className='text-xs text-neutral-500'>{description}</p>
+        <h3 className='font-medium text-sm md:text-base'>{title}</h3>
+        <p className='text-xs text-neutral-500 line-clamp-2'>{description}</p>
       </div>
     </div>
   );

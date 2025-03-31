@@ -4,10 +4,16 @@ import { Button } from '@/components/ui/button';
 import { useTogglePreviewMode } from '@/hooks/useTogglePreviewMode';
 
 export function PreviewToggle() {
-  const { isPreviewMode, togglePreviewMode } = useTogglePreviewMode();
+  const { isPreviewMode, togglePreviewMode, isMobile } = useTogglePreviewMode();
 
   return (
-    <Button onClick={togglePreviewMode} variant='default' size='icon'>
+    <Button
+      onClick={togglePreviewMode}
+      variant='default'
+      size='icon'
+      title={isPreviewMode ? 'Switch to edit mode' : 'Switch to preview mode'}
+      disabled={isMobile}
+    >
       {isPreviewMode ? (
         <Pencil className='h-4 w-4' />
       ) : (

@@ -33,40 +33,50 @@ function ConfigPanel() {
 
   return (
     <div className='flex h-full flex-col' data-testid='config-panel'>
-      <div className='p-4'>
-        <h2 className='text-lg font-semibold'>Configuration</h2>
-        <p className='text-sm text-neutral-500'>
-          {selectedComponent
-            ? `Editing ${selectedComponent.type} component`
-            : 'Select a component to configure'}
-        </p>
+      <div className='p-3 md:p-4 flex items-center justify-between'>
+        <div>
+          <h2 className='text-base md:text-lg font-semibold'>Configuration</h2>
+          <p className='text-xs md:text-sm text-neutral-500'>
+            {selectedComponent
+              ? `Editing ${selectedComponent.type} component`
+              : 'Select a component to configure'}
+          </p>
+        </div>
       </div>
       <Separator />
-      <div className='flex-1 overflow-auto p-4'>
+      <div className='flex-1 overflow-auto p-3 md:p-4'>
         <Tabs defaultValue='properties' className='w-full'>
           <TabsList className='grid w-full grid-cols-3'>
-            <TabsTrigger value='properties'>Properties</TabsTrigger>
-            <TabsTrigger value='bindings'>Bindings</TabsTrigger>
-            <TabsTrigger value='styles'>Styles</TabsTrigger>
+            <TabsTrigger value='properties' className='text-xs md:text-sm'>
+              Properties
+            </TabsTrigger>
+            <TabsTrigger value='bindings' className='text-xs md:text-sm'>
+              Bindings
+            </TabsTrigger>
+            <TabsTrigger value='styles' className='text-xs md:text-sm'>
+              Styles
+            </TabsTrigger>
           </TabsList>
           {selectedComponent ? (
             <>
-              <TabsContent value='properties' className='pt-4'>
-                <div className='space-y-4'>{renderPropertiesForm()}</div>
+              <TabsContent value='properties' className='pt-3 md:pt-4'>
+                <div className='space-y-3 md:space-y-4'>
+                  {renderPropertiesForm()}
+                </div>
               </TabsContent>
-              <TabsContent value='styles' className='pt-4'>
-                <div className='space-y-4'>
+              <TabsContent value='styles' className='pt-3 md:pt-4'>
+                <div className='space-y-3 md:space-y-4'>
                   <StyleConfig selectedComponent={selectedComponent} />
                 </div>
               </TabsContent>
-              <TabsContent value='bindings' className='pt-4'>
-                <div className='space-y-4'>
+              <TabsContent value='bindings' className='pt-3 md:pt-4'>
+                <div className='space-y-3 md:space-y-4'>
                   <BindingConfig selectedComponent={selectedComponent} />
                 </div>
               </TabsContent>
             </>
           ) : (
-            <div className='rounded-md border p-4 text-center text-sm text-neutral-500'>
+            <div className='rounded-md border p-3 md:p-4 text-center text-xs md:text-sm text-neutral-500 mt-3 md:mt-4'>
               No component selected
             </div>
           )}

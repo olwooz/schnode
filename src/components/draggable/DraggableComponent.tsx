@@ -61,6 +61,11 @@ export function DraggableComponent({
     handleDeleteComponent(component.id);
   }
 
+  const responsivePosition = {
+    x: component.position.x,
+    y: component.position.y,
+  };
+
   return (
     <div
       ref={draggableRef}
@@ -69,7 +74,7 @@ export function DraggableComponent({
         absolute 
         ${isPreviewMode ? 'cursor-default' : 'cursor-move'} 
         rounded 
-        p-2
+        p-1 md:p-2
         transition-opacity
         group
         ${
@@ -78,12 +83,14 @@ export function DraggableComponent({
             : ''
         }
         ${isDragging ? 'opacity-0' : 'opacity-100'}
+        max-w-[calc(100%-1rem)] md:max-w-none
       `}
       style={{
-        left: `${component.position.x}px`,
-        top: `${component.position.y}px`,
+        left: `${responsivePosition.x}px`,
+        top: `${responsivePosition.y}px`,
       }}
       onClick={handleSelect}
+      data-testid={`draggable-component-${component.id}`}
     >
       <BorderTrail
         className={cn(`${hasBoundBindings ? 'opacity-100' : 'opacity-0'}`)}
