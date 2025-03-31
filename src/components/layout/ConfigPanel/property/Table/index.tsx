@@ -10,8 +10,8 @@ import { useLocalFormState } from '@/hooks/useLocalFormState';
 
 import { TableColumnForm } from './TableColumnForm';
 import { TableRowForm } from './TableRowForm';
-import { TablePagination } from '@/components/layout/config/property/Table/TablePagination';
-import { TableApiEndpoint } from '@/components/layout/config/property/Table/TableApiEndpoint';
+import { TablePagination } from './TablePagination';
+import { TableApiEndpoint } from './TableApiEndpoint';
 
 export default function TableProperty({
   selectedComponent,

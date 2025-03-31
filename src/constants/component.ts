@@ -14,7 +14,7 @@ import {
   InputProperty,
   SelectProperty,
   TableProperty,
-} from '@/components/layout/config/property';
+} from '@/components/layout/ConfigPanel/property';
 import {
   ButtonRenderer,
   CheckboxRenderer,

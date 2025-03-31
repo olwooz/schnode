@@ -24,7 +24,7 @@ import {
   ToggleColumnForm,
   FilterTableForm,
   SortTableForm,
-} from '@/components/layout/config/binding';
+} from '@/components/layout/ConfigPanel/binding';
 
 import { CanvasComponent } from '@/types/dnd';
 import { BindingType, ComponentBinding } from '@/types/binding';
