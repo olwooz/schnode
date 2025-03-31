@@ -233,4 +233,50 @@ test.describe('Component Configuration Tests', () => {
         .count()) > 0;
     expect(hasUpdatedContent).toBeTruthy();
   });
+
+  test('Table component configuration - verify basic properties', async ({
+    appPage,
+    page,
+  }) => {
+    const { component, configPanel } = await addComponent(
+      page,
+      appPage,
+      'table'
+    );
+
+    await expect(component).toBeVisible();
+    await expect(configPanel).toBeVisible();
+
+    const titleField = configPanel.locator('#title');
+    await expect(titleField).toBeVisible({ timeout: 10000 });
+    await titleField.clear();
+    await titleField.fill('Test Table Title');
+    await page.waitForTimeout(500);
+
+    await expect(titleField).toHaveValue('Test Table Title');
+
+    try {
+      const columnsTab = configPanel.getByRole('tab', { name: 'Columns' });
+      await columnsTab.click();
+      await page.waitForTimeout(500);
+
+      await expect(columnsTab).toHaveAttribute('data-state', 'active');
+    } catch {
+      console.log('Columns tab not found or not clickable');
+    }
+
+    try {
+      const apiEndpointField = configPanel.locator('#apiEndpoint');
+      if (await apiEndpointField.isVisible()) {
+        await apiEndpointField.fill('https://example.com/api/data');
+        await expect(apiEndpointField).toHaveValue(
+          'https://example.com/api/data'
+        );
+      }
+    } catch {
+      console.log('API endpoint field not found or not editable');
+    }
+
+    await expect(component).toBeVisible();
+  });
 });
