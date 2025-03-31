@@ -4,7 +4,6 @@ import {
   ToggleColumnConfig,
   FilterTableConfig,
   SortTableConfig,
-  ViewTableRowConfig,
 } from '@/types/binding';
 
 export function isToggleColumnConfig(
@@ -25,16 +24,6 @@ export function isSortTableConfig(
   return 'id' in config;
 }
 
-export function isViewTableRowConfig(
-  config: BindingConfig
-): config is ViewTableRowConfig {
-  return (
-    'displayFields' in config &&
-    'allowEdit' in config &&
-    'allowDelete' in config
-  );
-}
-
 export function createDefaultBindingConfig(type: BindingType): BindingConfig {
   switch (type) {
     case BindingType.TOGGLE_COLUMN:
@@ -50,12 +39,6 @@ export function createDefaultBindingConfig(type: BindingType): BindingConfig {
       return {
         id: '',
       };
-    case BindingType.VIEW_TABLE_ROW:
-      return {
-        displayFields: [],
-        allowEdit: true,
-        allowDelete: true,
-      };
   }
 }
 
@@ -67,8 +50,6 @@ export function getCompatibleSourceComponents(type: BindingType): string[] {
       return ['input'];
     case BindingType.SORT_TABLE:
       return ['select'];
-    case BindingType.VIEW_TABLE_ROW:
-      return ['card'];
     default:
       return [];
   }
@@ -79,7 +60,6 @@ export function getCompatibleTargetComponents(type: BindingType): string[] {
     case BindingType.TOGGLE_COLUMN:
     case BindingType.FILTER_TABLE:
     case BindingType.SORT_TABLE:
-    case BindingType.VIEW_TABLE_ROW:
       return ['table'];
     default:
       return [];
@@ -97,8 +77,6 @@ export function validateBindingConfig(
       return isFilterTableConfig(config) && Boolean(config.id);
     case BindingType.SORT_TABLE:
       return isSortTableConfig(config) && Boolean(config.id);
-    case BindingType.VIEW_TABLE_ROW:
-      return isViewTableRowConfig(config) && config.displayFields.length > 0;
     default:
       return false;
   }

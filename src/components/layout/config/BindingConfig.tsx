@@ -29,7 +29,6 @@ import {
 import ToggleColumnForm from '@/components/layout/config/binding/ToggleColumnForm';
 import FilterTableForm from '@/components/layout/config/binding/FilterTableForm';
 import SortTableForm from '@/components/layout/config/binding/SortTableForm';
-import ViewTableRowForm from '@/components/layout/config/binding/ViewTableRowForm';
 import {
   Disclosure,
   DisclosureContent,
@@ -40,7 +39,6 @@ const BINDING_TYPE_LABELS: Record<BindingType, string> = {
   [BindingType.TOGGLE_COLUMN]: 'Toggle Column Visibility',
   [BindingType.FILTER_TABLE]: 'Filter Table Data',
   [BindingType.SORT_TABLE]: 'Sort Table Data',
-  [BindingType.VIEW_TABLE_ROW]: 'View Table Row Data',
 };
 
 interface BindingConfigProps {
@@ -162,10 +160,6 @@ export default function BindingConfig({
       case BindingType.SORT_TABLE:
         return (
           <SortTableForm binding={binding} updateBinding={updateBinding} />
-        );
-      case BindingType.VIEW_TABLE_ROW:
-        return (
-          <ViewTableRowForm binding={binding} updateBinding={updateBinding} />
         );
       default:
         return <div>Unknown binding type</div>;
