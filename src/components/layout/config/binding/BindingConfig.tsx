@@ -35,6 +35,7 @@ import {
   getCompatibleSourceComponents,
   getCompatibleTargetComponents,
 } from '@/utils/binding';
+import { COMPONENT_TYPE } from '@/constants/component-types';
 
 const BINDING_TYPE_LABELS: Record<BindingType, string> = {
   [BindingType.TOGGLE_COLUMN]: 'Toggle Column Visibility',
@@ -53,7 +54,6 @@ export default function BindingConfig({
   const { createBinding, deleteBinding, getBindingsForComponent } =
     useBindings();
 
-  const [, setSelectedBindingId] = useState<string | null>(null);
   const [newBindingType, setNewBindingType] = useState<BindingType | ''>('');
   const [newBindingTargetId, setNewBindingTargetId] = useState<string>('');
 
@@ -82,6 +82,18 @@ export default function BindingConfig({
     (c) => c.id !== selectedComponent.id && compatibleTargets.includes(c.type)
   );
 
+  function handleAddBinding() {
+    if (!newBindingType || !newBindingTargetId) return;
+
+    const type = newBindingType as BindingType;
+    const config = createDefaultBindingConfig(type);
+
+    createBinding(selectedComponent.id, newBindingTargetId, type, config);
+
+    setNewBindingType('');
+    setNewBindingTargetId('');
+  }
+
   function renderAlert() {
     if (componentBindings.length > 0 || canAddBinding) {
       return;
@@ -89,7 +101,7 @@ export default function BindingConfig({
 
     let alertDescription = '';
 
-    if (selectedComponent.type === 'table') {
+    if (selectedComponent.type === COMPONENT_TYPE.TABLE) {
       alertDescription = 'No bindings configured for this component yet.';
     } else if (isAlreadySource) {
       alertDescription =
@@ -124,24 +136,6 @@ export default function BindingConfig({
         </span>
       </div>
     );
-  }
-
-  function handleAddBinding() {
-    if (!newBindingType || !newBindingTargetId) return;
-
-    const type = newBindingType as BindingType;
-    const config = createDefaultBindingConfig(type);
-
-    const newBindingId = createBinding(
-      selectedComponent.id,
-      newBindingTargetId,
-      type,
-      config
-    );
-
-    setSelectedBindingId(newBindingId);
-    setNewBindingType('');
-    setNewBindingTargetId('');
   }
 
   function renderBindingForm(binding: ComponentBinding) {
@@ -259,8 +253,7 @@ export default function BindingConfig({
                         <SelectContent>
                           {availableTargets.map((component) => (
                             <SelectItem key={component.id} value={component.id}>
-                              {component.type} (ID:{' '}
-                              {component.id.substring(0, 8)})
+                              {component.type} (Name: {component.props.title})
                             </SelectItem>
                           ))}
                         </SelectContent>

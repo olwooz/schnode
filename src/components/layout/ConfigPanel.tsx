@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PROPERTY_COMPONENTS } from '@/constants/component';
 import StyleConfig from '@/components/layout/config/StyleConfig';
-import BindingConfig from '@/components/layout/config/BindingConfig';
+import { BindingConfig } from '@/components/layout/config/binding';
 import { selectedComponentAtom } from '@/atoms/component';
 
 function ConfigPanel() {
