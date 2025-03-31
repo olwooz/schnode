@@ -12,9 +12,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { ComponentBinding, ToggleColumnConfig } from '@/types/binding';
+import { ComponentBinding, BindingConfig } from '@/types/binding';
 import { componentsAtom } from '@/atoms/component';
-import { isToggleColumnConfig } from '@/utils/binding';
 
 interface ToggleColumnFormProps {
   binding: ComponentBinding;
@@ -29,7 +28,7 @@ export default function ToggleColumnForm({
   updateBinding,
 }: ToggleColumnFormProps) {
   const components = useAtomValue(componentsAtom);
-  const [config, setConfig] = useState<ToggleColumnConfig>({
+  const [config, setConfig] = useState<BindingConfig>({
     id: '',
   });
 
@@ -40,9 +39,11 @@ export default function ToggleColumnForm({
     : [];
 
   useEffect(() => {
-    if (binding.config && isToggleColumnConfig(binding.config)) {
-      setConfig(binding.config);
+    if (!binding.config) {
+      return;
     }
+
+    setConfig(binding.config);
   }, [binding.config]);
 
   function handleColumnChange(columnId: string) {

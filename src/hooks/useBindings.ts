@@ -3,21 +3,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { bindingsAtom, selectedBindingAtom } from '@/atoms/binding';
 import { ComponentBinding, BindingType, BindingConfig } from '@/types/binding';
-import {
-  isToggleColumnConfig,
-  isFilterTableConfig,
-  isSortTableConfig,
-} from '@/utils/binding';
 
 export function useBindings() {
   const [bindings, setBindings] = useAtom(bindingsAtom);
   const [selectedBinding, setSelectedBinding] = useAtom(selectedBindingAtom);
 
   function dispatchResetColumnVisibilityEvent(binding: ComponentBinding) {
-    if (
-      binding.type === BindingType.TOGGLE_COLUMN &&
-      isToggleColumnConfig(binding.config)
-    ) {
+    if (binding.type === BindingType.TOGGLE_COLUMN) {
       const resetEvent = new CustomEvent('resetColumnVisibility', {
         detail: {
           id: binding.config.id,
@@ -30,10 +22,7 @@ export function useBindings() {
   }
 
   function dispatchResetTableFilterEvent(binding: ComponentBinding) {
-    if (
-      binding.type === BindingType.FILTER_TABLE &&
-      isFilterTableConfig(binding.config)
-    ) {
+    if (binding.type === BindingType.FILTER_TABLE) {
       const resetEvent = new CustomEvent('resetTableFilter', {
         detail: {
           id: binding.config.id,
@@ -46,10 +35,7 @@ export function useBindings() {
   }
 
   function dispatchResetTableSortEvent(binding: ComponentBinding) {
-    if (
-      binding.type === BindingType.SORT_TABLE &&
-      isSortTableConfig(binding.config)
-    ) {
+    if (binding.type === BindingType.SORT_TABLE) {
       const resetEvent = new CustomEvent('resetTableSort', {
         detail: {
           id: binding.config.id,
@@ -112,51 +98,15 @@ export function useBindings() {
     }
 
     if (found && oldBinding) {
-      if (
-        oldBinding.type === BindingType.TOGGLE_COLUMN &&
-        isToggleColumnConfig(oldBinding.config)
-      ) {
-        const targetChanged =
-          updates.targetId !== undefined &&
-          updates.targetId !== oldBinding.targetId;
-        const configChanged =
-          updates.config !== undefined &&
-          isToggleColumnConfig(updates.config) &&
-          updates.config.id !== oldBinding.config.id;
+      const targetChanged =
+        updates.targetId !== undefined &&
+        updates.targetId !== oldBinding.targetId;
+      const configChanged =
+        updates.config !== undefined &&
+        updates.config.id !== oldBinding.config.id;
 
-        if (targetChanged || configChanged) {
-          dispatchResetColumnVisibilityEvent(oldBinding);
-        }
-      } else if (
-        oldBinding.type === BindingType.FILTER_TABLE &&
-        isFilterTableConfig(oldBinding.config)
-      ) {
-        const targetChanged =
-          updates.targetId !== undefined &&
-          updates.targetId !== oldBinding.targetId;
-        const configChanged =
-          updates.config !== undefined &&
-          isFilterTableConfig(updates.config) &&
-          updates.config.id !== oldBinding.config.id;
-
-        if (targetChanged || configChanged) {
-          dispatchResetTableFilterEvent(oldBinding);
-        }
-      } else if (
-        oldBinding.type === BindingType.SORT_TABLE &&
-        isSortTableConfig(oldBinding.config)
-      ) {
-        const targetChanged =
-          updates.targetId !== undefined &&
-          updates.targetId !== oldBinding.targetId;
-        const configChanged =
-          updates.config !== undefined &&
-          isSortTableConfig(updates.config) &&
-          updates.config.id !== oldBinding.config.id;
-
-        if (targetChanged || configChanged) {
-          dispatchResetTableSortEvent(oldBinding);
-        }
+      if (targetChanged || configChanged) {
+        dispatchResetEventForBinding(oldBinding);
       }
     }
 

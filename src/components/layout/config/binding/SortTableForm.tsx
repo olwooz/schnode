@@ -12,9 +12,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { ComponentBinding, SortTableConfig } from '@/types/binding';
+import { ComponentBinding, BindingConfig } from '@/types/binding';
 import { componentsAtom } from '@/atoms/component';
-import { isSortTableConfig } from '@/utils/binding';
 
 interface SortTableFormProps {
   binding: ComponentBinding;
@@ -29,7 +28,7 @@ export default function SortTableForm({
   updateBinding,
 }: SortTableFormProps) {
   const components = useAtomValue(componentsAtom);
-  const [config, setConfig] = useState<SortTableConfig>({
+  const [config, setConfig] = useState<BindingConfig>({
     id: '',
   });
 
@@ -40,9 +39,11 @@ export default function SortTableForm({
     : [];
 
   useEffect(() => {
-    if (binding.config && isSortTableConfig(binding.config)) {
-      setConfig(binding.config);
+    if (!binding.config) {
+      return;
     }
+
+    setConfig(binding.config);
   }, [binding.config]);
 
   function handleColumnChange(columnId: string) {

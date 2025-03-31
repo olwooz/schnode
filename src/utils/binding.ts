@@ -1,39 +1,9 @@
-import {
-  BindingType,
-  BindingConfig,
-  ToggleColumnConfig,
-  FilterTableConfig,
-  SortTableConfig,
-} from '@/types/binding';
-
-export function isToggleColumnConfig(
-  config: BindingConfig
-): config is ToggleColumnConfig {
-  return 'id' in config;
-}
-
-export function isFilterTableConfig(
-  config: BindingConfig
-): config is FilterTableConfig {
-  return 'id' in config;
-}
-
-export function isSortTableConfig(
-  config: BindingConfig
-): config is SortTableConfig {
-  return 'id' in config;
-}
+import { BindingType, BindingConfig } from '@/types/binding';
 
 export function createDefaultBindingConfig(type: BindingType): BindingConfig {
   switch (type) {
     case BindingType.TOGGLE_COLUMN:
-      return {
-        id: '',
-      };
     case BindingType.FILTER_TABLE:
-      return {
-        id: '',
-      };
     case BindingType.SORT_TABLE:
       return {
         id: '',
@@ -71,11 +41,9 @@ export function validateBindingConfig(
 ): boolean {
   switch (type) {
     case BindingType.TOGGLE_COLUMN:
-      return isToggleColumnConfig(config) && Boolean(config.id);
     case BindingType.FILTER_TABLE:
-      return isFilterTableConfig(config) && Boolean(config.id);
     case BindingType.SORT_TABLE:
-      return isSortTableConfig(config) && Boolean(config.id);
+      return Boolean(config.id);
     default:
       return false;
   }

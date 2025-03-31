@@ -7,7 +7,6 @@ import { DEFAULT_PROPS } from '@/constants/component';
 import { ComponentRendererProps, InputProps } from '@/types/component';
 import { bindingsAtom } from '@/atoms/binding';
 import { BindingType } from '@/types/binding';
-import { isFilterTableConfig } from '@/utils/binding';
 
 export default function InputRenderer({
   props,
@@ -36,9 +35,7 @@ export default function InputRenderer({
 
     const event = new CustomEvent('filterTable', {
       detail: {
-        id: isFilterTableConfig(tableFilterBinding.config)
-          ? tableFilterBinding.config.id
-          : '',
+        id: tableFilterBinding.config.id,
         filterValue: value,
         targetId: tableFilterBinding.targetId,
       },

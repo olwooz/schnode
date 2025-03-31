@@ -4,29 +4,16 @@ export enum BindingType {
   SORT_TABLE = 'sortTable',
 }
 
-export interface ToggleColumnConfig {
+export type BindingConfig = {
   id: string;
-}
+};
 
-export interface FilterTableConfig {
-  id: string;
-}
-
-export interface SortTableConfig {
-  id: string;
-}
-
-export type BindingConfig =
-  | ToggleColumnConfig
-  | FilterTableConfig
-  | SortTableConfig;
-
-export interface ComponentBinding {
+export type ComponentBinding = {
   id: string;
   sourceId: string;
   targetId: string;
   type: BindingType;
   config: BindingConfig;
-}
+};
 
 export type BindingsState = ComponentBinding[];

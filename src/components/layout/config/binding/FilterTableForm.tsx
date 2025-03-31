@@ -12,9 +12,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { ComponentBinding, FilterTableConfig } from '@/types/binding';
+import { ComponentBinding, BindingConfig } from '@/types/binding';
 import { componentsAtom } from '@/atoms/component';
-import { isFilterTableConfig } from '@/utils/binding';
 
 interface FilterTableFormProps {
   binding: ComponentBinding;
@@ -29,7 +28,7 @@ export default function FilterTableForm({
   updateBinding,
 }: FilterTableFormProps) {
   const components = useAtomValue(componentsAtom);
-  const [config, setConfig] = useState<FilterTableConfig>({
+  const [config, setConfig] = useState<BindingConfig>({
     id: '',
   });
 
@@ -40,9 +39,11 @@ export default function FilterTableForm({
     : [];
 
   useEffect(() => {
-    if (binding.config && isFilterTableConfig(binding.config)) {
-      setConfig(binding.config);
+    if (!binding.config) {
+      return;
     }
+
+    setConfig(binding.config);
   }, [binding.config]);
 
   function handleColumnChange(columnId: string) {

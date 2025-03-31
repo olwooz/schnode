@@ -13,7 +13,6 @@ import {
 import { DEFAULT_PROPS } from '@/constants/component';
 import { BindingType } from '@/types/binding';
 import { ComponentRendererProps, SelectProps } from '@/types/component';
-import { isSortTableConfig } from '@/utils/binding';
 
 export default function SelectRenderer({
   props,
@@ -47,9 +46,7 @@ export default function SelectRenderer({
 
     const event = new CustomEvent('sortTable', {
       detail: {
-        id: isSortTableConfig(tableSortBinding.config)
-          ? tableSortBinding.config.id
-          : '',
+        id: tableSortBinding.config.id,
         desc: value === 'desc',
         sort: value !== 'none',
         targetId: tableSortBinding.targetId,
