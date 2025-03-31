@@ -4,9 +4,9 @@ import { useAtomValue } from 'jotai';
 
 import ComponentRenderer from '@/components/renderer/ComponentRenderer';
 import { DraggableComponent } from '@/components/draggable/DraggableComponent';
-import { PreviewToggle } from '@/components/ui/preview-toggle';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { LayoutIO } from '@/components/layout/LayoutIO';
+import { PreviewToggle } from '@/components/layout/Canvas/PreviewToggle';
+import { ThemeToggle } from '@/components/layout/Canvas/ThemeToggle';
+import { LayoutIO } from '@/components/layout/Canvas/LayoutIO';
 import { GRID_SIZE } from '@/constants/canvas';
 import { useDropPreview } from '@/hooks/useDropPreview';
 import { componentsAtom } from '@/atoms/component';
