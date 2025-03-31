@@ -9,7 +9,7 @@ import {
 export function isToggleColumnConfig(
   config: BindingConfig
 ): config is ToggleColumnConfig {
-  return 'accessorKey' in config && 'defaultVisible' in config;
+  return 'id' in config;
 }
 
 export function isFilterTableConfig(
@@ -28,8 +28,7 @@ export function createDefaultBindingConfig(type: BindingType): BindingConfig {
   switch (type) {
     case BindingType.TOGGLE_COLUMN:
       return {
-        accessorKey: '',
-        defaultVisible: true,
+        id: '',
       };
     case BindingType.FILTER_TABLE:
       return {
@@ -72,7 +71,7 @@ export function validateBindingConfig(
 ): boolean {
   switch (type) {
     case BindingType.TOGGLE_COLUMN:
-      return isToggleColumnConfig(config) && Boolean(config.accessorKey);
+      return isToggleColumnConfig(config) && Boolean(config.id);
     case BindingType.FILTER_TABLE:
       return isFilterTableConfig(config) && Boolean(config.id);
     case BindingType.SORT_TABLE:

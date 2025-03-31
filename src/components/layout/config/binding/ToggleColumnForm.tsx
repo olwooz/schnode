@@ -30,8 +30,7 @@ export default function ToggleColumnForm({
 }: ToggleColumnFormProps) {
   const components = useAtomValue(componentsAtom);
   const [config, setConfig] = useState<ToggleColumnConfig>({
-    accessorKey: '',
-    defaultVisible: true,
+    id: '',
   });
 
   const tableComponent = components.find((c) => c.id === binding.targetId);
@@ -50,7 +49,7 @@ export default function ToggleColumnForm({
     const selectedColumn = tableColumns.find((col) => col.header === columnId);
     const accessorKey = selectedColumn?.accessorKey || '';
 
-    const newConfig = { ...config, accessorKey };
+    const newConfig = { ...config, id: accessorKey };
     setConfig(newConfig);
     updateBinding(binding.id, { config: newConfig });
   }
@@ -63,8 +62,8 @@ export default function ToggleColumnForm({
         <Label htmlFor='columnSelector'>Select Table Column</Label>
         <Select
           value={
-            tableColumns.find((col) => col.accessorKey === config.accessorKey)
-              ?.header || ''
+            tableColumns.find((col) => col.accessorKey === config.id)?.header ||
+            ''
           }
           onValueChange={handleColumnChange}
         >

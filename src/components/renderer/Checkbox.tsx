@@ -38,7 +38,7 @@ export default function CheckboxRenderer({
 
     if (currentBindingId !== columnToggleBinding.id) {
       if (isToggleColumnConfig(columnToggleBinding.config)) {
-        setIsChecked(columnToggleBinding.config.defaultVisible);
+        setIsChecked(true);
         setCurrentBindingId(columnToggleBinding.id);
       }
     }
@@ -53,8 +53,8 @@ export default function CheckboxRenderer({
 
     const event = new CustomEvent('toggleColumn', {
       detail: {
-        accessorKey: isToggleColumnConfig(columnToggleBinding.config)
-          ? columnToggleBinding.config.accessorKey
+        id: isToggleColumnConfig(columnToggleBinding.config)
+          ? columnToggleBinding.config.id
           : '',
         isVisible: checked,
         targetId: columnToggleBinding.targetId,

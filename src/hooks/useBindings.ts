@@ -20,7 +20,7 @@ export function useBindings() {
     ) {
       const resetEvent = new CustomEvent('resetColumnVisibility', {
         detail: {
-          accessorKey: binding.config.accessorKey,
+          id: binding.config.id,
           targetId: binding.targetId,
         },
         bubbles: true,
@@ -122,7 +122,7 @@ export function useBindings() {
         const configChanged =
           updates.config !== undefined &&
           isToggleColumnConfig(updates.config) &&
-          updates.config.accessorKey !== oldBinding.config.accessorKey;
+          updates.config.id !== oldBinding.config.id;
 
         if (targetChanged || configChanged) {
           dispatchResetColumnVisibilityEvent(oldBinding);

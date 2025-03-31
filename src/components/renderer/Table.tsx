@@ -101,7 +101,7 @@ export default function TableRenderer({
 
   useEffect(() => {
     const handleColumnToggle = (event: CustomEvent) => {
-      const { accessorKey, isVisible, targetId } = event.detail;
+      const { id, isVisible, targetId } = event.detail;
 
       if (targetId !== componentId) {
         return;
@@ -109,12 +109,12 @@ export default function TableRenderer({
 
       setColumnVisibility((prev) => ({
         ...prev,
-        [accessorKey]: isVisible,
+        [id]: isVisible,
       }));
     };
 
     const handleColumnReset = (event: CustomEvent) => {
-      const { accessorKey, targetId } = event.detail;
+      const { id, targetId } = event.detail;
 
       if (targetId !== componentId) {
         return;
@@ -122,7 +122,7 @@ export default function TableRenderer({
 
       setColumnVisibility((prev) => {
         const updated = { ...prev };
-        delete updated[accessorKey];
+        delete updated[id];
         return updated;
       });
     };

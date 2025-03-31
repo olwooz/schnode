@@ -5,8 +5,7 @@ export enum BindingType {
 }
 
 export interface ToggleColumnConfig {
-  accessorKey: string;
-  defaultVisible: boolean;
+  id: string;
 }
 
 export interface FilterTableConfig {
