@@ -29,14 +29,17 @@ export const TABLE_SAMPLE_COLUMNS = JSON.stringify([
   {
     accessorKey: 'email',
     header: 'Email',
+    filterFn: 'includesString',
   },
   {
     accessorKey: 'amount',
     header: 'Amount',
+    filterFn: 'equalsString',
   },
   {
     accessorKey: 'status',
     header: 'Status',
+    filterFn: 'includesString',
   },
 ]);
 

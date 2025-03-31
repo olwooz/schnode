@@ -11,9 +11,7 @@ export interface ToggleColumnConfig {
 }
 
 export interface FilterTableConfig {
-  columnId: string;
-  filterType: 'contains' | 'equals' | 'startsWith' | 'endsWith';
-  caseSensitive: boolean;
+  id: string;
 }
 
 export interface SortTableConfig {

@@ -16,9 +16,7 @@ export function isToggleColumnConfig(
 export function isFilterTableConfig(
   config: BindingConfig
 ): config is FilterTableConfig {
-  return (
-    'columnId' in config && 'filterType' in config && 'caseSensitive' in config
-  );
+  return 'id' in config;
 }
 
 export function isSortTableConfig(
@@ -46,9 +44,7 @@ export function createDefaultBindingConfig(type: BindingType): BindingConfig {
       };
     case BindingType.FILTER_TABLE:
       return {
-        columnId: '',
-        filterType: 'contains' as const,
-        caseSensitive: false,
+        id: '',
       };
     case BindingType.SORT_TABLE:
       return {
@@ -99,7 +95,7 @@ export function validateBindingConfig(
     case BindingType.TOGGLE_COLUMN:
       return isToggleColumnConfig(config) && Boolean(config.accessorKey);
     case BindingType.FILTER_TABLE:
-      return isFilterTableConfig(config) && Boolean(config.columnId);
+      return isFilterTableConfig(config) && Boolean(config.id);
     case BindingType.SORT_TABLE:
       return isSortTableConfig(config) && Boolean(config.columnId);
     case BindingType.VIEW_TABLE_ROW:

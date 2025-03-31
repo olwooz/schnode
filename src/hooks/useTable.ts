@@ -3,27 +3,18 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { CanvasComponent } from '@/types/dnd';
 import { useComponentActions } from '@/hooks/useComponentActions';
-
-export interface TableRow {
-  id: string;
-  [key: string]: unknown;
-}
-
-export interface TableColumn {
-  accessorKey: string;
-  header: string;
-}
+import { Column, TableRowData } from '@/types/table';
 
 export function useTable(selectedComponent: CanvasComponent) {
   const { handleUpdateComponent } = useComponentActions();
-  const rows = useMemo<TableRow[]>(
+  const rows = useMemo<TableRowData[]>(
     () =>
       selectedComponent.props.data
         ? JSON.parse(selectedComponent.props.data)
         : [],
     [selectedComponent.props.data]
   );
-  const columns = useMemo<TableColumn[]>(
+  const columns = useMemo<Column[]>(
     () =>
       selectedComponent.props.columns
         ? JSON.parse(selectedComponent.props.columns)
@@ -52,7 +43,7 @@ export function useTable(selectedComponent: CanvasComponent) {
     return null;
   }
 
-  function updateRows(newRows: TableRow[]) {
+  function updateRows(newRows: TableRowData[]) {
     handleUpdateComponent({
       id: selectedComponent.id,
       key: 'data',
@@ -60,7 +51,7 @@ export function useTable(selectedComponent: CanvasComponent) {
     });
   }
 
-  function updateColumns(newColumns: TableColumn[]) {
+  function updateColumns(newColumns: Column[]) {
     handleUpdateComponent({
       id: selectedComponent.id,
       key: 'columns',
@@ -68,8 +59,8 @@ export function useTable(selectedComponent: CanvasComponent) {
     });
   }
 
-  function handleAddRow(rowData: Record<string, unknown> = {}) {
-    const newRow: TableRow = {
+  function handleAddRow(rowData: Record<string, string> = {}) {
+    const newRow: TableRowData = {
       id: uuidv4(),
       ...rowData,
     };
@@ -81,11 +72,7 @@ export function useTable(selectedComponent: CanvasComponent) {
     updateRows(rows.filter((row) => row.id !== id));
   }
 
-  function handleUpdateRow(
-    rowId: string,
-    propName: string,
-    propValue: unknown
-  ) {
+  function handleUpdateRow(rowId: string, propName: string, propValue: string) {
     updateRows(
       rows.map((row) => {
         if (row.id !== rowId) return row;
@@ -98,7 +85,7 @@ export function useTable(selectedComponent: CanvasComponent) {
     );
   }
 
-  function handleAddColumn(column: TableColumn) {
+  function handleAddColumn(column: Column) {
     if (!column.accessorKey || !column.header) {
       return;
     }
@@ -126,10 +113,7 @@ export function useTable(selectedComponent: CanvasComponent) {
     );
   }
 
-  function handleUpdateColumn(
-    accessorKey: string,
-    updates: Partial<TableColumn>
-  ) {
+  function handleUpdateColumn(accessorKey: string, updates: Partial<Column>) {
     if (updates.accessorKey && updates.accessorKey !== accessorKey) {
       updateRows(
         rows.map((row) => {

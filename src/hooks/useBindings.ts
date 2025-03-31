@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { bindingsAtom, selectedBindingAtom } from '@/atoms/binding';
 import { ComponentBinding, BindingType, BindingConfig } from '@/types/binding';
-import { isToggleColumnConfig } from '@/utils/binding';
+import { isToggleColumnConfig, isFilterTableConfig } from '@/utils/binding';
 
 export function useBindings() {
   const [bindings, setBindings] = useAtom(bindingsAtom);
@@ -22,6 +22,30 @@ export function useBindings() {
         bubbles: true,
       });
       document.dispatchEvent(resetEvent);
+    }
+  }
+
+  function dispatchResetTableFilterEvent(binding: ComponentBinding) {
+    if (
+      binding.type === BindingType.FILTER_TABLE &&
+      isFilterTableConfig(binding.config)
+    ) {
+      const resetEvent = new CustomEvent('resetTableFilter', {
+        detail: {
+          id: binding.config.id,
+          targetId: binding.targetId,
+        },
+        bubbles: true,
+      });
+      document.dispatchEvent(resetEvent);
+    }
+  }
+
+  function dispatchResetEventForBinding(binding: ComponentBinding) {
+    if (binding.type === BindingType.TOGGLE_COLUMN) {
+      dispatchResetColumnVisibilityEvent(binding);
+    } else if (binding.type === BindingType.FILTER_TABLE) {
+      dispatchResetTableFilterEvent(binding);
     }
   }
 
@@ -65,22 +89,37 @@ export function useBindings() {
       setSelectedBinding((prev) => (prev ? { ...prev, ...updates } : null));
     }
 
-    if (
-      found &&
-      oldBinding &&
-      oldBinding.type === BindingType.TOGGLE_COLUMN &&
-      isToggleColumnConfig(oldBinding.config)
-    ) {
-      const targetChanged =
-        updates.targetId !== undefined &&
-        updates.targetId !== oldBinding.targetId;
-      const configChanged =
-        updates.config !== undefined &&
-        isToggleColumnConfig(updates.config) &&
-        updates.config.accessorKey !== oldBinding.config.accessorKey;
+    if (found && oldBinding) {
+      if (
+        oldBinding.type === BindingType.TOGGLE_COLUMN &&
+        isToggleColumnConfig(oldBinding.config)
+      ) {
+        const targetChanged =
+          updates.targetId !== undefined &&
+          updates.targetId !== oldBinding.targetId;
+        const configChanged =
+          updates.config !== undefined &&
+          isToggleColumnConfig(updates.config) &&
+          updates.config.accessorKey !== oldBinding.config.accessorKey;
 
-      if (targetChanged || configChanged) {
-        dispatchResetColumnVisibilityEvent(oldBinding);
+        if (targetChanged || configChanged) {
+          dispatchResetColumnVisibilityEvent(oldBinding);
+        }
+      } else if (
+        oldBinding.type === BindingType.FILTER_TABLE &&
+        isFilterTableConfig(oldBinding.config)
+      ) {
+        const targetChanged =
+          updates.targetId !== undefined &&
+          updates.targetId !== oldBinding.targetId;
+        const configChanged =
+          updates.config !== undefined &&
+          isFilterTableConfig(updates.config) &&
+          updates.config.id !== oldBinding.config.id;
+
+        if (targetChanged || configChanged) {
+          dispatchResetTableFilterEvent(oldBinding);
+        }
       }
     }
 
@@ -96,7 +135,7 @@ export function useBindings() {
     }
 
     if (bindingToDelete) {
-      dispatchResetColumnVisibilityEvent(bindingToDelete);
+      dispatchResetEventForBinding(bindingToDelete);
     }
 
     setBindings((prev) => prev.filter((b) => b.id !== bindingId));
@@ -118,7 +157,7 @@ export function useBindings() {
     }
 
     bindingsToDelete.forEach((binding) => {
-      dispatchResetColumnVisibilityEvent(binding);
+      dispatchResetEventForBinding(binding);
     });
 
     setBindings((prev) =>

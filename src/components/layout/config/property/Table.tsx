@@ -47,6 +47,7 @@ export default function TableProperty({
   const [newColumn, setNewColumn] = useState<Column>({
     accessorKey: '',
     header: '',
+    filterFn: '',
   });
   const [newRow, setNewRow] = useState<Record<string, string>>({});
   const [isEditMode, setIsEditMode] = useState(false);
@@ -84,7 +85,7 @@ export default function TableProperty({
   }
 
   function resetNewColumn() {
-    setNewColumn({ accessorKey: '', header: '' });
+    setNewColumn({ accessorKey: '', header: '', filterFn: '' });
   }
 
   function handleSelectColumn(column: Column) {
@@ -92,6 +93,7 @@ export default function TableProperty({
     setNewColumn({
       accessorKey: column.accessorKey,
       header: column.header,
+      filterFn: column.filterFn,
     });
     setIsEditMode(true);
   }
@@ -148,6 +150,7 @@ export default function TableProperty({
               .slice(1)
               .replace(/([A-Z])/g, ' $1')
               .trim(),
+          filterFn: '',
         }));
 
       if (columns.length > 0) {
@@ -389,6 +392,30 @@ export default function TableProperty({
                 }
                 placeholder='e.g. First Name'
               />
+            </div>
+
+            <div className='space-y-2 mt-2'>
+              <Label htmlFor='filterFn'>Filter Function</Label>
+              <Select
+                value={newColumn.filterFn ?? ''}
+                onValueChange={(value) =>
+                  setNewColumn({ ...newColumn, filterFn: value })
+                }
+              >
+                <SelectTrigger id='filterFn' className='w-full'>
+                  <SelectValue
+                    defaultValue='includesString'
+                    placeholder='Select filter function'
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='includesString'>Includes</SelectItem>
+                  <SelectItem value='includesStringSensitive'>
+                    Includes Case Sensitive
+                  </SelectItem>
+                  <SelectItem value='equalsString'>Equals</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className='flex space-x-2 mt-4'>

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useAtomValue } from 'jotai';
 
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import {
   Select,
   SelectContent,
@@ -31,9 +30,7 @@ export default function FilterTableForm({
 }: FilterTableFormProps) {
   const components = useAtomValue(componentsAtom);
   const [config, setConfig] = useState<FilterTableConfig>({
-    columnId: '',
-    filterType: 'contains',
-    caseSensitive: false,
+    id: '',
   });
 
   const tableComponent = components.find((c) => c.id === binding.targetId);
@@ -49,30 +46,27 @@ export default function FilterTableForm({
   }, [binding.config]);
 
   function handleColumnChange(columnId: string) {
-    const newConfig = { ...config, columnId };
-    setConfig(newConfig);
-    updateBinding(binding.id, { config: newConfig });
-  }
+    const selectedColumn = tableColumns.find((col) => col.header === columnId);
+    const accessorKey = selectedColumn?.accessorKey || '';
 
-  function handleFilterTypeChange(filterType: FilterTableConfig['filterType']) {
-    const newConfig = { ...config, filterType };
-    setConfig(newConfig);
-    updateBinding(binding.id, { config: newConfig });
-  }
-
-  function handleCaseSensitiveChange(caseSensitive: boolean) {
-    const newConfig = { ...config, caseSensitive };
+    const newConfig = { ...config, id: accessorKey };
     setConfig(newConfig);
     updateBinding(binding.id, { config: newConfig });
   }
 
   return (
     <div className='space-y-4'>
-      <h4 className='text-sm font-semibold'>Filter Table Configuration</h4>
+      <h4 className='text-sm font-semibold'>Table Filter Configuration</h4>
 
       <div className='space-y-2'>
-        <Label htmlFor='columnSelector'>Select Table Column to Filter</Label>
-        <Select value={config.columnId} onValueChange={handleColumnChange}>
+        <Label htmlFor='columnSelector'>Select Table Column</Label>
+        <Select
+          value={
+            tableColumns.find((col) => col.accessorKey === config.id)?.header ||
+            ''
+          }
+          onValueChange={handleColumnChange}
+        >
           <SelectTrigger id='columnSelector'>
             <SelectValue placeholder='Select a column to filter' />
           </SelectTrigger>
@@ -88,40 +82,9 @@ export default function FilterTableForm({
         </Select>
       </div>
 
-      <div className='space-y-2'>
-        <Label htmlFor='filterType'>Filter Type</Label>
-        <Select
-          value={config.filterType}
-          onValueChange={(value) =>
-            handleFilterTypeChange(value as FilterTableConfig['filterType'])
-          }
-        >
-          <SelectTrigger id='filterType'>
-            <SelectValue placeholder='Select filter type' />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value='contains'>Contains</SelectItem>
-            <SelectItem value='equals'>Equals</SelectItem>
-            <SelectItem value='startsWith'>Starts With</SelectItem>
-            <SelectItem value='endsWith'>Ends With</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className='flex items-center justify-between'>
-        <Label htmlFor='caseSensitive' className='flex-grow'>
-          Case Sensitive
-        </Label>
-        <Switch
-          id='caseSensitive'
-          checked={config.caseSensitive}
-          onCheckedChange={handleCaseSensitiveChange}
-        />
-      </div>
-
       <div className='text-sm text-muted-foreground pt-2'>
-        The input value will be used to filter the table data based on the
-        selected column and filter type.
+        Input text will be used to filter the selected column based on the
+        filter type chosen in the table column filter configuration.
       </div>
     </div>
   );

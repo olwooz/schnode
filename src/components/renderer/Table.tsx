@@ -7,9 +7,11 @@ import {
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
+  getFilteredRowModel,
   Row,
   ColumnDef,
   VisibilityState,
+  ColumnFiltersState,
 } from '@tanstack/react-table';
 
 import {
@@ -45,6 +47,7 @@ export default function TableRenderer({
     {} as TableRowData
   );
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const data = useMemo<TableRowData[]>(
     () => (tableProps.data ? JSON.parse(tableProps.data) : []),
@@ -58,61 +61,18 @@ export default function TableRenderer({
 
   const showPagination = getBooleanValue(tableProps.showPagination);
 
-  useEffect(() => {
-    const handleColumnToggle = (event: CustomEvent) => {
-      const { accessorKey, isVisible, targetId } = event.detail;
-
-      if (targetId === componentId) {
-        setColumnVisibility((prev) => ({
-          ...prev,
-          [accessorKey]: isVisible,
-        }));
-      }
-    };
-
-    const handleColumnReset = (event: CustomEvent) => {
-      const { accessorKey, targetId } = event.detail;
-
-      if (targetId === componentId) {
-        setColumnVisibility((prev) => {
-          const updated = { ...prev };
-          delete updated[accessorKey];
-          return updated;
-        });
-      }
-    };
-
-    document.addEventListener(
-      'toggleColumn',
-      handleColumnToggle as EventListener
-    );
-
-    document.addEventListener(
-      'resetColumnVisibility',
-      handleColumnReset as EventListener
-    );
-
-    return () => {
-      document.removeEventListener(
-        'toggleColumn',
-        handleColumnToggle as EventListener
-      );
-      document.removeEventListener(
-        'resetColumnVisibility',
-        handleColumnReset as EventListener
-      );
-    };
-  }, [componentId]);
-
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       columnVisibility,
+      columnFilters,
     },
     onColumnVisibilityChange: setColumnVisibility,
+    onColumnFiltersChange: setColumnFilters,
   });
 
   const headerGroups = table.getHeaderGroups();
@@ -136,6 +96,106 @@ export default function TableRenderer({
 
     setPageSize(parseInt(tableProps.pageSize));
   }, [tableProps.pageSize, setPageSize]);
+
+  useEffect(() => {
+    const handleColumnToggle = (event: CustomEvent) => {
+      const { accessorKey, isVisible, targetId } = event.detail;
+
+      if (targetId !== componentId) {
+        return;
+      }
+
+      setColumnVisibility((prev) => ({
+        ...prev,
+        [accessorKey]: isVisible,
+      }));
+    };
+
+    const handleColumnReset = (event: CustomEvent) => {
+      const { accessorKey, targetId } = event.detail;
+
+      if (targetId !== componentId) {
+        return;
+      }
+
+      setColumnVisibility((prev) => {
+        const updated = { ...prev };
+        delete updated[accessorKey];
+        return updated;
+      });
+    };
+
+    const handleTableFilter = (event: CustomEvent) => {
+      const { id, filterValue, targetId } = event.detail;
+
+      if (targetId === componentId) {
+        setColumnFilters((prev) => {
+          const filtered = prev.filter((filter) => filter.id !== id);
+
+          if (filterValue) {
+            return [
+              ...filtered,
+              {
+                id,
+                value: filterValue,
+              },
+            ];
+          }
+
+          return filtered;
+        });
+      }
+    };
+
+    const handleTableFilterReset = (event: CustomEvent) => {
+      const { id, targetId } = event.detail;
+
+      if (targetId !== componentId) {
+        return;
+      }
+
+      setColumnFilters((prev) => prev.filter((filter) => filter.id !== id));
+    };
+
+    document.addEventListener(
+      'toggleColumn',
+      handleColumnToggle as EventListener
+    );
+
+    document.addEventListener(
+      'resetColumnVisibility',
+      handleColumnReset as EventListener
+    );
+
+    document.addEventListener(
+      'filterTable',
+      handleTableFilter as EventListener
+    );
+
+    document.addEventListener(
+      'resetTableFilter',
+      handleTableFilterReset as EventListener
+    );
+
+    return () => {
+      document.removeEventListener(
+        'toggleColumn',
+        handleColumnToggle as EventListener
+      );
+      document.removeEventListener(
+        'resetColumnVisibility',
+        handleColumnReset as EventListener
+      );
+      document.removeEventListener(
+        'filterTable',
+        handleTableFilter as EventListener
+      );
+      document.removeEventListener(
+        'resetTableFilter',
+        handleTableFilterReset as EventListener
+      );
+    };
+  }, [componentId]);
 
   return (
     <div className='w-[640px] space-y-4'>
