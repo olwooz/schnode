@@ -1,4 +1,8 @@
 import { componentsAtom } from '@/atoms/component';
+import { Label } from '@/components/ui/label';
+import { SelectItem } from '@/components/ui/select';
+import { Select, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { SelectContent } from '@/components/ui/select';
 import { useBindings } from '@/hooks/useBindings';
 import { BindingConfig, ComponentBinding } from '@/types/binding';
 import { useAtomValue } from 'jotai';
@@ -34,5 +38,33 @@ export function useBindColumn(binding: ComponentBinding) {
     updateBinding(binding.id, { config: newConfig });
   }
 
-  return { config, tableColumns, handleColumnChange };
+  const ColumnSelect = () => {
+    return (
+      <div className='space-y-2'>
+        <Label htmlFor='columnSelector'>Select Table Column</Label>
+        <Select
+          value={
+            tableColumns.find((col) => col.accessorKey === config.id)?.header ||
+            ''
+          }
+          onValueChange={handleColumnChange}
+        >
+          <SelectTrigger id='columnSelector'>
+            <SelectValue placeholder='Select a column to filter' />
+          </SelectTrigger>
+          <SelectContent>
+            {tableColumns.map(
+              (column: { accessorKey: string; header: string }) => (
+                <SelectItem key={column.accessorKey} value={column.header}>
+                  {column.header}
+                </SelectItem>
+              )
+            )}
+          </SelectContent>
+        </Select>
+      </div>
+    );
+  };
+
+  return { ColumnSelect };
 }
