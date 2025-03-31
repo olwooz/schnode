@@ -134,6 +134,7 @@ export default function SelectProperty({
             placeholder='Add new option'
           />
           <Button
+            id='add-option'
             type='button'
             variant='outline'
             size='icon'
