@@ -49,12 +49,8 @@ export default function BindingConfig({
   selectedComponent,
 }: BindingConfigProps) {
   const components = useAtomValue(componentsAtom);
-  const {
-    createBinding,
-    updateBinding,
-    deleteBinding,
-    getBindingsForComponent,
-  } = useBindings();
+  const { createBinding, deleteBinding, getBindingsForComponent } =
+    useBindings();
 
   const [, setSelectedBindingId] = useState<string | null>(null);
   const [newBindingType, setNewBindingType] = useState<BindingType | ''>('');
@@ -150,17 +146,11 @@ export default function BindingConfig({
   function renderBindingForm(binding: ComponentBinding) {
     switch (binding.type) {
       case BindingType.TOGGLE_COLUMN:
-        return (
-          <ToggleColumnForm binding={binding} updateBinding={updateBinding} />
-        );
+        return <ToggleColumnForm binding={binding} />;
       case BindingType.FILTER_TABLE:
-        return (
-          <FilterTableForm binding={binding} updateBinding={updateBinding} />
-        );
+        return <FilterTableForm binding={binding} />;
       case BindingType.SORT_TABLE:
-        return (
-          <SortTableForm binding={binding} updateBinding={updateBinding} />
-        );
+        return <SortTableForm binding={binding} />;
       default:
         return <div>Unknown binding type</div>;
     }
