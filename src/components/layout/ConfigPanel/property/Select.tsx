@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PlusCircle, Trash2 } from 'lucide-react';
+import { PlusCircle, Trash2, AlertCircle } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,6 +23,7 @@ export default function SelectProperty({
 }: SelectPropertyProps) {
   const { handleUpdateComponent } = useComponentActions();
   const [newOption, setNewOption] = useState('');
+  const [errorIndex, setErrorIndex] = useState<number | null>(null);
 
   const label = useLocalFormState(
     selectedComponent.props.label ?? '',
@@ -72,8 +73,14 @@ export default function SelectProperty({
   }
 
   function handleUpdateOption(index: number, value: string) {
+    if (!value.trim()) {
+      setErrorIndex(index);
+      return;
+    }
+
+    setErrorIndex(null);
     const updatedOptions = [...options];
-    updatedOptions[index] = value;
+    updatedOptions[index] = value.trim();
     updateOptions(JSON.stringify(updatedOptions));
   }
 
@@ -109,10 +116,19 @@ export default function SelectProperty({
         <div className='space-y-2'>
           {options.map((option: string, index: number) => (
             <div key={index} className='flex items-center gap-2'>
-              <Input
-                value={option}
-                onChange={(e) => handleUpdateOption(index, e.target.value)}
-              />
+              <div className='relative flex-1'>
+                <Input
+                  value={option}
+                  onChange={(e) => handleUpdateOption(index, e.target.value)}
+                  placeholder='Option value'
+                  className={errorIndex === index ? 'border-red-500 pr-10' : ''}
+                />
+                {errorIndex === index && (
+                  <div className='absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-red-500'>
+                    <AlertCircle className='h-4 w-4' />
+                  </div>
+                )}
+              </div>
               <Button
                 type='button'
                 variant='ghost'
@@ -124,6 +140,11 @@ export default function SelectProperty({
               </Button>
             </div>
           ))}
+          {errorIndex !== null && (
+            <p className='text-sm text-red-500 mt-1'>
+              Option value cannot be empty
+            </p>
+          )}
         </div>
         <div className='flex items-center gap-2 mt-2'>
           <Input
