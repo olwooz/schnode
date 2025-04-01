@@ -24,6 +24,7 @@ import {
   ToggleColumnForm,
   FilterTableForm,
   SortTableForm,
+  CardTableBindingForm,
 } from '@/components/layout/ConfigPanel/binding';
 
 import { CanvasComponent } from '@/types/dnd';
@@ -41,6 +42,9 @@ const BINDING_TYPE_LABELS: Record<BindingType, string> = {
   [BindingType.TOGGLE_COLUMN]: 'Toggle Column Visibility',
   [BindingType.FILTER_TABLE]: 'Filter Table Data',
   [BindingType.SORT_TABLE]: 'Sort Table Data',
+  [BindingType.ADD_TABLE_ROW]: 'Add Table Row',
+  [BindingType.UPDATE_TABLE_ROW]: 'Update Table Row',
+  [BindingType.DELETE_TABLE_ROW]: 'Delete Table Row',
 };
 
 interface BindingConfigProps {
@@ -138,7 +142,7 @@ export default function BindingConfig({
     );
   }
 
-  function renderBindingForm(binding: ComponentBinding) {
+  function BindingFormContent({ binding }: { binding: ComponentBinding }) {
     switch (binding.type) {
       case BindingType.TOGGLE_COLUMN:
         return <ToggleColumnForm binding={binding} />;
@@ -146,6 +150,10 @@ export default function BindingConfig({
         return <FilterTableForm binding={binding} />;
       case BindingType.SORT_TABLE:
         return <SortTableForm binding={binding} />;
+      case BindingType.ADD_TABLE_ROW:
+      case BindingType.UPDATE_TABLE_ROW:
+      case BindingType.DELETE_TABLE_ROW:
+        return <CardTableBindingForm binding={binding} />;
       default:
         return <div>Unknown binding type</div>;
     }
@@ -187,7 +195,7 @@ export default function BindingConfig({
               <DisclosureContent>
                 <div className='space-y-4 pb-2'>
                   <Separator />
-                  {renderBindingForm(binding)}
+                  <BindingFormContent binding={binding} />
                 </div>
               </DisclosureContent>
             </Disclosure>

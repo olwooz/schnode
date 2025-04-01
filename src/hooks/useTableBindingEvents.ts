@@ -1,10 +1,15 @@
-import { BINDING_EVENT } from '@/constants/binding-event';
+import { useEffect } from 'react';
+import { useAtomValue } from 'jotai';
+import { v4 as uuidv4 } from 'uuid';
 import {
   ColumnFiltersState,
   SortingState,
   VisibilityState,
 } from '@tanstack/react-table';
-import { useEffect } from 'react';
+
+import { BINDING_EVENT } from '@/constants/binding-event';
+import { useTable } from '@/hooks/useTable';
+import { componentsAtom } from '@/atoms/component';
 
 export function useTableBindingEvents(
   componentId: string | undefined,
@@ -12,6 +17,17 @@ export function useTableBindingEvents(
   setColumnFilters: React.Dispatch<React.SetStateAction<ColumnFiltersState>>,
   setColumnSorts: React.Dispatch<React.SetStateAction<SortingState>>
 ) {
+  const components = useAtomValue(componentsAtom);
+  const tableComponent = components.filter(
+    (component) => component.id === componentId
+  )[0];
+
+  const { handleAddRow, handleUpdateRow, handleDeleteRow } = useTable(
+    tableComponent?.id,
+    tableComponent?.props.data,
+    tableComponent?.props.columns
+  );
+
   useEffect(() => {
     const eventHandlers = {
       [BINDING_EVENT.TOGGLE_COLUMN]: (event: CustomEvent) => {
@@ -78,10 +94,40 @@ export function useTableBindingEvents(
 
         setColumnSorts((prev) => prev.filter((sort) => sort.id !== id));
       },
+
+      [BINDING_EVENT.ADD_TABLE_ROW]: (event: CustomEvent) => {
+        const { targetId, rowData } = event.detail;
+        if (targetId !== componentId) return;
+
+        const newRow = {
+          id: rowData.id ?? uuidv4(),
+          ...rowData,
+        };
+
+        handleAddRow(newRow);
+      },
+
+      [BINDING_EVENT.UPDATE_TABLE_ROW]: (event: CustomEvent) => {
+        const { targetId, rowData } = event.detail;
+        if (targetId !== componentId) return;
+
+        const rowId = rowData.id;
+        if (!rowId) return;
+
+        handleUpdateRow(rowId, rowData);
+      },
+
+      [BINDING_EVENT.DELETE_TABLE_ROW]: (event: CustomEvent) => {
+        const { targetId, rowId } = event.detail;
+        if (targetId !== componentId) return;
+
+        if (!rowId) return;
+
+        handleDeleteRow(rowId);
+      },
     };
 
     Object.entries(eventHandlers).forEach(([event, handler]) => {
-      console.log(event);
       document.addEventListener(event, handler as EventListener);
     });
 
@@ -90,5 +136,13 @@ export function useTableBindingEvents(
         document.removeEventListener(event, handler as EventListener);
       });
     };
-  }, [componentId, setColumnVisibility, setColumnFilters, setColumnSorts]);
+  }, [
+    componentId,
+    setColumnVisibility,
+    setColumnFilters,
+    setColumnSorts,
+    handleAddRow,
+    handleUpdateRow,
+    handleDeleteRow,
+  ]);
 }

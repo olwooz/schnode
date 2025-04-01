@@ -8,6 +8,13 @@ export function createDefaultBindingConfig(type: BindingType): BindingConfig {
       return {
         id: '',
       };
+    case BindingType.ADD_TABLE_ROW:
+    case BindingType.UPDATE_TABLE_ROW:
+    case BindingType.DELETE_TABLE_ROW:
+      return {
+        id: '',
+        fieldMappings: {},
+      };
   }
 }
 
@@ -19,6 +26,10 @@ export function getCompatibleSourceComponents(type: BindingType): string[] {
       return ['input'];
     case BindingType.SORT_TABLE:
       return ['select'];
+    case BindingType.ADD_TABLE_ROW:
+    case BindingType.UPDATE_TABLE_ROW:
+    case BindingType.DELETE_TABLE_ROW:
+      return ['card'];
     default:
       return [];
   }
@@ -29,6 +40,9 @@ export function getCompatibleTargetComponents(type: BindingType): string[] {
     case BindingType.TOGGLE_COLUMN:
     case BindingType.FILTER_TABLE:
     case BindingType.SORT_TABLE:
+    case BindingType.ADD_TABLE_ROW:
+    case BindingType.UPDATE_TABLE_ROW:
+    case BindingType.DELETE_TABLE_ROW:
       return ['table'];
     default:
       return [];
@@ -44,6 +58,10 @@ export function validateBindingConfig(
     case BindingType.FILTER_TABLE:
     case BindingType.SORT_TABLE:
       return Boolean(config.id);
+    case BindingType.ADD_TABLE_ROW:
+    case BindingType.UPDATE_TABLE_ROW:
+    case BindingType.DELETE_TABLE_ROW:
+      return Boolean(config.id) && Boolean(config.fieldMappings);
     default:
       return false;
   }

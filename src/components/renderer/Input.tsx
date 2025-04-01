@@ -18,6 +18,9 @@ export default function InputRenderer({
   const [inputValue, setInputValue] = useState('');
   const [currentBindingId, setCurrentBindingId] = useState<string | null>(null);
 
+  const id = inputProps.id;
+  const value = inputProps.value ?? inputValue;
+
   const tableFilterBinding = componentId
     ? bindings.find(
         (binding) =>
@@ -28,6 +31,12 @@ export default function InputRenderer({
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
+
+    if (inputProps.onChange) {
+      inputProps.onChange(e);
+      return;
+    }
+
     setInputValue(value);
 
     if (!tableFilterBinding) {
@@ -62,9 +71,10 @@ export default function InputRenderer({
 
   return (
     <div className='grid w-full max-w-sm items-center gap-1.5'>
-      <Label>{inputProps.label}</Label>
+      <Label htmlFor={id}>{inputProps.label}</Label>
       <Input
-        value={inputValue}
+        id={id}
+        value={value}
         onChange={handleInputChange}
         placeholder={inputProps.placeholder}
         type={inputProps.type}

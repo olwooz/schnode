@@ -14,16 +14,22 @@ export type ButtonProps = {
 };
 
 export type InputProps = {
+  id: string;
   label: string;
   placeholder: string;
   type: HTMLInputTypeAttribute;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export type SelectProps = {
+  id: string;
   label: string;
   placeholder: string;
   options: string[];
   size?: SelectTriggerSize;
+  value?: string;
+  onChange?: (value: string) => void;
 };
 
 export type CardProps = {
