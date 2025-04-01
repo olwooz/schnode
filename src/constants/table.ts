@@ -1,45 +1,41 @@
 export const sampleRows = [
   {
-    id: '728ed52f',
-    email: 'm@example.com',
-    amount: 100,
-    status: 'pending',
+    id: '1',
+    task: 'drink coffee',
+    completed: true,
   },
   {
-    id: '489e1d42',
-    email: 'example@gmail.com',
-    amount: 125,
-    status: 'processing',
+    id: '2',
+    task: 'buy groceries',
+    completed: false,
   },
   {
-    id: '33c0d4fe',
-    email: 'user@example.org',
-    amount: 200,
-    status: 'success',
+    id: '3',
+    task: 'go to the gym',
+    completed: false,
   },
   {
-    id: '9a47b741',
-    email: 'test@example.com',
-    amount: 75,
-    status: 'failed',
+    id: '4',
+    task: 'fix bug',
+    completed: false,
   },
 ];
 
 export const TABLE_SAMPLE_COLUMNS = JSON.stringify([
   {
-    accessorKey: 'email',
-    header: 'Email',
-    filterFn: 'includesString',
-  },
-  {
-    accessorKey: 'amount',
-    header: 'Amount',
+    accessorKey: 'id',
+    header: 'ID',
     filterFn: 'equalsString',
   },
   {
-    accessorKey: 'status',
-    header: 'Status',
+    accessorKey: 'task',
+    header: 'Task',
     filterFn: 'includesString',
+  },
+  {
+    accessorKey: 'completed',
+    header: 'Completed',
+    filterFn: 'equalsString',
   },
 ]);
 
