@@ -74,9 +74,9 @@ dependencies:
   react-dom:
     specifier: ^19.0.0
     version: 19.0.0(react@19.0.0)
-  react-joyride:
-    specifier: ^2.9.3
-    version: 2.9.3(@types/react@19.0.12)(react-dom@19.0.0)(react@19.0.0)
+  react-joyride-react-19:
+    specifier: ^2.9.2
+    version: 2.9.2(@types/react@19.0.12)(react-dom@19.0.0)(react@19.0.0)
   tailwind-merge:
     specifier: ^3.0.2
     version: 3.0.2
@@ -4123,11 +4123,11 @@ packages:
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
-  /react-joyride@2.9.3(@types/react@19.0.12)(react-dom@19.0.0)(react@19.0.0):
-    resolution: {integrity: sha512-1+Mg34XK5zaqJ63eeBhqdbk7dlGCFp36FXwsEvgpjqrtyywX2C6h9vr3jgxP0bGHCw8Ilsp/nRDzNVq6HJ3rNw==}
+  /react-joyride-react-19@2.9.2(@types/react@19.0.12)(react-dom@19.0.0)(react@19.0.0):
+    resolution: {integrity: sha512-/ruorGnSPr9UUHMbXg47W+N/1Tm7T/mkMlHZ/d9DFYeP86OFJURoHK0Ij2PdtlZL4y6xFV+3n6dm7D+cSzQijw==}
     peerDependencies:
-      react: 15 - 18
-      react-dom: 15 - 18
+      react: 16.3 - 19
+      react-dom: 16.3 - 19
     dependencies:
       '@gilbarbara/deep-equal': 0.3.1
       deep-diff: 1.0.2

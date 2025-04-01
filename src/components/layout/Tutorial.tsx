@@ -1,5 +1,8 @@
 import { useAtom } from 'jotai';
-import Joyride, { CallBackProps, TooltipRenderProps } from 'react-joyride';
+import Joyride, {
+  CallBackProps,
+  TooltipRenderProps,
+} from 'react-joyride-react-19';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
