@@ -6,6 +6,7 @@ import { DEFAULT_PROPS } from '@/constants/component';
 import { CheckboxProps, ComponentRendererProps } from '@/types/component';
 import { bindingsAtom } from '@/atoms/binding';
 import { BindingType } from '@/types/binding';
+import { BINDING_EVENT } from '@/constants/binding-event';
 
 export default function CheckboxRenderer({
   props,
@@ -36,7 +37,7 @@ export default function CheckboxRenderer({
       return;
     }
 
-    const event = new CustomEvent('toggleColumn', {
+    const event = new CustomEvent(BINDING_EVENT.TOGGLE_COLUMN, {
       detail: {
         id: columnToggleBinding.config.id,
         isVisible: checked,

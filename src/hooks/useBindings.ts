@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { bindingsAtom, selectedBindingAtom } from '@/atoms/binding';
 import { ComponentBinding, BindingType, BindingConfig } from '@/types/binding';
+import { BINDING_EVENT } from '@/constants/binding-event';
 
 export function useBindings() {
   const [bindings, setBindings] = useAtom(bindingsAtom);
@@ -10,7 +11,7 @@ export function useBindings() {
 
   function dispatchResetColumnVisibilityEvent(binding: ComponentBinding) {
     if (binding.type === BindingType.TOGGLE_COLUMN) {
-      const resetEvent = new CustomEvent('resetColumnVisibility', {
+      const resetEvent = new CustomEvent(BINDING_EVENT.RESET_TABLE_VISIBILITY, {
         detail: {
           id: binding.config.id,
           targetId: binding.targetId,
@@ -23,7 +24,7 @@ export function useBindings() {
 
   function dispatchResetTableFilterEvent(binding: ComponentBinding) {
     if (binding.type === BindingType.FILTER_TABLE) {
-      const resetEvent = new CustomEvent('resetTableFilter', {
+      const resetEvent = new CustomEvent(BINDING_EVENT.RESET_TABLE_FILTER, {
         detail: {
           id: binding.config.id,
           targetId: binding.targetId,
@@ -36,7 +37,7 @@ export function useBindings() {
 
   function dispatchResetTableSortEvent(binding: ComponentBinding) {
     if (binding.type === BindingType.SORT_TABLE) {
-      const resetEvent = new CustomEvent('resetTableSort', {
+      const resetEvent = new CustomEvent(BINDING_EVENT.RESET_TABLE_SORT, {
         detail: {
           id: binding.config.id,
           targetId: binding.targetId,

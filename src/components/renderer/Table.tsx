@@ -32,6 +32,7 @@ import { TableRowData } from '@/types/table';
 import { isPreviewModeAtom } from '@/atoms/mode';
 import { cn } from '@/lib/utils';
 import { getBooleanValue } from '@/utils/string';
+import { useTableBindingEvents } from '@/hooks/useTableBindingEvents';
 
 export default function TableRenderer({
   props,
@@ -91,6 +92,13 @@ export default function TableRenderer({
     setIsDialogOpen(true);
   }
 
+  useTableBindingEvents(
+    componentId,
+    setColumnVisibility,
+    setColumnFilters,
+    setColumnSorts
+  );
+
   useEffect(() => {
     if (!tableProps.pageSize) {
       return;
@@ -98,156 +106,6 @@ export default function TableRenderer({
 
     setPageSize(parseInt(tableProps.pageSize));
   }, [tableProps.pageSize, setPageSize]);
-
-  useEffect(() => {
-    const handleColumnToggle = (event: CustomEvent) => {
-      const { id, isVisible, targetId } = event.detail;
-
-      if (targetId !== componentId) {
-        return;
-      }
-
-      setColumnVisibility((prev) => ({
-        ...prev,
-        [id]: isVisible,
-      }));
-    };
-
-    const handleColumnReset = (event: CustomEvent) => {
-      const { id, targetId } = event.detail;
-
-      if (targetId !== componentId) {
-        return;
-      }
-
-      setColumnVisibility((prev) => {
-        const updated = { ...prev };
-        delete updated[id];
-        return updated;
-      });
-    };
-
-    const handleTableFilter = (event: CustomEvent) => {
-      const { id, filterValue, targetId } = event.detail;
-
-      if (targetId !== componentId) {
-        return;
-      }
-
-      setColumnFilters((prev) => {
-        const filtered = prev.filter((filter) => filter.id !== id);
-
-        if (filterValue) {
-          return [
-            ...filtered,
-            {
-              id,
-              value: filterValue,
-            },
-          ];
-        }
-
-        return filtered;
-      });
-    };
-
-    const handleTableFilterReset = (event: CustomEvent) => {
-      const { id, targetId } = event.detail;
-
-      if (targetId !== componentId) {
-        return;
-      }
-
-      setColumnFilters((prev) => prev.filter((filter) => filter.id !== id));
-    };
-
-    const handleTableSort = (event: CustomEvent) => {
-      const { id, desc, sort, targetId } = event.detail;
-
-      if (targetId !== componentId) {
-        return;
-      }
-
-      setColumnSorts((prev) => {
-        const filtered = prev.filter((sort) => sort.id !== id);
-
-        if (sort) {
-          return [
-            ...filtered,
-            {
-              id,
-              desc,
-            },
-          ];
-        }
-
-        return filtered;
-      });
-    };
-
-    const handleTableSortReset = (event: CustomEvent) => {
-      const { id, targetId } = event.detail;
-
-      if (targetId !== componentId) {
-        return;
-      }
-
-      setColumnSorts((prev) => prev.filter((sort) => sort.id !== id));
-    };
-
-    document.addEventListener(
-      'toggleColumn',
-      handleColumnToggle as EventListener
-    );
-
-    document.addEventListener(
-      'resetColumnVisibility',
-      handleColumnReset as EventListener
-    );
-
-    document.addEventListener(
-      'filterTable',
-      handleTableFilter as EventListener
-    );
-
-    document.addEventListener(
-      'resetTableFilter',
-      handleTableFilterReset as EventListener
-    );
-
-    document.addEventListener('sortTable', handleTableSort as EventListener);
-
-    document.addEventListener(
-      'resetTableSort',
-      handleTableSortReset as EventListener
-    );
-    return () => {
-      document.removeEventListener(
-        'toggleColumn',
-        handleColumnToggle as EventListener
-      );
-      document.removeEventListener(
-        'resetColumnVisibility',
-        handleColumnReset as EventListener
-      );
-      document.removeEventListener(
-        'filterTable',
-        handleTableFilter as EventListener
-      );
-      document.removeEventListener(
-        'resetTableFilter',
-        handleTableFilterReset as EventListener
-      );
-      document.removeEventListener(
-        'sortTable',
-        handleTableSort as EventListener
-      );
-      document.removeEventListener(
-        'resetTableSort',
-        handleTableSortReset as EventListener
-      );
-    };
-  }, [componentId]);
 
   return (
     <div className='w-[640px] space-y-4'>
