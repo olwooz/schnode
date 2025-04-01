@@ -15,7 +15,11 @@ interface PanelToggleProps {
   panelName: string;
 }
 
-export function PanelToggle({ isOpen, onClick, panelName }: PanelToggleProps) {
+export default function PanelToggle({
+  isOpen,
+  onClick,
+  panelName,
+}: PanelToggleProps) {
   return (
     <TooltipProvider>
       <Tooltip>

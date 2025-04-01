@@ -22,7 +22,7 @@ export default function Canvas() {
   }
 
   return (
-    <div className='flex h-full flex-col' data-testid='canvas'>
+    <div id='canvas' className='flex h-full flex-col' data-testid='canvas'>
       <div className='flex items-center justify-between p-2 md:p-4 mb-2 md:mb-4 flex-wrap gap-2'>
         <h2
           className='text-base md:text-lg font-semibold'

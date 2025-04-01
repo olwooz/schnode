@@ -32,7 +32,11 @@ function ConfigPanel() {
   }
 
   return (
-    <div className='flex h-full flex-col' data-testid='config-panel'>
+    <div
+      id='config-panel'
+      className='flex h-full flex-col'
+      data-testid='config-panel'
+    >
       <div className='p-3 md:p-4 flex items-center justify-between'>
         <div>
           <h2 className='text-base md:text-lg font-semibold'>Configuration</h2>

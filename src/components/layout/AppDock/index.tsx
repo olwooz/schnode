@@ -13,7 +13,7 @@ import { Import } from './Import';
 import { PreviewToggle } from './PreviewToggle';
 import { ThemeToggle } from './ThemeToggle';
 
-export function AppDock() {
+export default function AppDock() {
   const isPreviewMode = useAtomValue(isPreviewModeAtom);
 
   const dockItems = [
@@ -36,7 +36,10 @@ export function AppDock() {
   ];
 
   return (
-    <div className='absolute bottom-2 left-1/2 max-w-full -translate-x-1/2'>
+    <div
+      id='app-dock'
+      className='absolute bottom-2 left-1/2 max-w-full -translate-x-1/2'
+    >
       <Dock className='items-end pb-3'>
         {dockItems.map((item) => (
           <DockItem

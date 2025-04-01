@@ -19,6 +19,7 @@ function ComponentLibrary({ closePanel }: ComponentLibraryProps) {
 
   return (
     <div
+      id='component-library'
       className='flex h-full flex-col relative'
       data-testid='component-library'
     >
