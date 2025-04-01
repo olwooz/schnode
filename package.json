@@ -36,6 +36,7 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.0.0",
+    "react-joyride": "^2.9.3",
     "tailwind-merge": "^3.0.2",
     "tw-animate-css": "^1.2.4",
     "uuid": "^11.1.0"
