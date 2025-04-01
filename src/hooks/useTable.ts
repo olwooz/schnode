@@ -65,14 +65,14 @@ export function useTable(id: string, dataRaw: string, columnsRaw: string) {
     updateRows(rows.filter((row) => row.id !== id));
   }
 
-  function handleUpdateRow(rowId: string, propName: string, propValue: string) {
+  function handleUpdateRow(rowId: string, rowData: Record<string, string>) {
     updateRows(
       rows.map((row) => {
         if (row.id !== rowId) return row;
 
         return {
           ...row,
-          [propName]: propValue,
+          ...rowData,
         };
       })
     );

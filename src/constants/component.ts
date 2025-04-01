@@ -72,11 +72,13 @@ export const DEFAULT_PROPS: ComponentProps = {
     size: BUTTON_SIZE.DEFAULT,
   },
   input: {
+    id: '',
     label: 'Input',
     placeholder: 'Type here...',
     type: INPUT_TYPES.TEXT,
   },
   select: {
+    id: '',
     label: 'Select',
     placeholder: 'Select an option',
     options: SELECT_DEFAULT_OPTIONS,

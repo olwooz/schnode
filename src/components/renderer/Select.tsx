@@ -25,6 +25,9 @@ export default function SelectRenderer({
   const [selectedValue, setSelectedValue] = useState('');
   const [currentBindingId, setCurrentBindingId] = useState<string | null>(null);
 
+  const id = selectProps.id;
+  const value = selectProps.value ?? selectedValue;
+
   const options =
     typeof selectProps.options === 'string'
       ? JSON.parse(selectProps.options)
@@ -39,6 +42,11 @@ export default function SelectRenderer({
     : null;
 
   function handleSelectChange(value: string) {
+    if (selectProps.onChange) {
+      selectProps.onChange(value);
+      return;
+    }
+
     setSelectedValue(value);
 
     if (!tableSortBinding) {
@@ -74,10 +82,10 @@ export default function SelectRenderer({
 
   return (
     <div className='grid w-full max-w-sm items-center gap-1.5'>
-      <Label>{selectProps.label}</Label>
-      <Select value={selectedValue} onValueChange={handleSelectChange}>
-        <SelectTrigger size={selectProps.size}>
-          <SelectValue placeholder={selectProps.placeholder} />
+      <Label htmlFor={id}>{selectProps.label}</Label>
+      <Select value={value} onValueChange={handleSelectChange}>
+        <SelectTrigger id={`${id}-trigger`} size={selectProps.size}>
+          <SelectValue id={id} placeholder={selectProps.placeholder} />
         </SelectTrigger>
         <SelectContent>
           {options.map((option: string) => (

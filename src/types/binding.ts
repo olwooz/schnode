@@ -2,10 +2,12 @@ export enum BindingType {
   TOGGLE_COLUMN = 'toggleColumn',
   FILTER_TABLE = 'filterTable',
   SORT_TABLE = 'sortTable',
+  TABLE_ACTION = 'tableAction',
 }
 
 export type BindingConfig = {
   id: string;
+  fieldMappings?: Record<string, string>; // Maps card input/select IDs to table column names
 };
 
 export type ComponentBinding = {

@@ -58,24 +58,24 @@ export function useLoadTableData(columns: Column[]) {
 
       const rowsWithIds = data.map((row) => ({
         id: row.id || uuidv4(),
-        ...row,
+        ...Object.fromEntries(
+          Object.entries(row).map(([key, value]) => [key, String(value)])
+        ),
       }));
 
       setLoadedData(rowsWithIds);
 
       const firstRow = rowsWithIds[0];
-      const detectedColumns = Object.keys(firstRow)
-        .filter((key) => key !== 'id')
-        .map((key) => ({
-          accessorKey: key,
-          header:
-            key.charAt(0).toUpperCase() +
-            key
-              .slice(1)
-              .replace(/([A-Z])/g, ' $1')
-              .trim(),
-          filterFn: '',
-        }));
+      const detectedColumns = Object.keys(firstRow).map((key) => ({
+        accessorKey: key,
+        header:
+          key.charAt(0).toUpperCase() +
+          key
+            .slice(1)
+            .replace(/([A-Z])/g, ' $1')
+            .trim(),
+        filterFn: '',
+      }));
 
       if (columns.length > 0) {
         setPendingColumns(detectedColumns);

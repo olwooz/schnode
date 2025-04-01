@@ -96,7 +96,7 @@ test.describe('Component Binding Tests', () => {
 
                   const columnOption = page
                     .getByRole('option')
-                    .filter({ hasText: 'Email' })
+                    .filter({ hasText: 'Task' })
                     .first();
                   if (await columnOption.isVisible()) {
                     await columnOption.click();
@@ -224,7 +224,7 @@ test.describe('Component Binding Tests', () => {
 
                   const columnOption = page
                     .getByRole('option')
-                    .filter({ hasText: 'Email' })
+                    .filter({ hasText: 'Task' })
                     .first();
                   if (await columnOption.isVisible()) {
                     await columnOption.click();
@@ -354,7 +354,7 @@ test.describe('Component Binding Tests', () => {
 
                   const columnOption = page
                     .getByRole('option')
-                    .filter({ hasText: 'Email' })
+                    .filter({ hasText: 'Task' })
                     .first();
                   if (await columnOption.isVisible()) {
                     await columnOption.click();

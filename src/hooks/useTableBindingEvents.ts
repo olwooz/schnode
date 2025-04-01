@@ -1,10 +1,14 @@
-import { BINDING_EVENT } from '@/constants/binding-event';
+import { useEffect } from 'react';
+import { useAtomValue } from 'jotai';
 import {
   ColumnFiltersState,
   SortingState,
   VisibilityState,
 } from '@tanstack/react-table';
-import { useEffect } from 'react';
+
+import { BINDING_EVENT, TABLE_ACTION } from '@/constants/binding-event';
+import { useTable } from '@/hooks/useTable';
+import { componentsAtom } from '@/atoms/component';
 
 export function useTableBindingEvents(
   componentId: string | undefined,
@@ -12,6 +16,17 @@ export function useTableBindingEvents(
   setColumnFilters: React.Dispatch<React.SetStateAction<ColumnFiltersState>>,
   setColumnSorts: React.Dispatch<React.SetStateAction<SortingState>>
 ) {
+  const components = useAtomValue(componentsAtom);
+  const tableComponent = components.filter(
+    (component) => component.id === componentId
+  )[0];
+
+  const { handleAddRow, handleUpdateRow, handleDeleteRow } = useTable(
+    tableComponent?.id,
+    tableComponent?.props.data,
+    tableComponent?.props.columns
+  );
+
   useEffect(() => {
     const eventHandlers = {
       [BINDING_EVENT.TOGGLE_COLUMN]: (event: CustomEvent) => {
@@ -78,10 +93,26 @@ export function useTableBindingEvents(
 
         setColumnSorts((prev) => prev.filter((sort) => sort.id !== id));
       },
+
+      [BINDING_EVENT.TABLE_ACTION]: (event: CustomEvent) => {
+        const { targetId, action, rowId, rowData } = event.detail;
+        if (targetId !== componentId) return;
+
+        switch (action) {
+          case TABLE_ACTION.ADD:
+            handleAddRow(rowData);
+            break;
+          case TABLE_ACTION.UPDATE:
+            handleUpdateRow(rowId, rowData);
+            break;
+          case TABLE_ACTION.DELETE:
+            handleDeleteRow(rowId);
+            break;
+        }
+      },
     };
 
     Object.entries(eventHandlers).forEach(([event, handler]) => {
-      console.log(event);
       document.addEventListener(event, handler as EventListener);
     });
 
@@ -90,5 +121,13 @@ export function useTableBindingEvents(
         document.removeEventListener(event, handler as EventListener);
       });
     };
-  }, [componentId, setColumnVisibility, setColumnFilters, setColumnSorts]);
+  }, [
+    componentId,
+    setColumnVisibility,
+    setColumnFilters,
+    setColumnSorts,
+    handleAddRow,
+    handleUpdateRow,
+    handleDeleteRow,
+  ]);
 }
