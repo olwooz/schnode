@@ -29,20 +29,7 @@ export default function CheckboxRenderer({
       )
     : null;
 
-  useEffect(() => {
-    if (!columnToggleBinding) {
-      setIsChecked(true);
-      setCurrentBindingId(null);
-      return;
-    }
-
-    if (currentBindingId !== columnToggleBinding.id) {
-      setIsChecked(true);
-      setCurrentBindingId(columnToggleBinding.id);
-    }
-  }, [columnToggleBinding, currentBindingId]);
-
-  const handleCheckedChange = (checked: boolean) => {
+  function handleCheckedChange(checked: boolean) {
     setIsChecked(checked);
 
     if (!columnToggleBinding) {
@@ -58,7 +45,20 @@ export default function CheckboxRenderer({
       bubbles: true,
     });
     document.dispatchEvent(event);
-  };
+  }
+
+  useEffect(() => {
+    if (!columnToggleBinding) {
+      setIsChecked(true);
+      setCurrentBindingId(null);
+      return;
+    }
+
+    if (currentBindingId !== columnToggleBinding.id) {
+      setIsChecked(true);
+      setCurrentBindingId(columnToggleBinding.id);
+    }
+  }, [columnToggleBinding, currentBindingId]);
 
   return (
     <div className='flex items-center space-x-2'>

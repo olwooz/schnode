@@ -36,17 +36,20 @@ function DisclosureProvider({
 }: DisclosureProviderProps) {
   const [internalOpenValue, setInternalOpenValue] = useState<boolean>(openProp);
 
+  function toggle() {
+    const newOpen = !internalOpenValue;
+    setInternalOpenValue(newOpen);
+
+    if (!onOpenChange) {
+      return;
+    }
+
+    onOpenChange(newOpen);
+  }
+
   useEffect(() => {
     setInternalOpenValue(openProp);
   }, [openProp]);
-
-  const toggle = () => {
-    const newOpen = !internalOpenValue;
-    setInternalOpenValue(newOpen);
-    if (onOpenChange) {
-      onOpenChange(newOpen);
-    }
-  };
 
   return (
     <DisclosureContext.Provider

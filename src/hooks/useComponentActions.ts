@@ -10,7 +10,7 @@ export type UpdateComponentProps = {
   value: string;
 };
 
-export const useComponentActions = () => {
+export function useComponentActions() {
   const isPreviewMode = useAtomValue(isPreviewModeAtom);
   const [components, setComponents] = useAtom(componentsAtom);
   const setSelectedComponent = useSetAtom(selectedComponentAtom);
@@ -87,4 +87,4 @@ export const useComponentActions = () => {
     getComponentById,
     getComponentsByType,
   };
-};
+}

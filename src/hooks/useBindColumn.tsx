@@ -21,14 +21,6 @@ export function useBindColumn(binding: ComponentBinding) {
     ? JSON.parse(tableComponent.props.columns)
     : [];
 
-  useEffect(() => {
-    if (!binding.config) {
-      return;
-    }
-
-    setConfig(binding.config);
-  }, [binding.config]);
-
   function handleColumnChange(columnId: string) {
     const selectedColumn = tableColumns.find((col) => col.header === columnId);
     const accessorKey = selectedColumn?.accessorKey || '';
@@ -37,6 +29,14 @@ export function useBindColumn(binding: ComponentBinding) {
     setConfig(newConfig);
     updateBinding(binding.id, { config: newConfig });
   }
+
+  useEffect(() => {
+    if (!binding.config) {
+      return;
+    }
+
+    setConfig(binding.config);
+  }, [binding.config]);
 
   const ColumnSelect = () => {
     return (

@@ -14,15 +14,6 @@ export function useTogglePreviewMode() {
 
   const effectiveMobile = isMobileContext || isMobile;
 
-  useEffect(() => {
-    if (!effectiveMobile || isPreviewMode) {
-      return;
-    }
-
-    setSelectedComponent(null);
-    setIsPreviewMode(true);
-  }, [effectiveMobile, isPreviewMode, setIsPreviewMode, setSelectedComponent]);
-
   function togglePreviewMode() {
     if (effectiveMobile && isPreviewMode) {
       return;
@@ -34,6 +25,15 @@ export function useTogglePreviewMode() {
 
     setIsPreviewMode(!isPreviewMode);
   }
+
+  useEffect(() => {
+    if (!effectiveMobile || isPreviewMode) {
+      return;
+    }
+
+    setSelectedComponent(null);
+    setIsPreviewMode(true);
+  }, [effectiveMobile, isPreviewMode, setIsPreviewMode, setSelectedComponent]);
 
   return {
     isPreviewMode,
