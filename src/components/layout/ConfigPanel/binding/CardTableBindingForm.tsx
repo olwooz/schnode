@@ -12,16 +12,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { BindingType, ComponentBinding } from '@/types/binding';
+import { ComponentBinding } from '@/types/binding';
 import { componentsAtom } from '@/atoms/component';
 import { useBindings } from '@/hooks/useBindings';
 import { ContentItem } from '@/types/card';
-
-const ACTION_TYPE_LABELS: Partial<Record<BindingType, string>> = {
-  [BindingType.ADD_TABLE_ROW]: 'Add Row',
-  [BindingType.UPDATE_TABLE_ROW]: 'Update Row',
-  [BindingType.DELETE_TABLE_ROW]: 'Delete Row',
-};
 
 interface CardTableBindingFormProps {
   binding: ComponentBinding;
@@ -41,8 +35,6 @@ export default function CardTableBindingForm({
 
   const cardComponent = components.find((c) => c.id === binding.sourceId);
   const tableComponent = components.find((c) => c.id === binding.targetId);
-
-  const actionTypeLabel = ACTION_TYPE_LABELS[binding.type];
 
   function handleSaveMapping(inputId: string, columnName: string) {
     const newMappings = {
@@ -88,7 +80,7 @@ export default function CardTableBindingForm({
 
   return (
     <div className='space-y-4'>
-      <div className='font-medium'>{actionTypeLabel} Configuration</div>
+      <div className='font-medium'>Table Action Configuration</div>
 
       <div className='space-y-2'>
         <Label>Field Mappings</Label>
@@ -128,12 +120,10 @@ export default function CardTableBindingForm({
           </div>
         ))}
 
-        {binding.type === BindingType.DELETE_TABLE_ROW && !mappings['id'] && (
-          <div className='text-sm text-amber-500 mt-2'>
-            Warning: For delete operations, you need to map an input to the{' '}
-            <code className='font-bold'>id</code> column.
-          </div>
-        )}
+        <div className='text-sm text-amber-500 mt-2'>
+          Note: For update and delete operations, make sure to map an input to
+          the <code className='font-bold'>id</code> column.
+        </div>
       </div>
     </div>
   );

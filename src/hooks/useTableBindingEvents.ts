@@ -1,13 +1,12 @@
 import { useEffect } from 'react';
 import { useAtomValue } from 'jotai';
-import { v4 as uuidv4 } from 'uuid';
 import {
   ColumnFiltersState,
   SortingState,
   VisibilityState,
 } from '@tanstack/react-table';
 
-import { BINDING_EVENT } from '@/constants/binding-event';
+import { BINDING_EVENT, TABLE_ACTION } from '@/constants/binding-event';
 import { useTable } from '@/hooks/useTable';
 import { componentsAtom } from '@/atoms/component';
 
@@ -95,35 +94,21 @@ export function useTableBindingEvents(
         setColumnSorts((prev) => prev.filter((sort) => sort.id !== id));
       },
 
-      [BINDING_EVENT.ADD_TABLE_ROW]: (event: CustomEvent) => {
-        const { targetId, rowData } = event.detail;
+      [BINDING_EVENT.TABLE_ACTION]: (event: CustomEvent) => {
+        const { targetId, action, rowId, rowData } = event.detail;
         if (targetId !== componentId) return;
 
-        const newRow = {
-          id: rowData.id ?? uuidv4(),
-          ...rowData,
-        };
-
-        handleAddRow(newRow);
-      },
-
-      [BINDING_EVENT.UPDATE_TABLE_ROW]: (event: CustomEvent) => {
-        const { targetId, rowData } = event.detail;
-        if (targetId !== componentId) return;
-
-        const rowId = rowData.id;
-        if (!rowId) return;
-
-        handleUpdateRow(rowId, rowData);
-      },
-
-      [BINDING_EVENT.DELETE_TABLE_ROW]: (event: CustomEvent) => {
-        const { targetId, rowId } = event.detail;
-        if (targetId !== componentId) return;
-
-        if (!rowId) return;
-
-        handleDeleteRow(rowId);
+        switch (action) {
+          case TABLE_ACTION.ADD:
+            handleAddRow(rowData);
+            break;
+          case TABLE_ACTION.UPDATE:
+            handleUpdateRow(rowId, rowData);
+            break;
+          case TABLE_ACTION.DELETE:
+            handleDeleteRow(rowId);
+            break;
+        }
       },
     };
 

@@ -5,7 +5,11 @@ export const BINDING_EVENT = {
   RESET_TABLE_SORT: 'resetTableSort',
   RESET_TABLE_FILTER: 'resetTableFilter',
   RESET_TABLE_VISIBILITY: 'resetTableVisibility',
-  ADD_TABLE_ROW: 'addTableRow',
-  UPDATE_TABLE_ROW: 'updateTableRow',
-  DELETE_TABLE_ROW: 'deleteTableRow',
+  TABLE_ACTION: 'tableAction',
+};
+
+export const TABLE_ACTION = {
+  ADD: 'add',
+  UPDATE: 'update',
+  DELETE: 'delete',
 };

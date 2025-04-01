@@ -10,7 +10,7 @@ import {
   ContentItem,
 } from '@/types/component';
 import { ActionButton } from '@/types/card';
-import { BINDING_EVENT } from '@/constants/binding-event';
+import { BINDING_EVENT, TABLE_ACTION } from '@/constants/binding-event';
 import { bindingsAtom } from '@/atoms/binding';
 import { BindingType } from '@/types/binding';
 
@@ -18,19 +18,12 @@ import ButtonRenderer from './Button';
 import InputRenderer from './Input';
 import SelectRenderer from './Select';
 
-const BINDING_EVENT_MAP: Partial<Record<BindingType, string>> = {
-  [BindingType.ADD_TABLE_ROW]: BINDING_EVENT.ADD_TABLE_ROW,
-  [BindingType.UPDATE_TABLE_ROW]: BINDING_EVENT.UPDATE_TABLE_ROW,
-  [BindingType.DELETE_TABLE_ROW]: BINDING_EVENT.DELETE_TABLE_ROW,
-};
-
 export default function CardRenderer({
   props,
   componentId,
 }: ComponentRendererProps) {
   const cardProps = { ...DEFAULT_PROPS.card, ...props } as CardProps;
   const bindings = useAtomValue(bindingsAtom);
-
   const [formValues, setFormValues] = useState<Record<string, string>>({});
 
   const contentItems = useMemo(() => {
@@ -43,7 +36,11 @@ export default function CardRenderer({
     : [];
 
   const cardBinding = componentId
-    ? bindings.find((binding) => binding.sourceId === componentId)
+    ? bindings.find(
+        (binding) =>
+          binding.sourceId === componentId &&
+          binding.type === BindingType.TABLE_ACTION
+      )
     : null;
 
   function handleInputChange(itemId: string, value: string) {
@@ -65,44 +62,49 @@ export default function CardRenderer({
     return mappedData;
   }
 
-  function handleButtonClick() {
-    if (!componentId || !cardBinding) return;
+  function handleButtonClick(button: ActionButton) {
+    const action = button.action;
+
+    if (!componentId || !cardBinding || !action) return;
 
     const mappedData = mapFormValuesToColumns(cardBinding.config.fieldMappings);
-    const { type, targetId } = cardBinding;
+    const { targetId } = cardBinding;
 
-    let rowData;
-    let rowId;
+    const detail: Record<string, unknown> = {
+      targetId,
+      action,
+      rowId: null,
+      rowData: {},
+    };
 
-    switch (type) {
-      case BindingType.ADD_TABLE_ROW:
+    switch (action) {
+      case TABLE_ACTION.ADD:
         if (!mappedData.id) {
           mappedData.id = uuidv4();
         }
-        rowData = mappedData;
+        detail.rowData = mappedData;
         break;
-      case BindingType.UPDATE_TABLE_ROW:
+      case TABLE_ACTION.UPDATE:
         if (!mappedData.id) {
           console.error('Cannot update without an ID field');
           return;
         }
-        rowData = mappedData;
+        detail.rowId = mappedData.id;
+        detail.rowData = mappedData;
         break;
-      case BindingType.DELETE_TABLE_ROW:
+      case TABLE_ACTION.DELETE:
         if (!mappedData.id) {
           console.error('Cannot delete without an ID field');
           return;
         }
-        rowId = mappedData.id;
+        detail.rowId = mappedData.id;
         break;
+      default:
+        return;
     }
 
-    const event = new CustomEvent(BINDING_EVENT_MAP[type]!, {
-      detail: {
-        targetId,
-        ...(rowData && { rowData }),
-        ...(rowId && { rowId }),
-      },
+    const event = new CustomEvent(BINDING_EVENT.TABLE_ACTION, {
+      detail,
       bubbles: true,
     });
     document.dispatchEvent(event);
@@ -155,7 +157,7 @@ export default function CardRenderer({
           {actionButtons.length > 0 && (
             <div className='flex flex-wrap gap-2 mt-4'>
               {actionButtons.map((button: ActionButton) => (
-                <div key={button.id} onClick={handleButtonClick}>
+                <div key={button.id} onClick={() => handleButtonClick(button)}>
                   <ButtonRenderer props={button} />
                 </div>
               ))}

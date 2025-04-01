@@ -42,9 +42,7 @@ const BINDING_TYPE_LABELS: Record<BindingType, string> = {
   [BindingType.TOGGLE_COLUMN]: 'Toggle Column Visibility',
   [BindingType.FILTER_TABLE]: 'Filter Table Data',
   [BindingType.SORT_TABLE]: 'Sort Table Data',
-  [BindingType.ADD_TABLE_ROW]: 'Add Table Row',
-  [BindingType.UPDATE_TABLE_ROW]: 'Update Table Row',
-  [BindingType.DELETE_TABLE_ROW]: 'Delete Table Row',
+  [BindingType.TABLE_ACTION]: 'Table Actions (Add/Update/Delete)',
 };
 
 interface BindingConfigProps {
@@ -150,9 +148,7 @@ export default function BindingConfig({
         return <FilterTableForm binding={binding} />;
       case BindingType.SORT_TABLE:
         return <SortTableForm binding={binding} />;
-      case BindingType.ADD_TABLE_ROW:
-      case BindingType.UPDATE_TABLE_ROW:
-      case BindingType.DELETE_TABLE_ROW:
+      case BindingType.TABLE_ACTION:
         return <CardTableBindingForm binding={binding} />;
       default:
         return <div>Unknown binding type</div>;

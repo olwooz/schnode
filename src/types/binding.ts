@@ -2,9 +2,7 @@ export enum BindingType {
   TOGGLE_COLUMN = 'toggleColumn',
   FILTER_TABLE = 'filterTable',
   SORT_TABLE = 'sortTable',
-  ADD_TABLE_ROW = 'addTableRow',
-  UPDATE_TABLE_ROW = 'updateTableRow',
-  DELETE_TABLE_ROW = 'deleteTableRow',
+  TABLE_ACTION = 'tableAction',
 }
 
 export type BindingConfig = {
