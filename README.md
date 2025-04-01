@@ -11,6 +11,7 @@ Schnode is a modern no-code application builder that allows users to visually co
 
 - **Drag-and-Drop Interface**: Create layouts by dragging components from a library onto a canvas
 - **Component Library**: Access pre-built UI components based on shadcn/ui
+- **API Data Integration**: Load data from APIs and display them in interactive tables
 - **Real-time Configuration**: Edit component properties through an intuitive configuration panel
 - **Preview Mode**: Toggle between edit and preview modes to test functionality
 - **Responsive Design**: Layouts automatically adapt to different screen sizes
