@@ -11,6 +11,7 @@ export class AppPage {
   async goto() {
     await this.page.goto('/');
     await this.waitForAppLoad();
+    await this.page.waitForTimeout(1000);
     await this.page.keyboard.press('Escape');
     return this;
   }
