@@ -21,21 +21,27 @@ export const sampleRows = [
   },
 ];
 
+export const TABLE_FILTER_FUNCTION = {
+  EQUALS: 'equalsString',
+  INCLUDES: 'includesString',
+  INCLUDES_CASE_SENSITIVE: 'includesStringSensitive',
+};
+
 export const TABLE_SAMPLE_COLUMNS = JSON.stringify([
   {
     accessorKey: 'id',
     header: 'ID',
-    filterFn: 'equalsString',
+    filterFn: TABLE_FILTER_FUNCTION.EQUALS,
   },
   {
     accessorKey: 'task',
     header: 'Task',
-    filterFn: 'includesString',
+    filterFn: TABLE_FILTER_FUNCTION.INCLUDES,
   },
   {
     accessorKey: 'completed',
     header: 'Completed',
-    filterFn: 'equalsString',
+    filterFn: TABLE_FILTER_FUNCTION.EQUALS,
   },
 ]);
 
