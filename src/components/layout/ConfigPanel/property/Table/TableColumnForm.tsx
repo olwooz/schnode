@@ -11,6 +11,7 @@ import { Select } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Column } from '@/types/table';
+import { TABLE_FILTER_FUNCTION } from '@/constants/table';
 
 import { TableColumnList } from './TableColumnList';
 
@@ -119,16 +120,20 @@ export function TableColumnForm({
           >
             <SelectTrigger id='filterFn' className='w-full'>
               <SelectValue
-                defaultValue='includesString'
+                defaultValue={TABLE_FILTER_FUNCTION.INCLUDES}
                 placeholder='Select filter function'
               />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='includesString'>Includes</SelectItem>
-              <SelectItem value='includesStringSensitive'>
+              <SelectItem value={TABLE_FILTER_FUNCTION.INCLUDES}>
+                Includes
+              </SelectItem>
+              <SelectItem value={TABLE_FILTER_FUNCTION.INCLUDES_CASE_SENSITIVE}>
                 Includes Case Sensitive
               </SelectItem>
-              <SelectItem value='equalsString'>Equals</SelectItem>
+              <SelectItem value={TABLE_FILTER_FUNCTION.EQUALS}>
+                Equals
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
