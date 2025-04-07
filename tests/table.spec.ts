@@ -155,7 +155,6 @@ test.describe('Table Tests', () => {
                     .locator('#columnHeader')
                     .first();
                   if (await columnHeaderInput.isVisible()) {
-                    await columnHeaderInput.clear();
                     await columnHeaderInput.fill('Edited Column');
                     console.log('Updated column name');
                   }
@@ -402,7 +401,6 @@ test.describe('Table Tests', () => {
           for (let i = 0; i < editInputCount; i++) {
             const editInput = editInputs.nth(i);
             if (await editInput.isVisible()) {
-              await editInput.clear();
               await editInput.fill(`Updated Value ${i + 1}`);
               console.log(`Updated input ${i + 1}`);
             }
