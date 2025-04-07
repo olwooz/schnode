@@ -249,7 +249,6 @@ test.describe('Component Configuration Tests', () => {
 
     const titleField = configPanel.locator('#title');
     await expect(titleField).toBeVisible({ timeout: 10000 });
-    await titleField.clear();
     await titleField.fill('Test Table Title');
     await page.waitForTimeout(500);
 

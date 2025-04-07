@@ -1,18 +1,24 @@
 'use client';
 
-import { useAtomValue } from 'jotai';
+import { useEffect } from 'react';
+import { useAtom, useAtomValue } from 'jotai';
 
 import ComponentRenderer from '@/components/renderer/ComponentRenderer';
 import { DraggableComponent } from '@/components/draggable/DraggableComponent';
 import { MobileNotice } from '@/components/layout/Canvas/MobileNotice';
 import { GRID_SIZE } from '@/constants/canvas';
 import { useDropPreview } from '@/hooks/useDropPreview';
-import { componentsAtom } from '@/atoms/component';
+import { useComponentActions } from '@/hooks/useComponentActions';
+import { componentsAtom, selectedComponentAtom } from '@/atoms/component';
 import { isPreviewModeAtom } from '@/atoms/mode';
 
 export default function Canvas() {
   const isPreviewMode = useAtomValue(isPreviewModeAtom);
   const components = useAtomValue(componentsAtom);
+  const [selectedComponent, setSelectedComponent] = useAtom(
+    selectedComponentAtom
+  );
+  const { handleDeleteComponent } = useComponentActions();
   const { dropRef, previewRef, dropPreview, isOver } =
     useDropPreview(isPreviewMode);
 
@@ -20,6 +26,40 @@ export default function Canvas() {
     const component = components.find((comp) => comp.id === componentId);
     return component?.props || {};
   }
+
+  useEffect(() => {
+    function handleDeselectComponent() {
+      setSelectedComponent(null);
+    }
+
+    const canvasDropArea = dropRef.current;
+
+    if (!canvasDropArea) {
+      return;
+    }
+
+    canvasDropArea.addEventListener('click', handleDeselectComponent);
+
+    return () => {
+      canvasDropArea.removeEventListener('click', handleDeselectComponent);
+    };
+  }, [selectedComponent, dropRef, setSelectedComponent]);
+
+  useEffect(() => {
+    function handleDeleteWithKeyboard(e: KeyboardEvent) {
+      if (e.key !== 'Delete' || !selectedComponent) {
+        return;
+      }
+
+      e.stopPropagation();
+      handleDeleteComponent(selectedComponent?.id);
+    }
+
+    document.addEventListener('keydown', handleDeleteWithKeyboard);
+
+    return () =>
+      document.removeEventListener('keydown', handleDeleteWithKeyboard);
+  }, [selectedComponent, handleDeleteComponent]);
 
   return (
     <div id='canvas' className='flex h-full flex-col' data-testid='canvas'>
