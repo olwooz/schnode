@@ -1,11 +1,12 @@
 import { useMemo } from 'react';
+
 import { v4 as uuidv4 } from 'uuid';
 import { fromZodError } from 'zod-validation-error';
 
+import { BINDING_EVENT } from '@/constants/binding-event';
 import { useComponentActions } from '@/hooks/useComponentActions';
 import { Column, TableRowData } from '@/types/table';
 import { validateRowData } from '@/utils/table-validation';
-import { BINDING_EVENT } from '@/constants/binding-event';
 
 export function useTable(id: string, dataRaw: string, columnsRaw: string) {
   const { handleUpdateComponent } = useComponentActions();

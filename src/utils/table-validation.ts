@@ -1,10 +1,11 @@
 import { z } from 'zod';
-import { Column } from '@/types/table';
+
 import {
   RESERVED_COLUMN_KEYS,
   TABLE_COLUMN_TYPE,
   TABLE_ERROR_MESSAGES,
 } from '@/constants/table';
+import { Column } from '@/types/table';
 
 function getValidationSchema(column: Column) {
   const { type } = column;

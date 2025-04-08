@@ -1,7 +1,9 @@
 import { useState } from 'react';
+
 import { useAtomValue } from 'jotai';
 import { v4 as uuidv4 } from 'uuid';
 
+import { selectedComponentAtom } from '@/atoms/component';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -11,11 +13,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { TABLE_COLUMN_TYPE, TABLE_FILTER_FUNCTION } from '@/constants/table';
 import { useComponentActions } from '@/hooks/useComponentActions';
 import { TableRowData } from '@/types/table';
 import { Column } from '@/types/table';
-import { selectedComponentAtom } from '@/atoms/component';
-import { TABLE_COLUMN_TYPE, TABLE_FILTER_FUNCTION } from '@/constants/table';
 
 export function useLoadTableData(columns: Column[]) {
   const selectedComponent = useAtomValue(selectedComponentAtom);

@@ -1,14 +1,15 @@
 'use client';
 
 import { memo } from 'react';
+
 import { useAtomValue } from 'jotai';
 
+import { selectedComponentAtom } from '@/atoms/component';
+import { BindingConfig } from '@/components/layout/ConfigPanel/binding';
+import StyleConfig from '@/components/layout/ConfigPanel/StyleConfig';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PROPERTY_COMPONENTS } from '@/constants/component';
-import StyleConfig from '@/components/layout/ConfigPanel/StyleConfig';
-import { BindingConfig } from '@/components/layout/ConfigPanel/binding';
-import { selectedComponentAtom } from '@/atoms/component';
 
 function ConfigPanel() {
   const selectedComponent = useAtomValue(selectedComponentAtom);

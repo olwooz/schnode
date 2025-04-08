@@ -1,25 +1,26 @@
 import { ReactNode, memo } from 'react';
+
 import { Trash2, Plus } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { COMPONENT_TYPE } from '@/constants/component-types';
-import { CanvasComponent } from '@/types/dnd';
-import { EditorItem, ContentItem, ActionButton } from '@/types/card';
-import { createMockComponent } from '@/utils/canvas';
 import { useCardActionButton } from '@/hooks/useCardActionButton';
 import { useCardContent } from '@/hooks/useCardContent';
-import { useLocalFormState } from '@/hooks/useLocalFormState';
 import {
   useComponentActions,
   UpdateComponentProps,
 } from '@/hooks/useComponentActions';
+import { useLocalFormState } from '@/hooks/useLocalFormState';
+import { EditorItem, ContentItem, ActionButton } from '@/types/card';
+import { CanvasComponent } from '@/types/dnd';
+import { createMockComponent } from '@/utils/canvas';
 
+import ButtonProperty from './Button';
 import InputProperty from './Input';
 import SelectProperty from './Select';
-import ButtonProperty from './Button';
 import StyleConfig from '../StyleConfig';
 
 type ItemEditorProps = {

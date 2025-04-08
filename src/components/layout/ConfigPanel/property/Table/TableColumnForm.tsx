@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   SelectContent,
   SelectItem,
@@ -8,11 +10,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Select } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Column, ColumnType, FilterFunction } from '@/types/table';
 import { TABLE_COLUMN_TYPE, TABLE_FILTER_FUNCTION } from '@/constants/table';
+import { Column, ColumnType, FilterFunction } from '@/types/table';
 import {
   validateColumnHeader,
   validateColumnKey,

@@ -1,18 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
+
 import { useAtomValue } from 'jotai';
 import { v4 as uuidv4 } from 'uuid';
 
+import { bindingsAtom } from '@/atoms/binding';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { BINDING_EVENT, TABLE_ACTION } from '@/constants/binding-event';
 import { DEFAULT_PROPS } from '@/constants/component';
+import { BindingType } from '@/types/binding';
+import { ActionButton } from '@/types/card';
 import {
   CardProps,
   ComponentRendererProps,
   ContentItem,
 } from '@/types/component';
-import { ActionButton } from '@/types/card';
-import { BINDING_EVENT, TABLE_ACTION } from '@/constants/binding-event';
-import { bindingsAtom } from '@/atoms/binding';
-import { BindingType } from '@/types/binding';
 
 import ButtonRenderer from './Button';
 import InputRenderer from './Input';

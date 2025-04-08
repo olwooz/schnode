@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 
-import { CanvasComponent } from '@/types/dnd';
 import {
   UpdateComponentProps,
   useComponentActions,
 } from '@/hooks/useComponentActions';
+import { CanvasComponent } from '@/types/dnd';
 
 export interface ItemWithId {
   id: string;

@@ -1,8 +1,8 @@
-import ToggleColumnForm from './ToggleColumnForm';
+import BindingConfig from './BindingConfig';
+import CardTableBindingForm from './CardTableBindingForm';
 import FilterTableForm from './FilterTableForm';
 import SortTableForm from './SortTableForm';
-import CardTableBindingForm from './CardTableBindingForm';
-import BindingConfig from './BindingConfig';
+import ToggleColumnForm from './ToggleColumnForm';
 
 export {
   ToggleColumnForm,

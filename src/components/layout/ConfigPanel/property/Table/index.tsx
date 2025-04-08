@@ -3,15 +3,15 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PropertyComponentProps } from '@/types/component';
-import { useTable } from '@/hooks/useTable';
 import { useComponentActions } from '@/hooks/useComponentActions';
 import { useLocalFormState } from '@/hooks/useLocalFormState';
+import { useTable } from '@/hooks/useTable';
+import { PropertyComponentProps } from '@/types/component';
 
-import { TableColumnForm } from './TableColumnForm';
-import { TableRowForm } from './TableRowForm';
-import { TablePagination } from './TablePagination';
 import { TableApiEndpoint } from './TableApiEndpoint';
+import { TableColumnForm } from './TableColumnForm';
+import { TablePagination } from './TablePagination';
+import { TableRowForm } from './TableRowForm';
 
 export default function TableProperty({
   selectedComponent,

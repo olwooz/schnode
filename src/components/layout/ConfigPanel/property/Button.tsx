@@ -7,13 +7,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { CanvasComponent } from '@/types/dnd';
-import { useLocalFormState } from '@/hooks/useLocalFormState';
+import { TABLE_ACTION } from '@/constants/binding-event';
 import {
   UpdateComponentProps,
   useComponentActions,
 } from '@/hooks/useComponentActions';
-import { TABLE_ACTION } from '@/constants/binding-event';
+import { useLocalFormState } from '@/hooks/useLocalFormState';
+import { CanvasComponent } from '@/types/dnd';
 
 const TABLE_ACTION_OPTIONS = [
   { value: TABLE_ACTION.ADD, label: 'Add Row' },

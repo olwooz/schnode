@@ -1,13 +1,4 @@
 import {
-  SELECT_DEFAULT_OPTIONS,
-  SELECT_TRIGGER_SIZE,
-} from '@/constants/variant';
-import { INPUT_TYPES } from '@/constants/input';
-import { BUTTON_SIZE, BUTTON_VARIANT } from '@/constants/variant';
-import { COMPONENT_TYPE } from '@/constants/component-types';
-import { ComponentProps, ComponentRendererProps } from '@/types/component';
-import { ComponentLibraryItem, ComponentType } from '@/types/dnd';
-import {
   ButtonProperty,
   CardProperty,
   CheckboxProperty,
@@ -23,11 +14,20 @@ import {
   CardRenderer,
   TableRenderer,
 } from '@/components/renderer';
+import { COMPONENT_TYPE } from '@/constants/component-types';
+import { INPUT_TYPES } from '@/constants/input';
 import {
   TABLE_DEFAULT_PAGE_SIZE,
   TABLE_SAMPLE_COLUMNS,
   TABLE_SAMPLE_DATA,
 } from '@/constants/table';
+import {
+  SELECT_DEFAULT_OPTIONS,
+  SELECT_TRIGGER_SIZE,
+} from '@/constants/variant';
+import { BUTTON_SIZE, BUTTON_VARIANT } from '@/constants/variant';
+import { ComponentProps, ComponentRendererProps } from '@/types/component';
+import { ComponentLibraryItem, ComponentType } from '@/types/dnd';
 
 export const COMPONENT_LIBRARY_ITEMS: ComponentLibraryItem[] = [
   {

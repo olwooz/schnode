@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
 import { useAtomValue } from 'jotai';
 
+import { componentsAtom } from '@/atoms/component';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -11,10 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-import { ComponentBinding } from '@/types/binding';
-import { componentsAtom } from '@/atoms/component';
 import { useBindings } from '@/hooks/useBindings';
+import { ComponentBinding } from '@/types/binding';
 import { ContentItem } from '@/types/card';
 
 interface CardTableBindingFormProps {

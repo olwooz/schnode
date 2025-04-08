@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
+
 import { useAtomValue } from 'jotai';
 
+import { bindingsAtom } from '@/atoms/binding';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { DEFAULT_PROPS } from '@/constants/component';
-import { ComponentRendererProps, InputProps } from '@/types/component';
-import { bindingsAtom } from '@/atoms/binding';
-import { BindingType } from '@/types/binding';
 import { BINDING_EVENT } from '@/constants/binding-event';
+import { DEFAULT_PROPS } from '@/constants/component';
+import { BindingType } from '@/types/binding';
+import { ComponentRendererProps, InputProps } from '@/types/component';
 
 export default function InputRenderer({
   props,

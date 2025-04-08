@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { useAtomValue } from 'jotai';
 
 import { bindingsAtom } from '@/atoms/binding';
@@ -10,10 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { BINDING_EVENT } from '@/constants/binding-event';
 import { DEFAULT_PROPS } from '@/constants/component';
 import { BindingType } from '@/types/binding';
 import { ComponentRendererProps, SelectProps } from '@/types/component';
-import { BINDING_EVENT } from '@/constants/binding-event';
 
 export default function SelectRenderer({
   props,

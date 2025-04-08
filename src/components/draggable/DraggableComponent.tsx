@@ -3,16 +3,16 @@ import { Trash2 } from 'lucide-react';
 
 import { selectedComponentAtom } from '@/atoms/component';
 import { isPreviewModeAtom } from '@/atoms/mode';
-import { DRAG_ITEM_TYPE } from '@/constants/component-types';
-import { CanvasComponent } from '@/types/dnd';
-import { useDraggable } from '@/hooks/useDraggable';
-import ComponentRenderer from '@/components/renderer/ComponentRenderer';
-import { GlowEffect } from '@/components/motion-primitives/glow-effect';
 import { BorderTrail } from '@/components/motion-primitives/border-trail';
+import { GlowEffect } from '@/components/motion-primitives/glow-effect';
+import ComponentRenderer from '@/components/renderer/ComponentRenderer';
 import { Button } from '@/components/ui/button';
-import { useComponentActions } from '@/hooks/useComponentActions';
+import { DRAG_ITEM_TYPE } from '@/constants/component-types';
 import { useBindings } from '@/hooks/useBindings';
+import { useComponentActions } from '@/hooks/useComponentActions';
+import { useDraggable } from '@/hooks/useDraggable';
 import { cn } from '@/lib/utils';
+import { CanvasComponent } from '@/types/dnd';
 
 export function DraggableComponent({
   component,
@@ -20,15 +20,14 @@ export function DraggableComponent({
   component: CanvasComponent;
 }) {
   const isPreviewMode = useAtomValue(isPreviewModeAtom);
+  const selectedComponent = useAtomValue(selectedComponentAtom);
+
   const {
     handleSelectComponent,
     handleRepositionComponent,
     handleDeleteComponent,
   } = useComponentActions();
-  const selectedComponent = useAtomValue(selectedComponentAtom);
-  const isSelected = component.id === selectedComponent?.id;
   const { hasBindings } = useBindings();
-  const hasBoundBindings = hasBindings(component.id, selectedComponent?.id);
 
   const { draggableRef, isDragging } = useDraggable({
     type: DRAG_ITEM_TYPE.PLACED_COMPONENT,
@@ -52,6 +51,13 @@ export function DraggableComponent({
     isPreviewMode,
   } as const);
 
+  const hasBoundBindings = hasBindings(component.id, selectedComponent?.id);
+  const isSelected = component.id === selectedComponent?.id;
+  const responsivePosition = {
+    x: component.position.x,
+    y: component.position.y,
+  };
+
   function handleSelect() {
     handleSelectComponent(component.id);
   }
@@ -60,11 +66,6 @@ export function DraggableComponent({
     e.stopPropagation();
     handleDeleteComponent(component.id);
   }
-
-  const responsivePosition = {
-    x: component.position.x,
-    y: component.position.y,
-  };
 
   return (
     <div

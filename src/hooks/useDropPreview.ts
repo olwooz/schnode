@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { DropTargetMonitor, useDrop } from 'react-dnd';
 
+import { DropTargetMonitor, useDrop } from 'react-dnd';
+import { v4 as uuidv4 } from 'uuid';
+
+import { DEFAULT_PROPS } from '@/constants/component';
 import { DRAG_ITEM_TYPE, COMPONENT_TYPE } from '@/constants/component-types';
+import { useComponentActions } from '@/hooks/useComponentActions';
 import { DragItem, DropPreview } from '@/types/dnd';
 import { CanvasComponent } from '@/types/dnd';
 import { calculatePosition } from '@/utils/canvas';
-import { DEFAULT_PROPS } from '@/constants/component';
-import { useComponentActions } from '@/hooks/useComponentActions';
 
 export function useDropPreview(isPreviewMode: boolean) {
   const { handleAddComponent } = useComponentActions();

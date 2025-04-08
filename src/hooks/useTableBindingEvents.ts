@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
-import { useAtomValue } from 'jotai';
+
 import {
   ColumnFiltersState,
   SortingState,
   VisibilityState,
 } from '@tanstack/react-table';
+import { useAtomValue } from 'jotai';
 
+import { componentsAtom } from '@/atoms/component';
 import { BINDING_EVENT, TABLE_ACTION } from '@/constants/binding-event';
 import { useTable } from '@/hooks/useTable';
-import { componentsAtom } from '@/atoms/component';
 
 export function useTableBindingEvents(
   componentId: string | undefined,

@@ -1,5 +1,5 @@
-import { CanvasComponent } from '@/types/dnd';
 import { ComponentBinding } from '@/types/binding';
+import { CanvasComponent } from '@/types/dnd';
 
 interface LayoutData {
   components: CanvasComponent[];

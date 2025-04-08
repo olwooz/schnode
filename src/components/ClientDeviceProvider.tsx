@@ -1,7 +1,9 @@
 'use client';
 
 import { createContext, useContext, useEffect } from 'react';
+
 import { useSetAtom } from 'jotai';
+
 import { isMobileAtom } from '@/atoms/isMobile';
 import { isPreviewModeAtom } from '@/atoms/mode';
 

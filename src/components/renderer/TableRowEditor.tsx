@@ -1,8 +1,19 @@
 import { Dispatch, SetStateAction, useState } from 'react';
+
 import { ColumnDef } from '@tanstack/react-table';
 import { useAtom } from 'jotai';
 
 import { selectedComponentAtom } from '@/atoms/component';
+import {
+  AlertDialogAction,
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -15,16 +26,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useComponentActions } from '@/hooks/useComponentActions';
 import { TableRowData } from '@/types/table';
-import {
-  AlertDialogAction,
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
 
 type TableRowEditorProps = {
   isDialogOpen: boolean;

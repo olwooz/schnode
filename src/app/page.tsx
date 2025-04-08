@@ -3,11 +3,11 @@
 import { useState } from 'react';
 
 import DndProvider from '@/components/DndProvider';
-import ComponentLibrary from '@/components/layout/ComponentLibrary';
+import AppDock from '@/components/layout/AppDock';
 import Canvas from '@/components/layout/Canvas';
+import ComponentLibrary from '@/components/layout/ComponentLibrary';
 import ConfigPanel from '@/components/layout/ConfigPanel';
 import PanelToggle from '@/components/layout/PanelToggle';
-import AppDock from '@/components/layout/AppDock';
 import Tutorial from '@/components/layout/Tutorial';
 
 export default function Home() {
