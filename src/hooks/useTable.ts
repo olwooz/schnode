@@ -1,8 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { fromZodError } from 'zod-validation-error';
 
 import { useComponentActions } from '@/hooks/useComponentActions';
 import { Column, TableRowData } from '@/types/table';
+import { validateRowData } from '@/utils/table-validation';
+import { BINDING_EVENT } from '@/constants/binding-event';
 
 export function useTable(id: string, dataRaw: string, columnsRaw: string) {
   const { handleUpdateComponent } = useComponentActions();
@@ -14,26 +17,27 @@ export function useTable(id: string, dataRaw: string, columnsRaw: string) {
     () => (columnsRaw ? JSON.parse(columnsRaw) : []),
     [columnsRaw]
   );
-  const [error, setError] = useState<string | null>(null);
 
-  function validateColumnKey(key: string): string | null {
-    if (!key.trim()) return 'Column key is required';
-
-    if (!/^[a-zA-Z0-9_]+$/.test(key)) {
-      return 'Column key can only contain letters, numbers, and underscores';
+  function validateRow(rowData: Record<string, string>) {
+    const result = validateRowData(columns, rowData);
+    if (!result.success) {
+      const errorMessage = fromZodError(result.error)
+        .message.split(/[:;]/)
+        .slice(1);
+      return errorMessage;
     }
-
-    const reservedKeys = ['id', '__proto__', 'constructor', 'prototype'];
-    if (reservedKeys.includes(key)) {
-      return `"${key}" is a reserved key`;
-    }
-
-    const existingKeys = columns.map((col) => col.accessorKey);
-    if (existingKeys.includes(key)) {
-      return `Column key "${key}" already exists`;
-    }
-
     return null;
+  }
+
+  function dispatchTableActionResult(
+    sourceId: string,
+    errors: string[] | null
+  ) {
+    const event = new CustomEvent(BINDING_EVENT.TABLE_ACTION_RESULT, {
+      detail: { sourceId, errors },
+      bubbles: true,
+    });
+    document.dispatchEvent(event);
   }
 
   function updateRows(newRows: TableRowData[]) {
@@ -52,11 +56,24 @@ export function useTable(id: string, dataRaw: string, columnsRaw: string) {
     });
   }
 
-  function handleAddRow(rowData: Record<string, string> = {}) {
+  function handleAddRow(
+    rowData: Record<string, string> = {},
+    sourceId?: string
+  ) {
     const newRow: TableRowData = {
       id: uuidv4(),
       ...rowData,
     };
+
+    const errorMessage = validateRow(newRow);
+
+    if (sourceId) {
+      dispatchTableActionResult(sourceId, errorMessage);
+    }
+
+    if (errorMessage) {
+      return;
+    }
 
     updateRows([...rows, newRow]);
   }
@@ -65,33 +82,39 @@ export function useTable(id: string, dataRaw: string, columnsRaw: string) {
     updateRows(rows.filter((row) => row.id !== id));
   }
 
-  function handleUpdateRow(rowId: string, rowData: Record<string, string>) {
+  function handleUpdateRow(
+    rowId: string,
+    rowData: Record<string, string>,
+    sourceId?: string
+  ) {
+    const targetRow = rows.find((row) => row.id === rowId);
+
+    if (!targetRow) return;
+
+    const newRow = { ...targetRow, ...rowData };
+
+    const errorMessage = validateRow(newRow);
+
+    if (sourceId) {
+      dispatchTableActionResult(sourceId, errorMessage);
+    }
+
+    if (errorMessage) {
+      return;
+    }
+
     updateRows(
       rows.map((row) => {
         if (row.id !== rowId) return row;
 
-        return {
-          ...row,
-          ...rowData,
-        };
+        return newRow;
       })
     );
   }
 
   function handleAddColumn(column: Column) {
-    if (!column.accessorKey || !column.header) {
-      return;
-    }
-
-    const keyError = validateColumnKey(column.accessorKey);
-    if (keyError) {
-      setError(keyError);
-      return;
-    }
-
     const newColumnsArray = [...columns, column];
     updateColumns(newColumnsArray);
-    setError(null);
   }
 
   function handleDeleteColumn(accessorKey: string) {
@@ -135,7 +158,6 @@ export function useTable(id: string, dataRaw: string, columnsRaw: string) {
   return {
     rows,
     columns,
-    error,
     handleAddRow,
     handleDeleteRow,
     handleUpdateRow,

@@ -15,7 +15,7 @@ import { useComponentActions } from '@/hooks/useComponentActions';
 import { TableRowData } from '@/types/table';
 import { Column } from '@/types/table';
 import { selectedComponentAtom } from '@/atoms/component';
-import { TABLE_FILTER_FUNCTION } from '@/constants/table';
+import { TABLE_COLUMN_TYPE, TABLE_FILTER_FUNCTION } from '@/constants/table';
 
 export function useLoadTableData(columns: Column[]) {
   const selectedComponent = useAtomValue(selectedComponentAtom);
@@ -76,6 +76,8 @@ export function useLoadTableData(columns: Column[]) {
             .replace(/([A-Z])/g, ' $1')
             .trim(),
         filterFn: TABLE_FILTER_FUNCTION.INCLUDES,
+        type: TABLE_COLUMN_TYPE.STRING,
+        required: true,
       }));
 
       if (columns.length > 0) {

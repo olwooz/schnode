@@ -19,7 +19,6 @@ export default function TableProperty({
   const { handleUpdateComponent } = useComponentActions();
   const {
     columns,
-    error,
     handleAddRow,
     handleAddColumn,
     handleDeleteColumn,
@@ -71,8 +70,6 @@ export default function TableProperty({
           <TableRowForm columns={columns} handleAddRow={handleAddRow} />
         </TabsContent>
       </Tabs>
-
-      {error && <div className='text-sm text-red-500 mt-2'>{error}</div>}
     </div>
   );
 }
