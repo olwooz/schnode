@@ -113,6 +113,7 @@ const ActionButtonComponent = memo(function ActionButtonComponent({
           children: button.children,
           variant: button.variant ?? 'default',
           size: button.size ?? 'default',
+          action: button.action,
         })}
         handleUpdateItemProp={handleUpdateItemProp}
       />
@@ -276,6 +277,8 @@ const ActionProperties = memo(function ActionProperties({
     handleRemoveActionButton,
     handleUpdateItemProp,
   } = useCardActionButton(selectedComponent);
+
+  console.log(actionButtons);
 
   const EmptyActions = memo(function EmptyActions() {
     return (
