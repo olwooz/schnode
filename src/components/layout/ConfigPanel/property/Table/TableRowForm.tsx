@@ -12,7 +12,10 @@ type TableRowFormProps = {
 };
 
 export function TableRowForm({ columns, handleAddRow }: TableRowFormProps) {
-  const [newRow, setNewRow] = useState<Record<string, string>>({});
+  const emptyRow = Object.fromEntries(
+    columns.map((col) => [col.accessorKey, ''])
+  );
+  const [newRow, setNewRow] = useState<Record<string, string>>(emptyRow);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   function addRow() {
@@ -33,7 +36,7 @@ export function TableRowForm({ columns, handleAddRow }: TableRowFormProps) {
   }
 
   function reset() {
-    setNewRow({});
+    setNewRow(emptyRow);
     setErrors({});
   }
 
@@ -45,7 +48,7 @@ export function TableRowForm({ columns, handleAddRow }: TableRowFormProps) {
           <Input
             id={`row${col.accessorKey}`}
             className='row-input'
-            value={newRow[col.accessorKey] ?? ''}
+            value={newRow[col.accessorKey]}
             onChange={(e) =>
               setNewRow({
                 ...newRow,
