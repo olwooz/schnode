@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -25,6 +25,7 @@ export default function CardRenderer({
   const cardProps = { ...DEFAULT_PROPS.card, ...props } as CardProps;
   const bindings = useAtomValue(bindingsAtom);
   const [formValues, setFormValues] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<string[] | null>(null);
 
   const contentItems = useMemo(() => {
     if (!cardProps.contentItems) return [];
@@ -68,9 +69,10 @@ export default function CardRenderer({
     if (!componentId || !cardBinding || !action) return;
 
     const mappedData = mapFormValuesToColumns(cardBinding.config.fieldMappings);
-    const { targetId } = cardBinding;
+    const { sourceId, targetId } = cardBinding;
 
     const detail: Record<string, unknown> = {
+      sourceId,
       targetId,
       action,
       rowId: null,
@@ -86,7 +88,7 @@ export default function CardRenderer({
         break;
       case TABLE_ACTION.UPDATE:
         if (!mappedData.id) {
-          console.error('Cannot update without an ID field');
+          setErrors(['ID field is required']);
           return;
         }
         detail.rowId = mappedData.id;
@@ -94,7 +96,7 @@ export default function CardRenderer({
         break;
       case TABLE_ACTION.DELETE:
         if (!mappedData.id) {
-          console.error('Cannot delete without an ID field');
+          setErrors(['ID field is required']);
           return;
         }
         detail.rowId = mappedData.id;
@@ -109,6 +111,33 @@ export default function CardRenderer({
     });
     document.dispatchEvent(event);
   }
+
+  useEffect(() => {
+    if (!cardBinding) return;
+
+    function handleTableActionResult(event: CustomEvent) {
+      const { sourceId, errors: eventErrors } = event.detail;
+      if (sourceId !== componentId) return;
+
+      setErrors(eventErrors);
+
+      if (eventErrors) return;
+
+      setFormValues({});
+    }
+
+    document.addEventListener(
+      BINDING_EVENT.TABLE_ACTION_RESULT,
+      handleTableActionResult as EventListener
+    );
+
+    return () => {
+      document.removeEventListener(
+        BINDING_EVENT.TABLE_ACTION_RESULT,
+        handleTableActionResult as EventListener
+      );
+    };
+  }, [cardBinding, componentId]);
 
   return (
     <Card>
@@ -150,6 +179,14 @@ export default function CardRenderer({
                     />
                   )}
                 </div>
+              ))}
+            </div>
+          )}
+
+          {errors && errors.length > 0 && (
+            <div className='text-red-500 text-sm'>
+              {errors.map((error) => (
+                <div key={error}>{error}</div>
               ))}
             </div>
           )}

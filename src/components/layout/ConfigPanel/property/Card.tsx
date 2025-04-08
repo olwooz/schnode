@@ -278,8 +278,6 @@ const ActionProperties = memo(function ActionProperties({
     handleUpdateItemProp,
   } = useCardActionButton(selectedComponent);
 
-  console.log(actionButtons);
-
   const EmptyActions = memo(function EmptyActions() {
     return (
       <div className='text-sm text-muted-foreground text-center p-4 border rounded-md'>

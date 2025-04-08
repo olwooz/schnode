@@ -95,15 +95,15 @@ export function useTableBindingEvents(
       },
 
       [BINDING_EVENT.TABLE_ACTION]: (event: CustomEvent) => {
-        const { targetId, action, rowId, rowData } = event.detail;
+        const { sourceId, targetId, action, rowId, rowData } = event.detail;
         if (targetId !== componentId) return;
 
         switch (action) {
           case TABLE_ACTION.ADD:
-            handleAddRow(rowData);
+            handleAddRow(rowData, sourceId);
             break;
           case TABLE_ACTION.UPDATE:
-            handleUpdateRow(rowId, rowData);
+            handleUpdateRow(rowId, rowData, sourceId);
             break;
           case TABLE_ACTION.DELETE:
             handleDeleteRow(rowId);

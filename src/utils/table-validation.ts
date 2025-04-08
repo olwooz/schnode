@@ -11,10 +11,10 @@ function getValidationSchema(column: Column) {
 
   const baseSchema = {
     [TABLE_COLUMN_TYPE.STRING]: z
-      .string()
+      .string({ required_error: TABLE_ERROR_MESSAGES.REQUIRED })
       .min(1, { message: TABLE_ERROR_MESSAGES.REQUIRED }),
     [TABLE_COLUMN_TYPE.NUMBER]: z
-      .string()
+      .string({ required_error: TABLE_ERROR_MESSAGES.REQUIRED })
       .min(1, { message: TABLE_ERROR_MESSAGES.REQUIRED })
       .regex(/^\d+$/, { message: TABLE_ERROR_MESSAGES.INVALID_NUMBER }),
     [TABLE_COLUMN_TYPE.BOOLEAN]: z.enum(['true', 'false'], {

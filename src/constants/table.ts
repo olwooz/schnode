@@ -2,22 +2,22 @@ export const sampleRows = [
   {
     id: '1',
     task: 'drink coffee',
-    completed: true,
+    completed: 'true',
   },
   {
     id: '2',
     task: 'buy groceries',
-    completed: false,
+    completed: 'false',
   },
   {
     id: '3',
     task: 'go to the gym',
-    completed: false,
+    completed: 'false',
   },
   {
     id: '4',
     task: 'fix bug',
-    completed: false,
+    completed: 'false',
   },
 ];
 

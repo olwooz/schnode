@@ -6,6 +6,7 @@ export const BINDING_EVENT = {
   RESET_TABLE_FILTER: 'resetTableFilter',
   RESET_TABLE_VISIBILITY: 'resetTableVisibility',
   TABLE_ACTION: 'tableAction',
+  TABLE_ACTION_RESULT: 'tableActionResult',
 };
 
 export const TABLE_ACTION = {
