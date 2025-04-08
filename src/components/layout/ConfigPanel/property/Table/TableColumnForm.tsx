@@ -147,7 +147,7 @@ export function TableColumnForm({
           {isEditMode ? 'Edit Column' : 'Add Column'}
         </div>
         <div className='space-y-2'>
-          <Label htmlFor='columnKey'>Column Key</Label>
+          <Label htmlFor='columnKey'>Column Key (required)</Label>
           <Input
             id='columnKey'
             value={newColumn.accessorKey ?? ''}
@@ -162,7 +162,7 @@ export function TableColumnForm({
         </div>
 
         <div className='space-y-2 mt-2'>
-          <Label htmlFor='columnHeader'>Column Header</Label>
+          <Label htmlFor='columnHeader'>Column Header (required)</Label>
           <Input
             id='columnHeader'
             value={newColumn.header ?? ''}
