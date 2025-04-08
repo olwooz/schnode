@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 
 import { componentsAtom, selectedComponentAtom } from '@/atoms/component';
+import { isMobileAtom } from '@/atoms/isMobile';
 import { isPreviewModeAtom } from '@/atoms/mode';
 import { DraggableComponent } from '@/components/draggable/DraggableComponent';
 import { MobileNotice } from '@/components/layout/Canvas/MobileNotice';
@@ -14,6 +15,7 @@ import { useComponentActions } from '@/hooks/useComponentActions';
 import { useDropPreview } from '@/hooks/useDropPreview';
 
 export default function Canvas() {
+  const isMobile = useAtomValue(isMobileAtom);
   const isPreviewMode = useAtomValue(isPreviewModeAtom);
   const components = useAtomValue(componentsAtom);
   const [selectedComponent, setSelectedComponent] = useAtom(
@@ -73,8 +75,6 @@ export default function Canvas() {
         </h2>
       </div>
 
-      <MobileNotice />
-
       <div className='flex-1 overflow-auto p-2 md:p-4'>
         <div
           id='canvas-drop-area'
@@ -130,11 +130,15 @@ export default function Canvas() {
             ))
           ) : (
             <div className='flex items-center justify-center h-full'>
-              <p className='text-neutral-500 text-sm md:text-base text-center px-4'>
-                {isPreviewMode
-                  ? 'No components to preview'
-                  : 'Drag components here to build your interface'}
-              </p>
+              {isMobile ? (
+                <MobileNotice />
+              ) : (
+                <p className='text-neutral-500 text-sm md:text-base text-center px-4'>
+                  {isPreviewMode
+                    ? 'No components to preview'
+                    : 'Drag components here to build your interface'}
+                </p>
+              )}
             </div>
           )}
         </div>

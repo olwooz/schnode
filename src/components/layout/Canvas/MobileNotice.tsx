@@ -5,16 +5,17 @@ import { Info } from 'lucide-react';
 
 import { isMobileAtom } from '@/atoms/isMobile';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { cn } from '@/lib/utils';
 
 export function MobileNotice() {
   const isMobile = useAtomValue(isMobileAtom);
 
-  if (!isMobile) {
-    return null;
-  }
-
   return (
-    <Alert className='mb-2 relative pr-8'>
+    <Alert
+      className={cn('mb-2 relative pr-8 opacity-0', {
+        'opacity-100': isMobile,
+      })}
+    >
       <Info className='h-4 w-4' />
       <AlertDescription className='text-xs md:text-sm'>
         Edit mode is not supported on mobile devices.
