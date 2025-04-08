@@ -3,10 +3,9 @@
 import { useAtomValue } from 'jotai';
 import { Upload } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-
-import { componentsAtom } from '@/atoms/component';
 import { bindingsAtom } from '@/atoms/binding';
+import { componentsAtom } from '@/atoms/component';
+import { Button } from '@/components/ui/button';
 import { downloadLayout } from '@/utils/layout-io';
 
 export function Export() {

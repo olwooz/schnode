@@ -1,11 +1,11 @@
 import { HTMLInputTypeAttribute } from 'react';
 
+import { CanvasComponent } from '@/types/dnd';
 import {
   ButtonVariant,
   ButtonSize,
   SelectTriggerSize,
 } from '@/types/shadcn-component';
-import { CanvasComponent } from '@/types/dnd';
 
 export type ButtonProps = {
   children: string;

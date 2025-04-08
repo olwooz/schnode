@@ -1,8 +1,10 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
-import { isPreviewModeAtom } from '@/atoms/mode';
+
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+
 import { selectedComponentAtom } from '@/atoms/component';
 import { isMobileAtom } from '@/atoms/isMobile';
+import { isPreviewModeAtom } from '@/atoms/mode';
 import { useDeviceContext } from '@/components/ClientDeviceProvider';
 
 export function useTogglePreviewMode() {

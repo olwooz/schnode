@@ -1,16 +1,17 @@
 import { useState } from 'react';
+
 import { PlusCircle, Trash2, AlertCircle } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { SELECT_DEFAULT_OPTIONS } from '@/constants/variant';
-import { CanvasComponent } from '@/types/dnd';
-import { useLocalFormState } from '@/hooks/useLocalFormState';
 import {
   useComponentActions,
   UpdateComponentProps,
 } from '@/hooks/useComponentActions';
+import { useLocalFormState } from '@/hooks/useLocalFormState';
+import { CanvasComponent } from '@/types/dnd';
 
 type SelectPropertyProps = {
   selectedComponent: CanvasComponent;

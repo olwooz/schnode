@@ -1,16 +1,17 @@
 'use client';
 
 import { useEffect } from 'react';
+
 import { useAtom, useAtomValue } from 'jotai';
 
-import ComponentRenderer from '@/components/renderer/ComponentRenderer';
-import { DraggableComponent } from '@/components/draggable/DraggableComponent';
-import { MobileNotice } from '@/components/layout/Canvas/MobileNotice';
-import { GRID_SIZE } from '@/constants/canvas';
-import { useDropPreview } from '@/hooks/useDropPreview';
-import { useComponentActions } from '@/hooks/useComponentActions';
 import { componentsAtom, selectedComponentAtom } from '@/atoms/component';
 import { isPreviewModeAtom } from '@/atoms/mode';
+import { DraggableComponent } from '@/components/draggable/DraggableComponent';
+import { MobileNotice } from '@/components/layout/Canvas/MobileNotice';
+import ComponentRenderer from '@/components/renderer/ComponentRenderer';
+import { GRID_SIZE } from '@/constants/canvas';
+import { useComponentActions } from '@/hooks/useComponentActions';
+import { useDropPreview } from '@/hooks/useDropPreview';
 
 export default function Canvas() {
   const isPreviewMode = useAtomValue(isPreviewModeAtom);

@@ -1,7 +1,7 @@
 'use client';
 
-import { ComponentBinding } from '@/types/binding';
 import { useBindColumn } from '@/hooks/useBindColumn';
+import { ComponentBinding } from '@/types/binding';
 
 interface FilterTableFormProps {
   binding: ComponentBinding;

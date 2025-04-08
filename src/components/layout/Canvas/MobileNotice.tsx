@@ -3,8 +3,8 @@
 import { useAtomValue } from 'jotai';
 import { Info } from 'lucide-react';
 
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { isMobileAtom } from '@/atoms/isMobile';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export function MobileNotice() {
   const isMobile = useAtomValue(isMobileAtom);

@@ -1,21 +1,17 @@
-import { SelectItem } from '@/components/ui/select';
+import { useAtomValue } from 'jotai';
 
-import { TABLE_SIZES } from '@/constants/table';
-
-import { SelectContent } from '@/components/ui/select';
-
-import { SelectValue } from '@/components/ui/select';
-
-import { SelectTrigger } from '@/components/ui/select';
-
+import { selectedComponentAtom } from '@/atoms/component';
 import { Label } from '@/components/ui/label';
+import { SelectItem } from '@/components/ui/select';
+import { SelectContent } from '@/components/ui/select';
+import { SelectValue } from '@/components/ui/select';
+import { SelectTrigger } from '@/components/ui/select';
 import { Select } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { TABLE_SIZES } from '@/constants/table';
 import { TABLE_DEFAULT_PAGE_SIZE } from '@/constants/table';
-import { cn } from '@/lib/utils';
 import { useComponentActions } from '@/hooks/useComponentActions';
-import { useAtomValue } from 'jotai';
-import { selectedComponentAtom } from '@/atoms/component';
+import { cn } from '@/lib/utils';
 
 export function TablePagination() {
   const selectedComponent = useAtomValue(selectedComponentAtom);

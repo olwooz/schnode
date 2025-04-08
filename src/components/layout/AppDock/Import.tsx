@@ -1,18 +1,12 @@
 'use client';
 
 import { useState, useRef } from 'react';
+
 import { useAtom, useSetAtom } from 'jotai';
 import { AlertCircle, Download } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { bindingsAtom } from '@/atoms/binding';
+import { componentsAtom } from '@/atoms/component';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,13 +17,20 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { componentsAtom } from '@/atoms/component';
-import { bindingsAtom } from '@/atoms/binding';
-import { readLayoutFile, deserializeLayout } from '@/utils/layout-io';
-import { CanvasComponent } from '@/types/dnd';
 import { ComponentBinding } from '@/types/binding';
+import { CanvasComponent } from '@/types/dnd';
+import { readLayoutFile, deserializeLayout } from '@/utils/layout-io';
 
 export function Import() {
   const [components, setComponents] = useAtom(componentsAtom);

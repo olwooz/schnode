@@ -1,15 +1,6 @@
 'use client';
 
 import {
-  motion,
-  MotionValue,
-  useMotionValue,
-  useSpring,
-  useTransform,
-  type SpringOptions,
-  AnimatePresence,
-} from 'motion/react';
-import {
   Children,
   cloneElement,
   createContext,
@@ -19,6 +10,17 @@ import {
   useRef,
   useState,
 } from 'react';
+
+import {
+  motion,
+  MotionValue,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  type SpringOptions,
+  AnimatePresence,
+} from 'motion/react';
+
 import { cn } from '@/lib/utils';
 
 const DOCK_HEIGHT = 128;

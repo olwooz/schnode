@@ -1,11 +1,25 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+
 import { useAtomValue } from 'jotai';
 import { ArrowRight, PlusCircle, Trash2 } from 'lucide-react';
 
+import { componentsAtom } from '@/atoms/component';
+import {
+  ToggleColumnForm,
+  FilterTableForm,
+  SortTableForm,
+  CardTableBindingForm,
+} from '@/components/layout/ConfigPanel/binding';
+import {
+  Disclosure,
+  DisclosureContent,
+  DisclosureTrigger,
+} from '@/components/motion-primitives/disclosure';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -13,30 +27,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import {
-  Disclosure,
-  DisclosureContent,
-  DisclosureTrigger,
-} from '@/components/motion-primitives/disclosure';
-import {
-  ToggleColumnForm,
-  FilterTableForm,
-  SortTableForm,
-  CardTableBindingForm,
-} from '@/components/layout/ConfigPanel/binding';
-
-import { CanvasComponent } from '@/types/dnd';
-import { BindingType, ComponentBinding } from '@/types/binding';
-import { componentsAtom } from '@/atoms/component';
+import { Separator } from '@/components/ui/separator';
+import { COMPONENT_TYPE } from '@/constants/component-types';
 import { useBindings } from '@/hooks/useBindings';
+import { BindingType, ComponentBinding } from '@/types/binding';
+import { CanvasComponent } from '@/types/dnd';
 import {
   createDefaultBindingConfig,
   getCompatibleSourceComponents,
   getCompatibleTargetComponents,
 } from '@/utils/binding';
-import { COMPONENT_TYPE } from '@/constants/component-types';
 
 const BINDING_TYPE_LABELS: Record<BindingType, string> = {
   [BindingType.TOGGLE_COLUMN]: 'Toggle Column Visibility',

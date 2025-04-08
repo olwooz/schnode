@@ -1,8 +1,9 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+
 import { componentsAtom, selectedComponentAtom } from '@/atoms/component';
-import { CanvasComponent, CanvasPosition } from '@/types/dnd';
 import { isPreviewModeAtom } from '@/atoms/mode';
 import { useBindings } from '@/hooks/useBindings';
+import { CanvasComponent, CanvasPosition } from '@/types/dnd';
 
 export type UpdateComponentProps = {
   id?: string;

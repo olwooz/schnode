@@ -1,3 +1,7 @@
+import { useEffect, useState } from 'react';
+
+import { useAtomValue } from 'jotai';
+
 import { componentsAtom } from '@/atoms/component';
 import { Label } from '@/components/ui/label';
 import { SelectItem } from '@/components/ui/select';
@@ -5,8 +9,6 @@ import { Select, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SelectContent } from '@/components/ui/select';
 import { useBindings } from '@/hooks/useBindings';
 import { BindingConfig, ComponentBinding } from '@/types/binding';
-import { useAtomValue } from 'jotai';
-import { useEffect, useState } from 'react';
 
 export function useBindColumn(binding: ComponentBinding) {
   const { updateBinding } = useBindings();

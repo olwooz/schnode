@@ -8,12 +8,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { INPUT_TYPES } from '@/constants/input';
-import { CanvasComponent } from '@/types/dnd';
-import { useLocalFormState } from '@/hooks/useLocalFormState';
 import {
   UpdateComponentProps,
   useComponentActions,
 } from '@/hooks/useComponentActions';
+import { useLocalFormState } from '@/hooks/useLocalFormState';
+import { CanvasComponent } from '@/types/dnd';
 
 type InputPropertyProps = {
   selectedComponent: CanvasComponent;

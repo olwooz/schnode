@@ -1,8 +1,8 @@
 'use client';
 
 import { COMPONENT_RENDERERS } from '@/constants/component';
-import { ComponentType } from '@/types/dnd';
 import { ComponentProps } from '@/types/component';
+import { ComponentType } from '@/types/dnd';
 
 type RendererProps = {
   type: ComponentType;

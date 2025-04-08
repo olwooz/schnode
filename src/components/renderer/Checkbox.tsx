@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
+
 import { useAtomValue } from 'jotai';
 
-import { Checkbox } from '@/components/ui/checkbox';
-import { DEFAULT_PROPS } from '@/constants/component';
-import { CheckboxProps, ComponentRendererProps } from '@/types/component';
 import { bindingsAtom } from '@/atoms/binding';
-import { BindingType } from '@/types/binding';
+import { Checkbox } from '@/components/ui/checkbox';
 import { BINDING_EVENT } from '@/constants/binding-event';
+import { DEFAULT_PROPS } from '@/constants/component';
+import { BindingType } from '@/types/binding';
+import { CheckboxProps, ComponentRendererProps } from '@/types/component';
 
 export default function CheckboxRenderer({
   props,

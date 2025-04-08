@@ -1,3 +1,4 @@
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -5,14 +6,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
 import { VARIANTS } from '@/constants/variant';
-import { CanvasComponent } from '@/types/dnd';
-import { isEmptyObject } from '@/utils/object';
 import {
   UpdateComponentProps,
   useComponentActions,
 } from '@/hooks/useComponentActions';
+import { CanvasComponent } from '@/types/dnd';
+import { isEmptyObject } from '@/utils/object';
 
 type StyleConfigProps = {
   selectedComponent: CanvasComponent;

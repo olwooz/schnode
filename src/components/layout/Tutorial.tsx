@@ -1,13 +1,13 @@
 import { useAtom } from 'jotai';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Joyride, {
   CallBackProps,
   TooltipRenderProps,
 } from 'react-joyride-react-19';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
 import { showTutorialAtom } from '@/atoms/tutorial';
-import { TUTORIAL_STEPS } from '@/constants/tutorial';
+import { GlowEffect } from '@/components/motion-primitives/glow-effect';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -15,8 +15,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { GlowEffect } from '@/components/motion-primitives/glow-effect';
+import { TUTORIAL_STEPS } from '@/constants/tutorial';
+import { cn } from '@/lib/utils';
 
 function CustomTooltip(props: TooltipRenderProps) {
   const { backProps, primaryProps, index, skipProps, step, tooltipProps } =

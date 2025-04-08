@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { useAtomValue } from 'jotai';
+
 import {
   flexRender,
   getCoreRowModel,
@@ -15,7 +15,11 @@ import {
   SortingState,
   getSortedRowModel,
 } from '@tanstack/react-table';
+import { useAtomValue } from 'jotai';
 
+import { isPreviewModeAtom } from '@/atoms/mode';
+import { TablePagination } from '@/components/renderer/TablePagination';
+import { TableRowEditor } from '@/components/renderer/TableRowEditor';
 import {
   Table,
   TableHeader,
@@ -24,15 +28,12 @@ import {
   TableRow,
   TableCell,
 } from '@/components/ui/table';
-import { TableRowEditor } from '@/components/renderer/TableRowEditor';
-import { TablePagination } from '@/components/renderer/TablePagination';
 import { DEFAULT_PROPS } from '@/constants/component';
+import { useTableBindingEvents } from '@/hooks/useTableBindingEvents';
+import { cn } from '@/lib/utils';
 import { ComponentRendererProps, TableProps } from '@/types/component';
 import { TableRowData } from '@/types/table';
-import { isPreviewModeAtom } from '@/atoms/mode';
-import { cn } from '@/lib/utils';
 import { getBooleanValue } from '@/utils/string';
-import { useTableBindingEvents } from '@/hooks/useTableBindingEvents';
 
 export default function TableRenderer({
   props,

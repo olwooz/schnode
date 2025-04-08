@@ -2,8 +2,8 @@ import { useAtom } from 'jotai';
 import { v4 as uuidv4 } from 'uuid';
 
 import { bindingsAtom, selectedBindingAtom } from '@/atoms/binding';
-import { ComponentBinding, BindingType, BindingConfig } from '@/types/binding';
 import { BINDING_EVENT } from '@/constants/binding-event';
+import { ComponentBinding, BindingType, BindingConfig } from '@/types/binding';
 
 export function useBindings() {
   const [bindings, setBindings] = useAtom(bindingsAtom);

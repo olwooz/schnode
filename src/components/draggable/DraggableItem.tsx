@@ -1,14 +1,15 @@
 'use client';
 
+import { useEffect } from 'react';
+
 import { useAtomValue } from 'jotai';
 import { v4 as uuidv4 } from 'uuid';
 
-import { ComponentType } from '@/types/dnd';
+import { isPreviewModeAtom } from '@/atoms/mode';
+import { GlowEffect } from '@/components/motion-primitives/glow-effect';
 import { DRAG_ITEM_TYPE } from '@/constants/component-types';
 import { useDraggable } from '@/hooks/useDraggable';
-import { GlowEffect } from '@/components/motion-primitives/glow-effect';
-import { isPreviewModeAtom } from '@/atoms/mode';
-import { useEffect } from 'react';
+import { ComponentType } from '@/types/dnd';
 
 type DraggableItemProps = {
   type: ComponentType;

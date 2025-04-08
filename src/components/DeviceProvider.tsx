@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
-import { isMobileUserAgent } from '@/utils/device';
+
 import ClientDeviceProvider from '@/components/ClientDeviceProvider';
+import { isMobileUserAgent } from '@/utils/device';
 
 export default async function DeviceProvider({
   children,

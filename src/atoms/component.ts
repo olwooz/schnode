@@ -1,4 +1,5 @@
 import { atom } from 'jotai';
+
 import { CanvasComponent } from '@/types/dnd';
 
 export const componentsAtom = atom<CanvasComponent[]>([]);
