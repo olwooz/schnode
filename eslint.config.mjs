@@ -22,7 +22,7 @@ const eslintConfig = [
           groups: ['builtin', 'external', 'internal'],
           pathGroups: [
             { pattern: 'react', group: 'builtin', position: 'before' },
-            { pattern: 'next', group: 'builtin', position: 'before' },
+            { pattern: 'next/*', group: 'builtin', position: 'before' },
           ],
           pathGroupsExcludedImportTypes: ['react', 'next'],
           alphabetize: {

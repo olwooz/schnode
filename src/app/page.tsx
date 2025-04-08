@@ -2,13 +2,28 @@
 
 import { useState } from 'react';
 
-import DndProvider from '@/components/DndProvider';
+import dynamic from 'next/dynamic';
+
 import AppDock from '@/components/layout/AppDock';
 import Canvas from '@/components/layout/Canvas';
-import ComponentLibrary from '@/components/layout/ComponentLibrary';
-import ConfigPanel from '@/components/layout/ConfigPanel';
 import PanelToggle from '@/components/layout/PanelToggle';
-import Tutorial from '@/components/layout/Tutorial';
+
+const ComponentLibrary = dynamic(
+  () => import('@/components/layout/ComponentLibrary'),
+  { loading: () => <div className='p-4'>Loading component library...</div> }
+);
+
+const ConfigPanel = dynamic(() => import('@/components/layout/ConfigPanel'), {
+  loading: () => <div className='p-4'>Loading configuration panel...</div>,
+});
+
+const DndProvider = dynamic(() => import('@/components/DndProvider'), {
+  ssr: false,
+});
+
+const Tutorial = dynamic(() => import('@/components/layout/Tutorial'), {
+  ssr: false,
+});
 
 export default function Home() {
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
