@@ -2,9 +2,9 @@ name: Lighthouse CI
 
 on:
   push:
-    branches: [main, perf/lcp]
+    branches: ['**']
   pull_request:
-    branches: [main]
+    branches: ['**']
 
 permissions:
   contents: read
