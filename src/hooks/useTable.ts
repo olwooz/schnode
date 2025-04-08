@@ -1,6 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-
 import { useComponentActions } from '@/hooks/useComponentActions';
 import { Column, TableRowData } from '@/types/table';
 
@@ -14,27 +13,6 @@ export function useTable(id: string, dataRaw: string, columnsRaw: string) {
     () => (columnsRaw ? JSON.parse(columnsRaw) : []),
     [columnsRaw]
   );
-  const [error, setError] = useState<string | null>(null);
-
-  function validateColumnKey(key: string): string | null {
-    if (!key.trim()) return 'Column key is required';
-
-    if (!/^[a-zA-Z0-9_]+$/.test(key)) {
-      return 'Column key can only contain letters, numbers, and underscores';
-    }
-
-    const reservedKeys = ['id', '__proto__', 'constructor', 'prototype'];
-    if (reservedKeys.includes(key)) {
-      return `"${key}" is a reserved key`;
-    }
-
-    const existingKeys = columns.map((col) => col.accessorKey);
-    if (existingKeys.includes(key)) {
-      return `Column key "${key}" already exists`;
-    }
-
-    return null;
-  }
 
   function updateRows(newRows: TableRowData[]) {
     handleUpdateComponent({
@@ -79,19 +57,8 @@ export function useTable(id: string, dataRaw: string, columnsRaw: string) {
   }
 
   function handleAddColumn(column: Column) {
-    if (!column.accessorKey || !column.header) {
-      return;
-    }
-
-    const keyError = validateColumnKey(column.accessorKey);
-    if (keyError) {
-      setError(keyError);
-      return;
-    }
-
     const newColumnsArray = [...columns, column];
     updateColumns(newColumnsArray);
-    setError(null);
   }
 
   function handleDeleteColumn(accessorKey: string) {
@@ -135,7 +102,6 @@ export function useTable(id: string, dataRaw: string, columnsRaw: string) {
   return {
     rows,
     columns,
-    error,
     handleAddRow,
     handleDeleteRow,
     handleUpdateRow,

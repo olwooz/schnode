@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Column } from '@/types/table';
-import { validateRowData } from '@/utils/column-validation';
+import { validateRowData } from '@/utils/table-validation';
 
 type TableRowFormProps = {
   columns: Column[];

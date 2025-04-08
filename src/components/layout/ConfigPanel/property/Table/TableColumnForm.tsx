@@ -13,6 +13,10 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Column, ColumnType, FilterFunction } from '@/types/table';
 import { TABLE_COLUMN_TYPE, TABLE_FILTER_FUNCTION } from '@/constants/table';
+import {
+  validateColumnHeader,
+  validateColumnKey,
+} from '@/utils/table-validation';
 
 import { TableColumnList } from './TableColumnList';
 
@@ -40,14 +44,59 @@ export function TableColumnForm({
   const [selectedColumnAccessorKey, setSelectedColumnAccessorKey] = useState<
     string | null
   >(null);
+  const [columnKeyError, setColumnKeyError] = useState<string | null>(null);
+  const [columnHeaderError, setColumnHeaderError] = useState<string | null>(
+    null
+  );
+
+  function validateColumn() {
+    let isValid = true;
+    const columnsToValidate = isEditMode
+      ? columns.filter((col) => col.accessorKey !== selectedColumnAccessorKey)
+      : columns;
+
+    const keyResult = validateColumnKey(
+      newColumn.accessorKey,
+      columnsToValidate
+    );
+
+    if (!keyResult.success) {
+      setColumnKeyError(keyResult.error.issues[0].message);
+      isValid = false;
+    } else {
+      setColumnKeyError(null);
+    }
+
+    const headerResult = validateColumnHeader(
+      newColumn.header,
+      columnsToValidate
+    );
+
+    if (!headerResult.success) {
+      setColumnHeaderError(headerResult.error.issues[0].message);
+      isValid = false;
+    } else {
+      setColumnHeaderError(null);
+    }
+
+    return isValid;
+  }
 
   function addColumn() {
+    if (!validateColumn()) {
+      return;
+    }
+
     handleAddColumn(newColumn);
     resetNewColumn();
   }
 
   function updateColumn() {
     if (!selectedColumnAccessorKey) {
+      return;
+    }
+
+    if (!validateColumn()) {
       return;
     }
 
@@ -107,6 +156,9 @@ export function TableColumnForm({
             }
             placeholder='e.g. firstName'
           />
+          {columnKeyError && (
+            <div className='text-sm text-red-500 mt-2'>{columnKeyError}</div>
+          )}
         </div>
 
         <div className='space-y-2 mt-2'>
@@ -119,6 +171,9 @@ export function TableColumnForm({
             }
             placeholder='e.g. First Name'
           />
+          {columnHeaderError && (
+            <div className='text-sm text-red-500 mt-2'>{columnHeaderError}</div>
+          )}
         </div>
 
         <div className='space-y-2 flex items-center justify-between'>
