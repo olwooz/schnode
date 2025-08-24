@@ -1,6 +1,6 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 
-import { componentsAtom, selectedComponentAtom } from '@/atoms/component';
+import { componentsAtom, useComponentAtomActions } from '@/atoms/component';
 import { isPreviewModeAtom } from '@/atoms/mode';
 import { useBindings } from '@/hooks/useBindings';
 import { CanvasComponent, CanvasPosition } from '@/types/dnd';
@@ -13,13 +13,18 @@ export type UpdateComponentProps = {
 
 export function useComponentActions() {
   const isPreviewMode = useAtomValue(isPreviewModeAtom);
-  const [components, setComponents] = useAtom(componentsAtom);
-  const setSelectedComponent = useSetAtom(selectedComponentAtom);
+  const components = useAtomValue(componentsAtom);
+  const {
+    createComponentAction,
+    updateComponentAction,
+    deleteComponentAction,
+    setSelectedComponentId,
+  } = useComponentAtomActions();
   const { deleteBindingsForComponent } = useBindings();
 
   function handleAddComponent(component: CanvasComponent) {
-    setComponents((prev) => [...prev, component]);
-    setSelectedComponent(component);
+    createComponentAction(component);
+    setSelectedComponentId(component.id);
   }
 
   function handleSelectComponent(id: string | null) {
@@ -27,18 +32,7 @@ export function useComponentActions() {
       return;
     }
 
-    if (id === null) {
-      setSelectedComponent(null);
-      return;
-    }
-
-    const component = components.find((component) => component.id === id);
-
-    if (!component) {
-      return;
-    }
-
-    setSelectedComponent(component);
+    setSelectedComponentId(id);
   }
 
   function handleUpdateComponent({ id, key, value }: UpdateComponentProps) {
@@ -46,28 +40,24 @@ export function useComponentActions() {
       return;
     }
 
-    setComponents(
-      components.map((component) => {
-        if (component.id === id) {
-          component.props[key] = value;
-        }
-        return component;
-      })
-    );
+    updateComponentAction({
+      id,
+      updates: {
+        props: {
+          ...components.find((c) => c.id === id)?.props,
+          [key]: value,
+        },
+      },
+    });
   }
 
   function handleRepositionComponent(id: string, position: CanvasPosition) {
-    setComponents((prev) =>
-      prev.map((component) =>
-        component.id === id ? { ...component, position } : component
-      )
-    );
+    updateComponentAction({ id, updates: { position } });
   }
 
   function handleDeleteComponent(id: string) {
-    setComponents((prev) => prev.filter((component) => component.id !== id));
     deleteBindingsForComponent(id);
-    setSelectedComponent((prev) => (prev?.id === id ? null : prev));
+    deleteComponentAction(id);
   }
 
   function getComponentById(id: string): CanvasComponent | undefined {

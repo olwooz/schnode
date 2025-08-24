@@ -1,13 +1,23 @@
-import { useAtom } from 'jotai';
-import { v4 as uuidv4 } from 'uuid';
+import { useAtomValue } from 'jotai';
 
-import { bindingsAtom, selectedBindingAtom } from '@/atoms/binding';
+import {
+  selectedBindingAtom,
+  allBindingsAtom,
+  useBindingAtomActions,
+} from '@/atoms/binding';
 import { BINDING_EVENT } from '@/constants/binding-event';
 import { ComponentBinding, BindingType, BindingConfig } from '@/types/binding';
 
 export function useBindings() {
-  const [bindings, setBindings] = useAtom(bindingsAtom);
-  const [selectedBinding, setSelectedBinding] = useAtom(selectedBindingAtom);
+  const bindings = useAtomValue(allBindingsAtom);
+  const selectedBinding = useAtomValue(selectedBindingAtom);
+  const {
+    createBindingAction,
+    updateBindingAction,
+    deleteBindingAction,
+    deleteBindingsForComponentAction,
+    setSelectedBindingId,
+  } = useBindingAtomActions();
 
   function dispatchResetColumnVisibilityEvent(binding: ComponentBinding) {
     if (binding.type === BindingType.TOGGLE_COLUMN) {
@@ -64,41 +74,17 @@ export function useBindings() {
     type: BindingType,
     config: BindingConfig
   ): string {
-    const newBinding: ComponentBinding = {
-      id: uuidv4(),
-      sourceId,
-      targetId,
-      type,
-      config,
-    };
-
-    setBindings((prev) => [...prev, newBinding]);
-    return newBinding.id;
+    return createBindingAction({ sourceId, targetId, type, config });
   }
 
   function updateBinding(
     bindingId: string,
     updates: Partial<Omit<ComponentBinding, 'id'>>
   ): boolean {
-    let found = false;
-
     const oldBinding = bindings.find((b) => b.id === bindingId);
+    const result = updateBindingAction({ id: bindingId, updates });
 
-    setBindings((prev) =>
-      prev.map((binding) => {
-        if (binding.id === bindingId) {
-          found = true;
-          return { ...binding, ...updates };
-        }
-        return binding;
-      })
-    );
-
-    if (found && selectedBinding?.id === bindingId) {
-      setSelectedBinding((prev) => (prev ? { ...prev, ...updates } : null));
-    }
-
-    if (found && oldBinding) {
+    if (result && oldBinding) {
       const targetChanged =
         updates.targetId !== undefined &&
         updates.targetId !== oldBinding.targetId;
@@ -111,72 +97,32 @@ export function useBindings() {
       }
     }
 
-    return found;
+    return result;
   }
 
   function deleteBinding(bindingId: string): boolean {
     const bindingToDelete = bindings.find((b) => b.id === bindingId);
-    const bindingExists = bindingToDelete !== undefined;
 
-    if (!bindingExists) {
+    if (!bindingToDelete) {
       return false;
     }
 
-    if (bindingToDelete) {
-      dispatchResetEventForBinding(bindingToDelete);
-    }
-
-    setBindings((prev) => prev.filter((b) => b.id !== bindingId));
-
-    if (selectedBinding?.id === bindingId) {
-      setSelectedBinding(null);
-    }
-
-    return true;
+    dispatchResetEventForBinding(bindingToDelete);
+    return deleteBindingAction(bindingId);
   }
 
   function deleteBindingsForComponent(componentId: string): number {
-    const bindingsToDelete = bindings.filter(
-      (b) => b.sourceId === componentId || b.targetId === componentId
-    );
-
-    if (bindingsToDelete.length === 0) {
-      return 0;
-    }
+    const bindingsToDelete = deleteBindingsForComponentAction(componentId);
 
     bindingsToDelete.forEach((binding) => {
       dispatchResetEventForBinding(binding);
     });
 
-    setBindings((prev) =>
-      prev.filter(
-        (b) => b.sourceId !== componentId && b.targetId !== componentId
-      )
-    );
-
-    if (
-      selectedBinding &&
-      (selectedBinding.sourceId === componentId ||
-        selectedBinding.targetId === componentId)
-    ) {
-      setSelectedBinding(null);
-    }
-
     return bindingsToDelete.length;
   }
 
   function selectBinding(bindingId: string | null) {
-    if (bindingId === null) {
-      setSelectedBinding(null);
-      return true;
-    }
-
-    const binding = bindings.find((b) => b.id === bindingId);
-    if (!binding) {
-      return false;
-    }
-
-    setSelectedBinding(binding);
+    setSelectedBindingId(bindingId);
     return true;
   }
 
