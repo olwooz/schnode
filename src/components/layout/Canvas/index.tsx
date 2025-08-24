@@ -2,9 +2,13 @@
 
 import { useEffect } from 'react';
 
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 
-import { componentsAtom, selectedComponentAtom } from '@/atoms/component';
+import {
+  componentsAtom,
+  selectedComponentAtom,
+  selectedComponentIdAtom,
+} from '@/atoms/component';
 import { isPreviewModeAtom } from '@/atoms/mode';
 import { DraggableComponent } from '@/components/draggable/DraggableComponent';
 import { MobileNotice } from '@/components/layout/Canvas/MobileNotice';
@@ -16,9 +20,8 @@ import { useDropPreview } from '@/hooks/useDropPreview';
 export default function Canvas() {
   const isPreviewMode = useAtomValue(isPreviewModeAtom);
   const components = useAtomValue(componentsAtom);
-  const [selectedComponent, setSelectedComponent] = useAtom(
-    selectedComponentAtom
-  );
+  const selectedComponent = useAtomValue(selectedComponentAtom);
+  const setSelectedComponentId = useSetAtom(selectedComponentIdAtom);
   const { handleDeleteComponent } = useComponentActions();
   const { dropRef, previewRef, dropPreview, isOver } =
     useDropPreview(isPreviewMode);
@@ -30,7 +33,7 @@ export default function Canvas() {
 
   useEffect(() => {
     function handleDeselectComponent() {
-      setSelectedComponent(null);
+      setSelectedComponentId(null);
     }
 
     const canvasDropArea = dropRef.current;
@@ -44,7 +47,7 @@ export default function Canvas() {
     return () => {
       canvasDropArea.removeEventListener('click', handleDeselectComponent);
     };
-  }, [selectedComponent, dropRef, setSelectedComponent]);
+  }, [selectedComponent, dropRef, setSelectedComponentId]);
 
   useEffect(() => {
     function handleDeleteWithKeyboard(e: KeyboardEvent) {

@@ -2,14 +2,14 @@ import { useEffect } from 'react';
 
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 
-import { selectedComponentAtom } from '@/atoms/component';
+import { selectedComponentIdAtom } from '@/atoms/component';
 import { isMobileAtom } from '@/atoms/isMobile';
 import { isPreviewModeAtom } from '@/atoms/mode';
 import { useDeviceContext } from '@/components/ClientDeviceProvider';
 
 export function useTogglePreviewMode() {
   const [isPreviewMode, setIsPreviewMode] = useAtom(isPreviewModeAtom);
-  const setSelectedComponent = useSetAtom(selectedComponentAtom);
+  const setSelectedComponentId = useSetAtom(selectedComponentIdAtom);
   const isMobile = useAtomValue(isMobileAtom);
 
   const isMobileContext = useDeviceContext();
@@ -22,7 +22,7 @@ export function useTogglePreviewMode() {
     }
 
     if (!isPreviewMode) {
-      setSelectedComponent(null);
+      setSelectedComponentId(null);
     }
 
     setIsPreviewMode(!isPreviewMode);
@@ -33,9 +33,9 @@ export function useTogglePreviewMode() {
       return;
     }
 
-    setSelectedComponent(null);
+    setSelectedComponentId(null);
     setIsPreviewMode(true);
-  }, [effectiveMobile, isPreviewMode, setIsPreviewMode, setSelectedComponent]);
+  }, [effectiveMobile, isPreviewMode, setIsPreviewMode, setSelectedComponentId]);
 
   return {
     isPreviewMode,
