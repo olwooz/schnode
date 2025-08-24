@@ -6,7 +6,7 @@ import { useAtomValue } from 'jotai';
 import { AlertCircle } from 'lucide-react';
 
 import { isMobileAtom } from '@/atoms/isMobile';
-import { DraggableItem } from '@/components/draggable/DraggableItem';
+import DraggableItem from '@/components/draggable/DraggableItem';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { COMPONENT_LIBRARY_ITEMS } from '@/constants/component';

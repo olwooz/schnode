@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 
 import { useAtomValue } from 'jotai';
 import { v4 as uuidv4 } from 'uuid';
@@ -18,7 +18,7 @@ type DraggableItemProps = {
   closePanel: () => void;
 };
 
-export function DraggableItem({
+function DraggableItem({
   type,
   title,
   description,
@@ -77,3 +77,5 @@ export function DraggableItem({
     </div>
   );
 }
+
+export default memo(DraggableItem);

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, memo, SetStateAction, useState } from 'react';
 
 import { ColumnDef } from '@tanstack/react-table';
 import { useAtom } from 'jotai';
@@ -37,7 +37,7 @@ type TableRowEditorProps = {
   columns: ColumnDef<TableRowData>[];
 };
 
-export function TableRowEditor({
+function TableRowEditor({
   isDialogOpen,
   setIsDialogOpen,
   data,
@@ -210,3 +210,5 @@ export function TableRowEditor({
     </>
   );
 }
+
+export default memo(TableRowEditor);

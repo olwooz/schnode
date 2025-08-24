@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 
 import { useAtomValue } from 'jotai';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,10 +19,7 @@ import ButtonRenderer from './Button';
 import InputRenderer from './Input';
 import SelectRenderer from './Select';
 
-export default function CardRenderer({
-  props,
-  componentId,
-}: ComponentRendererProps) {
+function CardRenderer({ props, componentId }: ComponentRendererProps) {
   const cardProps = { ...DEFAULT_PROPS.card, ...props } as CardProps;
   const bindings = useAtomValue(bindingsAtom);
   const [formValues, setFormValues] = useState<Record<string, string>>({});
@@ -206,3 +203,5 @@ export default function CardRenderer({
     </Card>
   );
 }
+
+export default memo(CardRenderer);

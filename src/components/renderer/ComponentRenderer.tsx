@@ -1,5 +1,7 @@
 'use client';
 
+import { memo } from 'react';
+
 import { COMPONENT_RENDERERS } from '@/constants/component';
 import { ComponentProps } from '@/types/component';
 import { ComponentType } from '@/types/dnd';
@@ -10,11 +12,7 @@ type RendererProps = {
   componentId?: string;
 };
 
-export default function ComponentRenderer({
-  type,
-  props,
-  componentId,
-}: RendererProps) {
+function ComponentRenderer({ type, props, componentId }: RendererProps) {
   const Renderer = COMPONENT_RENDERERS[type];
 
   if (!Renderer) {
@@ -23,3 +21,5 @@ export default function ComponentRenderer({
 
   return <Renderer props={props} componentId={componentId} />;
 }
+
+export default memo(ComponentRenderer);

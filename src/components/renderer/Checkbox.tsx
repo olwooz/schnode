@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import { useAtomValue } from 'jotai';
 
@@ -9,10 +9,7 @@ import { DEFAULT_PROPS } from '@/constants/component';
 import { BindingType } from '@/types/binding';
 import { CheckboxProps, ComponentRendererProps } from '@/types/component';
 
-export default function CheckboxRenderer({
-  props,
-  componentId,
-}: ComponentRendererProps) {
+function CheckboxRenderer({ props, componentId }: ComponentRendererProps) {
   const checkboxProps = {
     ...DEFAULT_PROPS.checkbox,
     ...props,
@@ -75,3 +72,5 @@ export default function CheckboxRenderer({
     </div>
   );
 }
+
+export default memo(CheckboxRenderer);

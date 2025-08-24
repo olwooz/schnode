@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import { useAtomValue } from 'jotai';
 
@@ -10,10 +10,7 @@ import { DEFAULT_PROPS } from '@/constants/component';
 import { BindingType } from '@/types/binding';
 import { ComponentRendererProps, InputProps } from '@/types/component';
 
-export default function InputRenderer({
-  props,
-  componentId,
-}: ComponentRendererProps) {
+function InputRenderer({ props, componentId }: ComponentRendererProps) {
   const inputProps = { ...DEFAULT_PROPS.input, ...props } as InputProps;
   const bindings = useAtomValue(bindingsAtom);
   const [inputValue, setInputValue] = useState('');
@@ -83,3 +80,5 @@ export default function InputRenderer({
     </div>
   );
 }
+
+export default memo(InputRenderer);
