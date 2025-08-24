@@ -10,7 +10,7 @@ import {
   selectedComponentIdAtom,
 } from '@/atoms/component';
 import { isPreviewModeAtom } from '@/atoms/mode';
-import { DraggableComponent } from '@/components/draggable/DraggableComponent';
+import DraggableComponent from '@/components/draggable/DraggableComponent';
 import { MobileNotice } from '@/components/layout/Canvas/MobileNotice';
 import ComponentRenderer from '@/components/renderer/ComponentRenderer';
 import { GRID_SIZE } from '@/constants/canvas';
