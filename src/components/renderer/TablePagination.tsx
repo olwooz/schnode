@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { Table } from '@tanstack/react-table';
 import {
   ChevronLeft,
@@ -14,7 +16,7 @@ import {
 } from '@/components/ui/pagination';
 import { TableRowData } from '@/types/table';
 
-export function TablePagination({ table }: { table: Table<TableRowData> }) {
+function TablePagination({ table }: { table: Table<TableRowData> }) {
   const pagination = table.getState().pagination;
   const pageCount = table.getPageCount();
 
@@ -101,3 +103,5 @@ export function TablePagination({ table }: { table: Table<TableRowData> }) {
     </Pagination>
   );
 }
+
+export default memo(TablePagination);

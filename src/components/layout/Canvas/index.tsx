@@ -10,12 +10,13 @@ import {
   selectedComponentIdAtom,
 } from '@/atoms/component';
 import { isPreviewModeAtom } from '@/atoms/mode';
-import { DraggableComponent } from '@/components/draggable/DraggableComponent';
+import DraggableComponent from '@/components/draggable/DraggableComponent';
 import { MobileNotice } from '@/components/layout/Canvas/MobileNotice';
-import ComponentRenderer from '@/components/renderer/ComponentRenderer';
 import { GRID_SIZE } from '@/constants/canvas';
 import { useComponentActions } from '@/hooks/useComponentActions';
 import { useDropPreview } from '@/hooks/useDropPreview';
+
+import DropPreviewComponent from './DropPreviewComponent';
 
 export default function Canvas() {
   const isPreviewMode = useAtomValue(isPreviewModeAtom);
@@ -25,11 +26,6 @@ export default function Canvas() {
   const { handleDeleteComponent } = useComponentActions();
   const { dropRef, previewRef, dropPreview, isOver } =
     useDropPreview(isPreviewMode);
-
-  function getComponentProps(componentId: string) {
-    const component = components.find((comp) => comp.id === componentId);
-    return component?.props || {};
-  }
 
   useEffect(() => {
     function handleDeselectComponent() {
@@ -104,27 +100,10 @@ export default function Canvas() {
           data-testid='canvas-drop-area'
         >
           {dropPreview.previewComponentType && !isPreviewMode && (
-            <div
-              ref={previewRef}
-              className='absolute rounded border-2 border-dashed border-blue-500 bg-blue-100 p-2 z-10 pointer-events-none opacity-80'
-              style={{
-                left: `${dropPreview.position.x}px`,
-                top: `${dropPreview.position.y}px`,
-                boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)',
-                maxWidth: 'calc(100% - 2rem)',
-              }}
-            >
-              {dropPreview.previewComponentType && (
-                <ComponentRenderer
-                  type={dropPreview.previewComponentType}
-                  props={
-                    dropPreview.isRelocation && dropPreview.id
-                      ? getComponentProps(dropPreview.id)
-                      : {}
-                  }
-                />
-              )}
-            </div>
+            <DropPreviewComponent
+              previewRef={previewRef}
+              dropPreview={dropPreview}
+            />
           )}
 
           {components.length > 0 ? (

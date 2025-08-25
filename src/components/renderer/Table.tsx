@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 
 import {
   flexRender,
@@ -18,8 +18,8 @@ import {
 import { useAtomValue } from 'jotai';
 
 import { isPreviewModeAtom } from '@/atoms/mode';
-import { TablePagination } from '@/components/renderer/TablePagination';
-import { TableRowEditor } from '@/components/renderer/TableRowEditor';
+import TablePagination from '@/components/renderer/TablePagination';
+import TableRowEditor from '@/components/renderer/TableRowEditor';
 import {
   Table,
   TableHeader,
@@ -35,10 +35,7 @@ import { ComponentRendererProps, TableProps } from '@/types/component';
 import { TableRowData } from '@/types/table';
 import { getBooleanValue } from '@/utils/string';
 
-export default function TableRenderer({
-  props,
-  componentId,
-}: ComponentRendererProps) {
+function TableRenderer({ props, componentId }: ComponentRendererProps) {
   const isPreviewMode = useAtomValue(isPreviewModeAtom);
   const tableProps = { ...DEFAULT_PROPS.table, ...props } as TableProps;
   const [selectedRow, setSelectedRow] = useState<TableRowData | null>(null);
@@ -182,3 +179,5 @@ export default function TableRenderer({
     </div>
   );
 }
+
+export default memo(TableRenderer);

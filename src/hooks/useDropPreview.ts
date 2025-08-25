@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { DropTargetMonitor, useDrop } from 'react-dnd';
 import { v4 as uuidv4 } from 'uuid';
@@ -22,6 +22,37 @@ export function useDropPreview(isPreviewMode: boolean) {
   const dropRef = useRef<HTMLDivElement | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
 
+  const getDropPosition = useCallback(
+    (monitor: DropTargetMonitor): { x: number; y: number } | null => {
+      const offset = monitor.getClientOffset();
+      if (!offset) return null;
+
+      const dropTargetElement = document.getElementById('canvas-drop-area');
+      const dropTargetRect = dropTargetElement?.getBoundingClientRect();
+      if (!dropTargetRect) return null;
+
+      const mouseX = offset.x - dropTargetRect.left;
+      const mouseY = offset.y - dropTargetRect.top;
+
+      return calculatePosition(
+        mouseX,
+        mouseY,
+        previewSize.width,
+        previewSize.height
+      );
+    },
+    [previewSize.width, previewSize.height]
+  );
+
+  const hideDropPreview = useCallback(() => {
+    setDropPreview({
+      isVisible: false,
+      previewComponentType: null,
+      position: { x: 0, y: 0 },
+      isRelocation: false,
+    });
+  }, []);
+
   const [{ isOver }, drop] = useDrop(
     () => ({
       accept: [DRAG_ITEM_TYPE.COMPONENT, DRAG_ITEM_TYPE.PLACED_COMPONENT],
@@ -29,7 +60,13 @@ export function useDropPreview(isPreviewMode: boolean) {
         if (isPreviewMode) return;
 
         const position = getDropPosition(monitor);
-        if (!position) return;
+
+        if (
+          !position ||
+          (Math.abs(position.x - dropPreview.position.x) < 5 &&
+            Math.abs(position.y - dropPreview.position.y) < 5)
+        )
+          return;
 
         setDropPreview({
           isVisible: true,
@@ -73,38 +110,14 @@ export function useDropPreview(isPreviewMode: boolean) {
         };
       },
     }),
-    [isPreviewMode, dropPreview.isVisible, previewSize]
+    [
+      isPreviewMode,
+      dropPreview,
+      hideDropPreview,
+      handleAddComponent,
+      getDropPosition,
+    ]
   );
-
-  function getDropPosition(
-    monitor: DropTargetMonitor
-  ): { x: number; y: number } | null {
-    const offset = monitor.getClientOffset();
-    if (!offset) return null;
-
-    const dropTargetElement = document.getElementById('canvas-drop-area');
-    const dropTargetRect = dropTargetElement?.getBoundingClientRect();
-    if (!dropTargetRect) return null;
-
-    const mouseX = offset.x - dropTargetRect.left;
-    const mouseY = offset.y - dropTargetRect.top;
-
-    return calculatePosition(
-      mouseX,
-      mouseY,
-      previewSize.width,
-      previewSize.height
-    );
-  }
-
-  function hideDropPreview() {
-    setDropPreview({
-      isVisible: false,
-      previewComponentType: null,
-      position: { x: 0, y: 0 },
-      isRelocation: false,
-    });
-  }
 
   useEffect(() => {
     if (!dropRef.current) {

@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { useAtomValue } from 'jotai';
 import { Trash2 } from 'lucide-react';
 
@@ -14,11 +16,7 @@ import { useDraggable } from '@/hooks/useDraggable';
 import { cn } from '@/lib/utils';
 import { CanvasComponent } from '@/types/dnd';
 
-export function DraggableComponent({
-  component,
-}: {
-  component: CanvasComponent;
-}) {
+function DraggableComponent({ component }: { component: CanvasComponent }) {
   const isPreviewMode = useAtomValue(isPreviewModeAtom);
   const selectedComponent = useAtomValue(selectedComponentAtom);
 
@@ -125,3 +123,5 @@ export function DraggableComponent({
     </div>
   );
 }
+
+export default memo(DraggableComponent);

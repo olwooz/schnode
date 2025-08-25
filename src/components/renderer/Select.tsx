@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import { useAtomValue } from 'jotai';
 
@@ -16,10 +16,7 @@ import { DEFAULT_PROPS } from '@/constants/component';
 import { BindingType } from '@/types/binding';
 import { ComponentRendererProps, SelectProps } from '@/types/component';
 
-export default function SelectRenderer({
-  props,
-  componentId,
-}: ComponentRendererProps) {
+function SelectRenderer({ props, componentId }: ComponentRendererProps) {
   const selectProps = { ...DEFAULT_PROPS.select, ...props } as SelectProps;
 
   const bindings = useAtomValue(bindingsAtom);
@@ -99,3 +96,5 @@ export default function SelectRenderer({
     </div>
   );
 }
+
+export default memo(SelectRenderer);
